@@ -1,0 +1,405 @@
+#shaders/lang/de_DE.lang
+
+profile.LOWEST=Niedrigst
+profile.LOW=Niedrig
+profile.NORMAL=Normal
+profile.HIGH=Hoch
+
+option.REFORGED_INFO=Zarya
+option.REFORGED_INFO.comment=Ein Add-on namens Zarya auf Basis von minecraft-miniature-shader
+value.REFORGED_INFO.0=§evon Throw New Error
+value.REFORGED_INFO.1=§avon Throw New Error
+value.REFORGED_INFO.2=§bvon Throw New Error
+value.REFORGED_INFO.3=§dvon Throw New Error
+
+screen.WATER_SCREEN=Wasser
+screen.WATER_WAVES_SCREEN=Wellen
+screen.WATER_UNDER_SCREEN=Unter Wasser
+option.WATER_BRIGHTNESS=Wasserhelligkeit
+option.WATER_BRIGHTNESS.comment=Wie stark die Wasseroberfläche und nahe Reflexionen leuchten.
+option.WATER_B=Wasserbläue
+option.WATER_B.comment=Farbton des Wassers: wie kalt und blau es wirkt.
+option.WATER_A=Wasserdeckkraft
+option.WATER_A.comment=Wie stark Wasser Boden und Volumen verdeckt.
+option.WATER_MIN_GLINT=Stärke des Wasser-Glints §e[?]
+option.WATER_MIN_GLINT.comment=Bestimmt, wie viel Textur das Wasser behält; bewegtes Wasser behält die Textur vollständig
+option.WATER_GLINT_BRIGHTNESS=Helligkeit des Wasser-Glints
+option.WATER_GLINT_BRIGHTNESS.comment=Intensität spiegelnder Glints auf Wasser.
+option.WATER_GLINT_CUTOFF=Glint-Schwelle des Wassers
+option.WATER_GLINT_CUTOFF.comment=Sichtbarkeitsschwelle für Glints: ab welchem Winkel/Helligkeitsniveau sie stärker werden.
+option.WATER_WAVE_SIZE=Wellenhöhe
+option.WATER_WAVE_SIZE.comment=Größe der Wasserwellen.
+option.WATER_WAVE_SPEED=Wellengeschwindigkeit §e[?]
+option.WATER_WAVE_SPEED.comment=Wie viele Wellenzyklen in eine Schleifenperiode passen
+option.WATER_WAVE_PERIOD=Wasser-Schleifenperiode §e[?]
+option.WATER_WAVE_PERIOD.comment=Sekunden, bis sich die Wasseroberfläche Bild für Bild exakt wiederholt. Vanilla und Distant Horizons teilen diese Uhr
+option.WATER_WAVE_DIR=Wellenrichtung §e[?]
+option.WATER_WAVE_DIR.comment=Kompassrichtung der Strömung in Grad. 0 = +X, 90 = +Z. Die Strömung bleibt einseitig; die Schleife bleibt dennoch exakt
+option.WATER_FOG=Unterwassernebel §e[?]
+option.WATER_FOG.comment=Absorption und türkisfarbener Dunst unter Wasser
+option.WATER_FOG_DENSITY=Dichte des Unterwassernebels
+option.WATER_FOG_DENSITY.comment=Unterwassernebeldichte nach Entfernung (wie schnell es in der Tiefe dunkler wird).
+option.WATER_FOG_EXPONENT=Unterwassernebel-Falloff §e[?]
+option.WATER_FOG_EXPONENT.comment=Stärker negativ = Nebel baut sich mit der Entfernung schneller auf
+
+screen.COLORS_SCREEN=Fackelfarbe
+option.TORCH_INNER_R=Innere Fackel §cR
+option.TORCH_INNER_R.comment=Roter Farbanteil der Fackel (innen).
+option.TORCH_INNER_G=Innere Fackel §2G
+option.TORCH_INNER_G.comment=Grüner Farbanteil der Fackel (innen).
+option.TORCH_INNER_B=Innere Fackel §9B
+option.TORCH_INNER_B.comment=Blauer Farbanteil der Fackel (innen).
+option.TORCH_MIDDLE_R=Mittlere Fackel §cR
+option.TORCH_MIDDLE_R.comment=Roter Farbanteil der Fackel (mitte).
+option.TORCH_MIDDLE_G=Mittlere Fackel §2G
+option.TORCH_MIDDLE_G.comment=Grüner Farbanteil der Fackel (mitte).
+option.TORCH_MIDDLE_B=Mittlere Fackel §9B
+option.TORCH_MIDDLE_B.comment=Blauer Farbanteil der Fackel (mitte).
+option.TORCH_OUTER_R=Äußere Fackel §cR
+option.TORCH_OUTER_R.comment=Roter Farbanteil der Fackel (außen).
+option.TORCH_OUTER_G=Äußere Fackel §2G
+option.TORCH_OUTER_G.comment=Grüner Farbanteil der Fackel (außen).
+option.TORCH_OUTER_B=Äußere Fackel §9B
+option.TORCH_OUTER_B.comment=Blauer Farbanteil der Fackel (außen).
+option.MOON_R=Mond §cR
+option.MOON_R.comment=Roter Farbanteil des Mondes.
+option.MOON_G=Mond §2G
+option.MOON_G.comment=Grüner Farbanteil des Mondes.
+option.MOON_B=Mond §9B
+option.MOON_B.comment=Blauer Farbanteil des Mondes.
+
+screen.ATMOSPHERE_SCREEN=Himmel
+screen.AIR_FOG_SCREEN=Nebel
+screen.OVERWORLD_STARS_SCREEN=Sterne
+screen.END_SKY_SCREEN=End-Himmel
+screen.MOON_COLOR_SCREEN=Mondfarbe
+screen.NETHER_WORLD_SCREEN=Nether-Welt
+screen.CYCLES_SCREEN=Schleifen
+screen.CYCLE_WATER_SCREEN=Wasserschleife
+screen.CYCLE_WAVING_SCREEN=Laub
+screen.CYCLE_STAR_SCREEN=Sterne
+screen.CYCLE_END_SCREEN=End-Sterne
+screen.CYCLE_CLOUD_SCREEN=Wolkenwind
+screen.POST_SCREEN=Nachbearbeitung
+screen.MATERIALS_SCREEN=Materialien
+option.ENABLE_FOG=Nebel aktivieren
+option.ENABLE_FOG.comment=Aktiviert Nebel.
+option.WEATHER_OPACITY=Wetter-Deckkraft
+option.WEATHER_OPACITY.comment=Deckkraft des Wetter-Overlays.
+option.ENABLE_SKY=Himmel aktivieren §e[?]
+option.ENABLE_SKY.comment=Deaktiviere diese Option, wenn du ein Himmel-Resourcepack benutzt
+option.SHADER_STARS=Shader-Sterne §e[?]
+option.SHADER_STARS.comment=Prozedurales Sternenfeld statt Vanilla-Punkte. Aus = Vanilla-Sterne
+option.STAR_BRIGHTNESS=Sternhelligkeit
+option.STAR_BRIGHTNESS.comment=Helligkeit der Sterne und allgemeines Funkeln des Sternenfelds.
+option.STAR_AMOUNT=Sternanzahl
+option.STAR_AMOUNT.comment=Dichte des Sternenfelds (wie viele Sterne sichtbar sind).
+option.STAR_SIZE=Sternengröße
+option.STAR_SIZE.comment=Größenskala der Sterne.
+option.STAR_PERIOD=Stern-Schleifenperiode §e[?]
+option.STAR_PERIOD.comment=Sekunden, bis Feld und Flimmern sich wieder exakt Bild für Bild wiederholen, ohne Sprung
+option.STAR_SPEED=Stern-Geschwindigkeit §e[?]
+option.STAR_SPEED.comment=Wie viele Feld-Durchläufe in eine Periode passen. 0 = still, 0.5 = ein Durchlauf, 1.0 = zwei. Saubere Schleife wie bei Wasserwellen
+option.STAR_PHASE=Stern-Phase §e[?]
+option.STAR_PHASE.comment=Schleifenversatz. 0 = Start der Uhr, 0.5 = Mitte des Zyklus
+option.VANILLA_LIKE_SUN=Vanilla-ähnliche Sonne §e[?]
+option.VANILLA_LIKE_SUN.comment=Hartes quadratisches Sonnenbild aus bereinigter vanilla sun.png (ohne Leuchthof). Aus = runde prozedurale Sonne
+option.VANILLA_LIKE_MOON=Vanilla-ähnlicher Mond §e[?]
+option.VANILLA_LIKE_MOON.comment=Har te quadratische Mondphasen aus bereinigter vanilla moon_phases.png (ohne Leuchthof)
+screen.CLOUDS_SCREEN=Wolken
+screen.CLOUD_LC_SCREEN=Tiefe Wolken
+screen.CLOUD_MC_SCREEN=Mittlere Wolken
+screen.CLOUD_UC_SCREEN=Hohe Wolken
+option.SHADER_CLOUDS=Shader-Wolken §e[?]
+option.SHADER_CLOUDS.comment=An = volumetrische Cumulus-Wolken (3 Schichten). Aus = Vanilla-Boxen (Wolken in den Videoeinstellungen aktivieren)
+option.CLOUD_SHADOWS=Wolkenschatten
+option.CLOUD_SHADOWS.comment=Projiziert alle Shader-Wolkenschichten auf das Terrain
+option.CLOUD_RAIN_AMOUNT=Regenbedeckung §e[?]
+option.CLOUD_RAIN_AMOUNT.comment=Multipliziert die Wolkenbedeckung aller Schichten bei Regen. 1.0 = keine Änderung
+
+option.CLOUD_LC_AMOUNT=Bedeckung
+option.CLOUD_LC_AMOUNT.comment=Wie viel des Himmels diese Schicht bedeckt
+option.CLOUD_LC_HEIGHT=Höhe
+option.CLOUD_LC_HEIGHT.comment=Basishöhe der tiefen Wolken (~120)
+option.CLOUD_LC_THICKNESS=Dicke §e[?]
+option.CLOUD_LC_THICKNESS.comment=Vertikale Tiefe der Wolkenschicht
+option.CLOUD_LC_SCALE=Skalierung §e[?]
+option.CLOUD_LC_SCALE.comment=Horizontale Größe der Wolkenmassen
+option.CLOUD_LC_DENSITY=Dichte
+option.CLOUD_LC_DENSITY.comment=Dichte der unteren (LC) Wolkenschicht.
+option.CLOUD_LC_DETAIL=Detail
+option.CLOUD_LC_DETAIL.comment=Detailgrad der unteren Wolken.
+option.CLOUD_LC_SPEED=Tief · Wind §e[?]
+option.CLOUD_LC_SPEED.comment=Wie weit sich die tiefe Schicht auf ihrer geschlossenen Windschleife bewegt. Ende der Schleife = Anfang, ohne Tile-Reset
+option.CLOUD_LC_LOOP_SECONDS=Tief · Schleife §e[?]
+option.CLOUD_LC_LOOP_SECONDS.comment=Sekunden, bis sich die tiefe Schicht Bild für Bild exakt wiederholt
+option.CLOUD_LC_OPACITY=Deckkraft
+option.CLOUD_LC_OPACITY.comment=Wie dicht diese Schicht ist
+option.CLOUD_LC_SAMPLES=Samples §e[?]
+option.CLOUD_LC_SAMPLES.comment=Raymarch-Schritte für diese Schicht
+option.CLOUD_LC_DISTANCE=Sichtweite
+option.CLOUD_LC_DISTANCE.comment=Sichtweite der tiefen Wolken.
+
+option.CLOUD_MC_AMOUNT=Bedeckung
+option.CLOUD_MC_AMOUNT.comment=Wie viel des Himmels diese Schicht bedeckt
+option.CLOUD_MC_HEIGHT=Höhe
+option.CLOUD_MC_HEIGHT.comment=Basishöhe der mittleren Wolken (~220)
+option.CLOUD_MC_THICKNESS=Dicke §e[?]
+option.CLOUD_MC_THICKNESS.comment=Vertikale Tiefe der Wolkenschicht
+option.CLOUD_MC_SCALE=Skalierung §e[?]
+option.CLOUD_MC_SCALE.comment=Horizontale Größe der Wolkenmassen
+option.CLOUD_MC_DENSITY=Dichte
+option.CLOUD_MC_DENSITY.comment=Dichte der mittleren (MC) Wolkenschicht.
+option.CLOUD_MC_DETAIL=Detail
+option.CLOUD_MC_DETAIL.comment=Detailgrad der mittleren Wolken.
+option.CLOUD_MC_SPEED=Mittel · Wind §e[?]
+option.CLOUD_MC_SPEED.comment=Wie weit sich die mittlere Schicht auf ihrer geschlossenen Windschleife bewegt. Ohne Tile-Reset
+option.CLOUD_MC_LOOP_SECONDS=Mittel · Schleife §e[?]
+option.CLOUD_MC_LOOP_SECONDS.comment=Sekunden, bis sich die mittlere Schicht Bild für Bild exakt wiederholt
+option.CLOUD_MC_OPACITY=Deckkraft
+option.CLOUD_MC_OPACITY.comment=Wie dicht diese Schicht ist
+option.CLOUD_MC_SAMPLES=Samples §e[?]
+option.CLOUD_MC_SAMPLES.comment=Raymarch-Schritte für diese Schicht
+option.CLOUD_MC_DISTANCE=Sichtweite
+option.CLOUD_MC_DISTANCE.comment=Sichtweite der mittleren Wolken.
+
+option.CLOUD_UC_AMOUNT=Bedeckung
+option.CLOUD_UC_AMOUNT.comment=Wie viel des Himmels diese Schicht bedeckt
+option.CLOUD_UC_HEIGHT=Höhe
+option.CLOUD_UC_HEIGHT.comment=Basishöhe der hohen Wolken (~320)
+option.CLOUD_UC_THICKNESS=Dicke §e[?]
+option.CLOUD_UC_THICKNESS.comment=Vertikale Tiefe der Wolkenschicht
+option.CLOUD_UC_SCALE=Skalierung §e[?]
+option.CLOUD_UC_SCALE.comment=Horizontale Größe der Wolkenmassen
+option.CLOUD_UC_DENSITY=Dichte
+option.CLOUD_UC_DENSITY.comment=Dichte der oberen (UC) Wolkenschicht.
+option.CLOUD_UC_DETAIL=Detail
+option.CLOUD_UC_DETAIL.comment=Detailgrad der oberen Wolken.
+option.CLOUD_UC_SPEED=Hoch · Wind §e[?]
+option.CLOUD_UC_SPEED.comment=Wie weit sich die hohe Schicht auf ihrer geschlossenen Windschleife bewegt. Ohne Tile-Reset
+option.CLOUD_UC_LOOP_SECONDS=Hoch · Schleife §e[?]
+option.CLOUD_UC_LOOP_SECONDS.comment=Sekunden, bis sich die hohe Schicht Bild für Bild exakt wiederholt
+option.CLOUD_UC_OPACITY=Deckkraft
+option.CLOUD_UC_OPACITY.comment=Wie dicht diese Schicht ist
+option.CLOUD_UC_SAMPLES=Samples §e[?]
+option.CLOUD_UC_SAMPLES.comment=Raymarch-Schritte für diese Schicht
+option.CLOUD_UC_DISTANCE=Sichtweite
+option.CLOUD_UC_DISTANCE.comment=Sichtweite der oberen Wolken.
+option.TAA=TAA §e[?]
+option.TAA.comment=Zeitliches Glätten mit History-Blending (Catmull–Rom). Reduziert Korn und Kanten über die Zeit. Kann bei schnellen Kamerabewegungen Nachziehen verursachen; funktioniert am besten bei hohen Auflösungen. Kanten-AA ist FXAA
+option.TAA_STRENGTH=TAA-Stärke §e[?]
+option.TAA_STRENGTH.comment=0 = aus. Wie stark frühere Frames beigemischt werden. Höher = ruhigeres Bild mit weniger Korn, aber mehr Ghosting/Nachziehen
+option.FXAA=FXAA §e[?]
+option.FXAA.comment=Kantenglättung. Günstig, kein Kamerajittern, kein Nachziehen. Das ist das Haupt-AA
+option.SHARPEN_STRENGTH=Schärfen §e[?]
+option.SHARPEN_STRENGTH.comment=Bringt nach FXAA wieder Biss zurück. 0 = aus. ~0.3 Standard
+option.SUNSET_INTENSITY=Stärke von Sonnenauf-/untergang §e[?]
+option.SUNSET_INTENSITY.comment=Stärke des orange-rosa Horizontglühens bei Morgen- und Abenddämmerung
+option.STYLE_EXPOSURE=Gesamthelligkeit §e[?]
+option.STYLE_EXPOSURE.comment=Niedrigere Werte machen das Bild düsterer. Highlights bleiben etwas heller als der Rest
+option.STYLE_SATURATION=Sättigung
+option.STYLE_SATURATION.comment=Sättigung des Color Gradings.
+option.STYLE_CONTRAST=Kontrast
+option.STYLE_CONTRAST.comment=Kontrast des Color Gradings.
+option.OVERWORLD_FOG_MAX_SLIDER=Overworld-Übergangsnebel §e[?]
+option.OVERWORLD_FOG_MAX_SLIDER.comment=Nebelstärke bei Sonnenauf- und -untergang
+option.OVERWORLD_FOG_MIN_SLIDER=Overworld-Nebel
+option.OVERWORLD_FOG_MIN_SLIDER.comment=Minimale Nebelintensität im Overworld.
+option.END_STARS_SPEED=End-Sterne-Geschwindigkeit §e[?]
+option.END_STARS_SPEED.comment=Fall-Durchgänge pro Schleife, auf ganze Zahlen gerundet, damit u=0 und u=1 übereinstimmen. 0.05 × 20 s = 1 Durchgang
+option.END_STARS_PERIOD=End-Sterne-Schleifenperiode §e[?]
+option.END_STARS_PERIOD.comment=Sekunden, bis sich fallende Sterne Bild für Bild exakt wiederholen
+option.END_STARS_PHASE=End-Sterne-Phase §e[?]
+option.END_STARS_PHASE.comment=Schleifenversatz. 0 = Start der Uhr, 0.5 = Mitte des Zyklus
+option.END_STARS_AMOUNT=End-Sternanzahl
+option.END_STARS_AMOUNT.comment=Dichte des End-Sternenfeldes (wie viele Sterne sichtbar sind).
+option.END_STARS_OPACITY=Deckkraft der End-Sterne
+option.END_STARS_OPACITY.comment=Wie sichtbar die End-Sterne über dem Himmel sind.
+option.AUTO_EXPOSURE=Auto-Exposition
+option.AUTO_EXPOSURE.comment=Basiert auf dem Licht dort, wo du stehst (eyeBrightness), nicht dort, wo du hinschaust. Fackeln/Sonne senken EV; Höhlen erhöhen ihn
+option.AUTO_EXPOSURE_STRENGTH=Stärke der Auto-Exposition
+option.AUTO_EXPOSURE_STRENGTH.comment=Stärke der Auto-Exposition: wie aktiv sich die Helligkeit anpasst.
+option.AUTO_EXPOSURE_SPEED=Geschwindigkeit der Auto-Exposition §e[?]
+option.AUTO_EXPOSURE_SPEED.comment=Wie schnell sich die Belichtung beim Wechsel zwischen dunklen und hellen Bereichen anpasst
+option.VL=Gottstrahlen / Lichtschächte
+option.VL.comment=Schau durch Blätter/Fenster in Richtung Sonne. Benötigt aktivierte Schatten. Offene Sonne wird gedämpft; Strahlen durch Kronen bleiben sichtbar. ~0.3 sieht meist gut aus
+option.VL_STRENGTH=Stärke der Lichtstrahlen
+option.VL_STRENGTH.comment=Stärke volumetrischer Lichtstrahlen (VL).
+option.VL_SAMPLES=Samples für Lichtstrahlen
+option.VL_SAMPLES.comment=Mehr Samples = sauberere Strahlen. Korn kommt oft vom Dither/Laubschatten, nicht nur von der Anzahl; 12–16 reichen meist
+
+screen.SHADOWS_SCREEN=Beleuchtung
+screen.SHADOW_MAP_SCREEN=Schattenkarte
+screen.AO_SCREEN=Umgebungsverdeckung
+screen.VL_SCREEN=Lichtstrahlen
+screen.LIGHT_FX_SCREEN=Auffülllicht
+option.SHADOW_BLUENESS=Schattenbläue
+option.SHADOW_BLUENESS.comment=Schattenfärbung: wie kalt/bläulich Schatten aussehen.
+option.shadowDistance=Schattendistanz
+option.shadowDistance.comment=Schattendistanz. Höher = weiter sichtbar, aber teurer.
+option.shadowMapResolution=Schattenauflösung
+option.shadowMapResolution.comment=Auflösung der Schattenkarte. Höher = schärfer, aber teurer.
+option.shadowIntervalSize=Schatten-Nachfokusrate §e[?]
+option.shadowIntervalSize.comment=Bestimmt, nach wie vielen Blöcken Schatten erneut auf den Spieler nachfokussieren
+option.entityShadowDistanceMul=Entitäts-Schattendistanz §e[?]
+option.entityShadowDistanceMul.comment=Als Prozentsatz der Schattendistanz
+option.SHADOW_PIXEL=Schatten-Pixelisierung §e[?]
+option.SHADOW_PIXEL.comment=Lässt Schatten auf ein Blockraster einrasten. Bei 0 bleiben harte Schatten geometriegenau
+option.SHADOW_FILTER=Schattenfilterung §e[?]
+option.SHADOW_FILTER.comment=Aus = scharfer Rand mit 2-Texel-AA (verdeckt Schattenkarten-Quadrate). Höher = weichere Halbschatten
+value.SHADOW_FILTER.0=§eAus (scharf)
+value.SHADOW_FILTER.1=§eNiedrig
+value.SHADOW_FILTER.2=§eMittel
+value.SHADOW_FILTER.3=§eHoch
+option.SHADOW_SHARPNESS=Schatten-Schärfe §e[?]
+option.SHADOW_SHARPNESS.comment=10 = enges AA, 0 = etwas breiter. Für scharfe Schatten ohne Pixeltreppen: Filter aus + Schärfe 10
+option.LIGHT_BRIGHTNESS=Sonnenhelligkeit
+option.LIGHT_BRIGHTNESS.comment=Helligkeit des Sonnenlichts.
+option.sunPathRotation=Sonnenbahn-Winkel §e[!]
+option.sunPathRotation.comment=Miniature wurde für gerade Schatten entworfen und kann bei Änderungen Artefakte erzeugen
+option.SHADOW_DARKNESS=Schatten-Dunkelheit
+option.SHADOW_DARKNESS.comment=Gesamtdunkelheit der Schatten: wie stark verschattete Bereiche abdunkeln.
+option.FLAT_LIGHTING=Flaches Licht verwenden §e[?]
+option.FLAT_LIGHTING.comment=Ohne flaches Licht haben Blöcke Schatten, die wie in Vanilla nicht zur Sonnenposition passen
+option.ENABLE_SHADOWS=Schatten aktivieren
+option.ENABLE_SHADOWS.comment=Aktiviert Schatten.
+option.SHADOW_ENTITY=Entitäts-Schatten
+option.SHADOW_ENTITY.comment=Schatten für Entitäten.
+value.SHADOW_ENTITY.-1=§aAus
+value.SHADOW_ENTITY.0=§eSpieler
+value.SHADOW_ENTITY.1=§eAlle
+option.SSAO=SSAO / GTAO
+option.SSAO.comment=Verdunkelt Spalten und Ecken (screen-space ambient occlusion)
+option.AO_MODE=AO-Modus
+option.AO_MODE.comment=AO-Berechnungsmodus (SSAO / GTAO).
+value.AO_MODE.0=§eSSAO
+value.AO_MODE.1=§eGTAO-artig
+option.AO_STRENGTH=AO-Stärke
+option.AO_STRENGTH.comment=Stärke der AO-Abdunkelung.
+option.AO_RADIUS=AO-Radius
+option.AO_RADIUS.comment=Abtastradius für AO.
+option.AO_SAMPLES=AO-Samples
+option.AO_SAMPLES.comment=Anzahl der AO-Samples. Höher = weicher, aber teurer.
+
+screen.REFLECTIONS_SCREEN=Reflexionen
+option.REFLECTIONS=Reflexions-Deckkraft
+option.REFLECTIONS.comment=Gesamte Spiegelungs-Deckkraft (SSR-Sichtbarkeit).
+option.SUN_MOON_GLINT=Sonnen-/Mond-Glint §e[?]
+option.SUN_MOON_GLINT.comment=Spiegelnde Highlights von Sonne und Mond auf Wasser, Glas, Eis und anderen reflektierenden Oberflächen
+option.BLOCK_REFLECTIONS=Block-Reflexionsdeckkraft §e[?]
+option.BLOCK_REFLECTIONS.comment=Stärke der Reflexionen auf iPBR / reflektierenden Blöcken
+option.SSR_MAX_STEPS=Maximale Schritte
+option.SSR_MAX_STEPS.comment=Maximale Anzahl der SSR-Raytracing-Schritte.
+option.SSR_BINARY_STEPS=Maximale Verfeinerungsschritte
+option.SSR_BINARY_STEPS.comment=Verfeinerungsschritte am Ende von SSR. Höher = genauer, aber teurer.
+option.SSR_STEP_SIZE=Schrittweite
+option.SSR_STEP_SIZE.comment=SSR-Schrittweite (kleiner = genauer, größer = schneller).
+
+screen.IPBR_SCREEN=Integriertes PBR
+option.GENERATED_SPECULAR=Generiertes Specular §e[?]
+option.GENERATED_SPECULAR.comment=Prozedurale Glätte und Metallizität aus Blocktyp und Texturhelligkeit (ohne PBR-Resourcepack)
+option.GENERATED_EMISSION=Generierte Emission §e[?]
+option.GENERATED_EMISSION.comment=Prozedurales Leuchten für Erze, Glowstone, Sculk und Lichtquellen anhand der Texturfarbe
+option.GENERATED_NORMALS=Generierte Normalen §e[?]
+option.GENERATED_NORMALS.comment=Gefälschtes Relief aus Helligkeitsunterschieden der Textur
+option.GENERATED_SPECULAR_ON_ALL=Specular auf allen Blöcken §e[?]
+option.GENERATED_SPECULAR_ON_ALL.comment=Fügt jedem Block einen kleinen Grundglanz hinzu
+option.EMISSION_STRENGTH=Emissionsstärke
+option.EMISSION_STRENGTH.comment=Emissionsstärke für Materialien und Blöcke mit Emission.
+option.IPBR_REFLECTION_STRENGTH=Reflexionsstärke
+option.IPBR_REFLECTION_STRENGTH.comment=Reflexionsstärke in IPBR.
+option.NORMAL_STRENGTH=Normalenstärke
+option.NORMAL_STRENGTH.comment=Stärke prozeduraler Normalen.
+option.NORMAL_RESOLUTION=Normalenauflösung
+option.NORMAL_RESOLUTION.comment=Auflösung prozeduraler Normalen. Höher = genauer.
+option.NORMAL_THRESHOLD=Normalen-Schwelle
+option.NORMAL_THRESHOLD.comment=Schwelle für die Normalengenerierung: trennt schwache Details von Rauschen.
+
+screen.OTHER_SCREEN=Welt
+option.WAVING_LEAVES=Laubbewegung
+option.WAVING_LEAVES.comment=Blattbewegung aktivieren.
+option.WAVING_PLANTS=Pflanzenbewegung
+option.WAVING_PLANTS.comment=Pflanzenbewegung aktivieren.
+option.WAVING_CYCLE=Bewegungszyklus §e[?]
+option.WAVING_CYCLE.comment=Sekunden, bis sich die Laubbewegung Bild für Bild exakt wiederholt
+option.WAVING_WAVES=Wellen pro Zyklus §e[?]
+option.WAVING_WAVES.comment=Wie viele Schwingungen in einen Zyklus bei klarem Wetter passen. Muss ganzzahlig bleiben, damit die Schleife exakt ist
+option.WAVING_WAVES_RAIN=Regen-Wellen pro Zyklus §e[?]
+option.WAVING_WAVES_RAIN.comment=Anzahl der Wellen bei vollem Regen. Blendet als getrennte Bewegung ein, damit Regen-Start/Stop das Wanken nicht vorspult
+option.WAVING_AMPLITUDE=Bewegungsstärke
+option.WAVING_AMPLITUDE.comment=Amplitude der Blatt-/Pflanzenbewegung: wie stark sie schwingen.
+option.WAVING_RAIN_MULT=Regen-Verstärkung §e[?]
+option.WAVING_RAIN_MULT.comment=Wie viel stärker Pflanzen und Laub bei Regen schwingen. Bei Schnee stoppt die Bewegung
+option.FOLIAGE_SSS=Vegetations-SSS
+option.FOLIAGE_SSS.comment=Subsurface Scattering der Blätter gegen die Sonne. 0.4 = mittel, 0.8 = max
+option.FOLIAGE_SSS_STRENGTH=Stärke des Vegetations-SSS
+option.FOLIAGE_SSS_STRENGTH.comment=Stärke des Vegetations-SSS gegen das Licht.
+option.HIGHLIGHT_WAXED=Gewachste Blöcke hervorheben §e[?]
+option.HIGHLIGHT_WAXED.comment=Mit Honigwabe in der Hand werden gewachste Blöcke hervorgehoben
+option.GLOWING_ORES=Leuchtende Erze
+option.GLOWING_ORES.comment=Aktiviert verstärktes Leuchten für leuchtende Erze.
+option.NETHER_COLOR_GRADING=Nether-Color-Grading §e[?]
+option.NETHER_COLOR_GRADING.comment=Leichte Wärme und Highlight-Rolloff, damit Lava orange und nicht weiß bleibt
+option.NETHER_AMBIENT=Nether-Helligkeit §e[?]
+option.NETHER_AMBIENT.comment=Hellere Höhlen im Nether. 0.95 Standard — Photon-ähnlich, leicht dunkler. Erhöhen, wenn es zu finster wirkt
+option.NETHER_FOG=Nether-Dunst §e[?]
+option.NETHER_FOG.comment=Photon-ähnlich: dichter dunkler Dunst. Die Ferne versinkt in purpurnem Schatten; Lava bleibt der helle Akzent. Kein glühend orangefarbener Himmel
+option.NETHER_FOG_STRENGTH=Dunststärke
+option.NETHER_FOG_STRENGTH.comment=Dunststärke im Nether.
+option.NETHER_FOG_DENSITY=Dunstdichte §e[?]
+option.NETHER_FOG_DENSITY.comment=Wie schnell die Höhle dunkel wird. 1.15 Standard. Höher = schwererer Rauch
+option.NETHER_FOG_GLOW=Lava-Leuchten im Dunst §e[?]
+option.NETHER_FOG_GLOW.comment=Warme Unterbeleuchtung nur nahe Lavaseen. Niedrig halten, damit die Luft dunkel bleibt
+option.NETHER_BLOOM=Lava-Bloom §e[?]
+option.NETHER_BLOOM.comment=Enger Glow auf Lava/Feuer. Standardmäßig niedrig, damit Bloom die Höhle nicht füllt
+option.NETHER_FOG_SAMPLES=Dunst-Samples
+option.NETHER_FOG_SAMPLES.comment=Mehr Schritte = weichere Schichten. 12 reichen meist
+option.NETHER_FOG_EMBERS=Aschewolken §e[?]
+option.NETHER_FOG_EMBERS.comment=Große langsame Ascheflecken im Dunst. Standardmäßig aus — kann ohne TAA körnig wirken
+option.HAND_DYNAMIC_LIGHTING=Dynamisches Handlicht
+option.HAND_DYNAMIC_LIGHTING.comment=Dynamische Beleuchtung vom Gegenstand in der Hand.
+value.HAND_DYNAMIC_LIGHTING.-1=§aAus
+value.HAND_DYNAMIC_LIGHTING.0=§eMit Lichtquelle
+value.HAND_DYNAMIC_LIGHTING.1=§eImmer
+
+screen.DH_SCREEN=Distant Horizons
+option.DH_SEAM_MARGIN=LoD-Nahtabstand §e[?]
+option.DH_SEAM_MARGIN.comment=Wie viele Blöcke vor der Vanilla-Sichtweite das DH-Terrain vollständig eingeblendet wird. Weniger = LoD beginnt näher und versteckt die Vanilla/DH-Naht besser
+option.DH_SEAM_WIDTH=LoD-Nahtbreite
+option.DH_SEAM_WIDTH.comment=Breite der LoD-Nahtglättungszone in Distant Horizons (breiter = weicherer Übergang).
+option.DH_SEAM_DITHER=Geditherte LoD-Naht §e[?]
+option.DH_SEAM_DITHER.comment=Weicht den Vanilla/DH-Übergang auf. Nur deaktivieren, wenn an der Naht störende Rauschpunkte sichtbar sind
+option.DH_TERRAIN_NOISE=LoD-Terrainrauschen
+option.DH_TERRAIN_NOISE.comment=LoD-Terrainrauschen für natürlichere Übergänge zwischen Levels.
+option.DH_SHADOW_ENABLED=LoD-Schattenwerfer §e[?]
+option.DH_SHADOW_ENABLED.comment=Erlaubt Distant Horizons, in die Schattenkarte zu schreiben. Schattiert LoD jenseits der Schattendistanz nicht — dafür Kontaktschatten nutzen
+option.DH_FOLIAGE_SSS=LoD-Laub-SSS §e[?]
+option.DH_FOLIAGE_SSS.comment=Wrap-Lighting auf LoD-Laub, damit Baumwürfel nicht vollhell wirken
+option.DH_AO=LoD-AO §e[?]
+option.DH_AO.comment=Screen-Space-AO auf Distant-Horizons-Terrain (Spalten zwischen Hügeln und Baumgruppen)
+option.DH_DEPTH_SHADOWS=LoD-Kontaktschatten §e[?]
+option.DH_DEPTH_SHADOWS.comment=Verfolgt die Sonne gegen Vanilla- + LoD-Tiefe, sodass entfernte Bäume Kontaktschatten erhalten, ohne riesige Schattenkarte
+option.DH_DEPTH_SHADOW_STEPS=Kontaktschatten-Schritte
+option.DH_DEPTH_SHADOW_STEPS.comment=Kontaktschatten-Schritte nach Tiefe.
+
+screen.TMP_SCREEN=TMP §e[experimentell]
+option.TMP_COLORED_LPV=Farbiges Blocklicht / LPV §e[TMP]
+option.TMP_COLORED_LPV.comment=TMP-artige angenäherte farbige Flutbeleuchtung — sattere Fackelfarben und weicher Lichtschleier. Noch kein vollständiges Voxel-LPV
+option.TMP_LPV_STRENGTH=LPV-Stärke
+option.TMP_LPV_STRENGTH.comment=LPV-Stärke: wie stark die sekundäre farbige Beleuchtung wirkt.
+option.AIR_FOG=3D-Luftnebel §e[?]
+option.AIR_FOG.comment=Volumetrischer Dunst: blaue Ferne (Rayleigh) + Bodenglühen/Sonnenuntergangslicht (Mie). Höhenabhängig, sodass Gipfel hindurchragen. Ersetzt den Overworld-Distanznebel. Marschiert bis zur DH-Reichweite, wenn DH aktiv ist
+option.AIR_FOG_STRENGTH=3D-Nebelstärke
+option.AIR_FOG_STRENGTH.comment=Wie stark 3D-Nebel Entfernung und atmosphärische Tiefe „auffrisst“.
+option.AIR_FOG_DENSITY=Rayleigh-Dichte §e[?]
+option.AIR_FOG_DENSITY.comment=Blauer atmosphärischer Dunst mit Entfernung. Stärker = weiter entfernte Landschaft löst sich stärker im Himmel auf
+option.AIR_FOG_MIE=Mie-Dunst §e[?]
+option.AIR_FOG_MIE.comment=Niedriger weiß/goldener Bodennebel. Stärker bei Morgen, Abend und Regen
+option.AIR_FOG_HEIGHT=Höhen-Falloff §e[?]
+option.AIR_FOG_HEIGHT.comment=Wie hoch der Nebel dicht bleibt. Niedriger = Nebel liegt in Tälern; höher = Dunst füllt mehr Himmel
+option.AIR_FOG_SAMPLES=3D-Nebel-Samples
+option.AIR_FOG_SAMPLES.comment=Mehr Schritte = weichere Höhenschichten auf DH-Terrain. 12 reichen meist
+option.AIR_FOG_RAIN=Regen-Nebelboost
+option.AIR_FOG_RAIN.comment=Regenverstärkung für volumetrischen Luftnebel.
+option.AIR_FOG_NOISE=Wolkiger Nebel §e[?]
+option.AIR_FOG_NOISE.comment=Weiche Rauschflecken in der Mie-Schicht. Besonders sichtbar bei Morgendämmerung in Tälern

@@ -6,6 +6,7 @@
 
 varying vec2 texUV;
 varying vec3 feetPos;
+varying vec3 viewDir;
 varying vec4 color;
 
 #include "/common/transformations.glsl"
@@ -18,5 +19,6 @@ void main() {
    texUV = (gl_TextureMatrix[0] * gl_MultiTexCoord0).st;
 
    feetPos = view2feet(getViewPosition());
+   viewDir = feetPos;
    feetPos.y += END_STARS_FLOOR;
 }

@@ -1,3 +1,5 @@
+#include "/shader.h"
+
 varying vec2 texUV;
 varying vec4 color;
 

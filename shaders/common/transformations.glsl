@@ -1,3 +1,6 @@
+#ifndef TRANSFORMATIONS_GLSL
+#define TRANSFORMATIONS_GLSL
+
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjection;
@@ -82,3 +85,4 @@ vec3 view2screen(vec3 view) {
 vec3 world2view(vec3 world) {
    return feet2view(world2feet(world));
 }
+#endif

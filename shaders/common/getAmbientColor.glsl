@@ -1,3 +1,8 @@
+#ifndef FOG_COLOR_UNIFORM
+#define FOG_COLOR_UNIFORM
+uniform vec3 fogColor;
+#endif
+
 vec4 getAmbientColor(float skyLight, float sunHeight) {
    vec4 ambient = texture2D(lightmap, vec2(AMBIENT_UV.s, skyLight));
 
@@ -12,6 +17,10 @@ vec4 getAmbientColor(float skyLight, float sunHeight) {
          ambient.rgb,
          screenBrightness
       );
+   #elif defined THE_NETHER
+      float al = luma(ambient.rgb);
+      float lift = mix(1.03, 0.99, smoothstep(0.18, 0.80, al));
+      ambient.rgb *= lift * NETHER_AMBIENT;
    #endif
 
    return ambient;

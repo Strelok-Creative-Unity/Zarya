@@ -1,3 +1,6 @@
+#ifndef RF_MATH_GLSL
+#define RF_MATH_GLSL
+
 float random(vec2 v) {
 	return fract(sin(dot(v, vec2(18.9898, 28.633))) * 4378.5453);
 }
@@ -15,6 +18,11 @@ vec3 random3(vec3 v) {
                      v.z * v.x * 93.8365)) - 0.5;
 }
 
+float henyeyGreenstein(float cosT, float g) {
+   float g2 = g * g;
+   return (1.0 - g2) / pow(max(1.0 + g2 - 2.0 * g * cosT, 0.0001), 1.5);
+}
+
 float luma(vec3 color) {
    return dot(vec3(0.299, 0.587, 0.114), color);
 }
@@ -27,11 +35,11 @@ vec3 rescale(vec3 x, vec3 a, vec3 b) {
    return clamp((x - a) / (b - a), vec3(0.0), vec3(1.0));
 }
 
-float round(float x) {
+float rfRound(float x) {
    return floor(x + 0.5);
 }
 
-vec3 round(vec3 x) {
+vec3 rfRound(vec3 x) {
    return floor(x + 0.5);
 }
 
@@ -40,11 +48,11 @@ float squaredLength(vec3 v) {
 }
 
 float stepify(float x, float stepSize) {
-   return round(x / stepSize) * stepSize;
+   return rfRound(x / stepSize) * stepSize;
 }
 
 vec3 stepify(vec3 x, float stepSize) {
-   return round(x / stepSize) * stepSize;
+   return rfRound(x / stepSize) * stepSize;
 }
 
 vec3 bandify(vec3 value, float bands) {
@@ -95,3 +103,5 @@ vec3 sphericalDecode(vec2 e) {
 
    return vec3(cos(yaw) * cy, sin(yaw) * cy, sin(pitch));
 }
+
+#endif

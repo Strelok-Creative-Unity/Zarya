@@ -5,7 +5,16 @@ profile.LOW=Low
 profile.NORMAL=Normal
 profile.HIGH=High
 
+option.REFORGED_INFO=Zarya
+option.REFORGED_INFO.comment=An add-on called Zarya on top of minecraft-miniature-shader
+value.REFORGED_INFO.0=§eby Throw New Error
+value.REFORGED_INFO.1=§aby Throw New Error
+value.REFORGED_INFO.2=§bby Throw New Error
+value.REFORGED_INFO.3=§dby Throw New Error
+
 screen.WATER_SCREEN=Water
+screen.WATER_WAVES_SCREEN=Waves
+screen.WATER_UNDER_SCREEN=Underwater
 option.WATER_BRIGHTNESS=Water brightness
 option.WATER_B=Water blueness
 option.WATER_A=Water opacity
@@ -14,9 +23,19 @@ option.WATER_MIN_GLINT.comment=Determines how much texture the water retains; mo
 option.WATER_GLINT_BRIGHTNESS=Water glint brightness
 option.WATER_GLINT_CUTOFF=Water glint cutoff
 option.WATER_WAVE_SIZE=Wave size
-option.WATER_WAVE_SPEED=Wave speed
+option.WATER_WAVE_SPEED=Wave speed §e[?]
+option.WATER_WAVE_SPEED.comment=How many ripple cycles fit into one loop period
+option.WATER_WAVE_PERIOD=Wave loop period §e[?]
+option.WATER_WAVE_PERIOD.comment=Seconds until the water surface repeats identically, frame for frame. Vanilla and Distant Horizons share this clock
+option.WATER_WAVE_DIR=Wave direction §e[?]
+option.WATER_WAVE_DIR.comment=Compass heading of the current in degrees. 0 = +X, 90 = +Z. Flow stays one-way; the loop period still matches frame for frame
+option.WATER_FOG=Underwater fog §e[?]
+option.WATER_FOG.comment=Absorption and teal haze when the camera is underwater
+option.WATER_FOG_DENSITY=Underwater fog density
+option.WATER_FOG_EXPONENT=Underwater fog falloff §e[?]
+option.WATER_FOG_EXPONENT.comment=More negative = fog builds up faster with distance
 
-screen.COLORS_SCREEN=Colors
+screen.COLORS_SCREEN=Torch color
 option.TORCH_INNER_R=Inner torch §cR
 option.TORCH_INNER_G=Inner torch §2G
 option.TORCH_INNER_B=Inner torch §9B
@@ -30,19 +49,150 @@ option.MOON_R=Moon §cR
 option.MOON_G=Moon §2G
 option.MOON_B=Moon §9B
 
-screen.ATMOSPHERE_SCREEN=Atmosphere
+screen.ATMOSPHERE_SCREEN=Sky
+screen.AIR_FOG_SCREEN=Fog
+screen.OVERWORLD_STARS_SCREEN=Stars
+screen.END_SKY_SCREEN=End sky
+screen.MOON_COLOR_SCREEN=Moon color
+screen.NETHER_WORLD_SCREEN=Nether world
+screen.CYCLES_SCREEN=Loops
+screen.CYCLE_WATER_SCREEN=Water loop
+screen.CYCLE_WAVING_SCREEN=Foliage
+screen.CYCLE_STAR_SCREEN=Stars
+screen.CYCLE_END_SCREEN=End stars
+screen.CYCLE_CLOUD_SCREEN=Cloud wind
+screen.POST_SCREEN=Post-processing
+screen.MATERIALS_SCREEN=Materials
 option.ENABLE_FOG=Enable fog
 option.WEATHER_OPACITY=Weather Opacity
 option.ENABLE_SKY=Enable sky §e[?]
 option.ENABLE_SKY.comment=Disable this option if you are using a sky resource pack
+option.SHADER_STARS=Shader stars §e[?]
+option.SHADER_STARS.comment=Procedural starfield instead of vanilla dots. Off = vanilla stars
+option.STAR_BRIGHTNESS=Star brightness
+option.STAR_AMOUNT=Star amount
+option.STAR_SIZE=Star size
+option.STAR_PERIOD=Star loop period §e[?]
+option.STAR_PERIOD.comment=Seconds until the field and twinkle match again, frame for frame, with no jump
+option.STAR_SPEED=Star speed §e[?]
+option.STAR_SPEED.comment=How many field passes fit in one period. 0 = still, 0.5 = one pass, 1.0 = two. Loops cleanly, same idea as water waves
+option.STAR_PHASE=Star phase §e[?]
+option.STAR_PHASE.comment=Loop offset. 0 = start of the clock, 0.5 = halfway through the cycle
+option.VANILLA_LIKE_SUN=Vanilla-like sun §e[?]
+option.VANILLA_LIKE_SUN.comment=Hard square sun from cleaned vanilla sun.png (no glow halo). Off = round procedural sun
+option.VANILLA_LIKE_MOON=Vanilla-like moon §e[?]
+option.VANILLA_LIKE_MOON.comment=Hard square moon phases from cleaned vanilla moon_phases.png (no glow halo)
+screen.CLOUDS_SCREEN=Clouds
+screen.CLOUD_LC_SCREEN=Low clouds
+screen.CLOUD_MC_SCREEN=Mid clouds
+screen.CLOUD_UC_SCREEN=High clouds
+option.SHADER_CLOUDS=Shader clouds §e[?]
+option.SHADER_CLOUDS.comment=On = volumetric cumulus (3 layers). Off = vanilla boxes (enable Clouds in Video Settings)
+option.CLOUD_SHADOWS=Cloud shadows
+option.CLOUD_SHADOWS.comment=Projects all shader cloud layers onto terrain
+option.CLOUD_RAIN_AMOUNT=Rain coverage §e[?]
+option.CLOUD_RAIN_AMOUNT.comment=Multiplies cloud coverage on all layers during rain. 1.0 = no change
+
+option.CLOUD_LC_AMOUNT=Coverage
+option.CLOUD_LC_AMOUNT.comment=How much of the sky this layer covers
+option.CLOUD_LC_HEIGHT=Altitude
+option.CLOUD_LC_HEIGHT.comment=Base height of low clouds (~120)
+option.CLOUD_LC_THICKNESS=Thickness §e[?]
+option.CLOUD_LC_THICKNESS.comment=Vertical depth of the cloud slab
+option.CLOUD_LC_SCALE=Scale §e[?]
+option.CLOUD_LC_SCALE.comment=Horizontal size of cloud masses
+option.CLOUD_LC_DENSITY=Density
+option.CLOUD_LC_DETAIL=Detail
+option.CLOUD_LC_SPEED=Low · wind §e[?]
+option.CLOUD_LC_SPEED.comment=How far the low layer travels on its closed wind loop. End of the cycle matches the start, no tile rewind
+option.CLOUD_LC_LOOP_SECONDS=Low · loop §e[?]
+option.CLOUD_LC_LOOP_SECONDS.comment=Seconds until the low layer matches again, frame for frame
+option.CLOUD_LC_OPACITY=Opacity
+option.CLOUD_LC_OPACITY.comment=How solid this layer is
+option.CLOUD_LC_SAMPLES=Samples §e[?]
+option.CLOUD_LC_SAMPLES.comment=Raymarch steps for this layer
+option.CLOUD_LC_DISTANCE=Draw distance
+
+option.CLOUD_MC_AMOUNT=Coverage
+option.CLOUD_MC_AMOUNT.comment=How much of the sky this layer covers
+option.CLOUD_MC_HEIGHT=Altitude
+option.CLOUD_MC_HEIGHT.comment=Base height of mid clouds (~220)
+option.CLOUD_MC_THICKNESS=Thickness §e[?]
+option.CLOUD_MC_THICKNESS.comment=Vertical depth of the cloud slab
+option.CLOUD_MC_SCALE=Scale §e[?]
+option.CLOUD_MC_SCALE.comment=Horizontal size of cloud masses
+option.CLOUD_MC_DENSITY=Density
+option.CLOUD_MC_DETAIL=Detail
+option.CLOUD_MC_SPEED=Mid · wind §e[?]
+option.CLOUD_MC_SPEED.comment=How far the mid layer travels on its closed wind loop. No tile rewind
+option.CLOUD_MC_LOOP_SECONDS=Mid · loop §e[?]
+option.CLOUD_MC_LOOP_SECONDS.comment=Seconds until the mid layer matches again, frame for frame
+option.CLOUD_MC_OPACITY=Opacity
+option.CLOUD_MC_OPACITY.comment=How solid this layer is
+option.CLOUD_MC_SAMPLES=Samples §e[?]
+option.CLOUD_MC_SAMPLES.comment=Raymarch steps for this layer
+option.CLOUD_MC_DISTANCE=Draw distance
+
+option.CLOUD_UC_AMOUNT=Coverage
+option.CLOUD_UC_AMOUNT.comment=How much of the sky this layer covers
+option.CLOUD_UC_HEIGHT=Altitude
+option.CLOUD_UC_HEIGHT.comment=Base height of high clouds (~320)
+option.CLOUD_UC_THICKNESS=Thickness §e[?]
+option.CLOUD_UC_THICKNESS.comment=Vertical depth of the cloud slab
+option.CLOUD_UC_SCALE=Scale §e[?]
+option.CLOUD_UC_SCALE.comment=Horizontal size of cloud masses
+option.CLOUD_UC_DENSITY=Density
+option.CLOUD_UC_DETAIL=Detail
+option.CLOUD_UC_SPEED=High · wind §e[?]
+option.CLOUD_UC_SPEED.comment=How far the high layer travels on its closed wind loop. No tile rewind
+option.CLOUD_UC_LOOP_SECONDS=High · loop §e[?]
+option.CLOUD_UC_LOOP_SECONDS.comment=Seconds until the high layer matches again, frame for frame
+option.CLOUD_UC_OPACITY=Opacity
+option.CLOUD_UC_OPACITY.comment=How solid this layer is
+option.CLOUD_UC_SAMPLES=Samples §e[?]
+option.CLOUD_UC_SAMPLES.comment=Raymarch steps for this layer
+option.CLOUD_UC_DISTANCE=Draw distance
+option.TAA=TAA §e[?]
+option.TAA.comment=Temporal smoothing with history blending (Catmull–Rom). Reduces grain/aliasing over time. Can leave trails on fast camera motion; works best at higher screen resolutions. Edge AA is FXAA
+option.TAA_STRENGTH=TAA strength §e[?]
+option.TAA_STRENGTH.comment=0 = off. How strongly past frames are blended. Higher = smoother image with less grain, but more trail/ghosting
+option.FXAA=FXAA §e[?]
+option.FXAA.comment=Edge anti-aliasing. Cheap, no world shake, no trail. This is the main AA
+option.SHARPEN_STRENGTH=Sharpen §e[?]
+option.SHARPEN_STRENGTH.comment=Restores bite after FXAA. 0 is off. ~0.3 default
+option.SUNSET_INTENSITY=Sunset / sunrise intensity §e[?]
+option.SUNSET_INTENSITY.comment=Strength of the orange and pink horizon glow at dawn and dusk
+option.STYLE_EXPOSURE=Overall brightness §e[?]
+option.STYLE_EXPOSURE.comment=Lower values make the image gloomier. Highlights stay a bit brighter than the rest
+option.STYLE_SATURATION=Saturation
+option.STYLE_CONTRAST=Contrast
 option.OVERWORLD_FOG_MAX_SLIDER=Overworld transition fog §e[?]
 option.OVERWORLD_FOG_MAX_SLIDER.comment=Fog intensity during sunsets and sunrises
 option.OVERWORLD_FOG_MIN_SLIDER=Overworld fog
-option.END_STARS_SPEED=End stars speed
+option.END_STARS_SPEED=End stars speed §e[?]
+option.END_STARS_SPEED.comment=Fall passes per loop, rounded to a whole number so u=0 and u=1 match. 0.05 × 20 s = 1 pass
+option.END_STARS_PERIOD=End stars loop period §e[?]
+option.END_STARS_PERIOD.comment=Seconds until falling stars repeat identically, frame for frame
+option.END_STARS_PHASE=End stars phase §e[?]
+option.END_STARS_PHASE.comment=Loop offset. 0 = start of the clock, 0.5 = halfway through the cycle
 option.END_STARS_AMOUNT=End stars amount
 option.END_STARS_OPACITY=End stars opacity
+option.AUTO_EXPOSURE=Auto exposure
+option.AUTO_EXPOSURE.comment=Based on light where you stand (eyeBrightness), not where you look. Torches/sun lower EV; caves raise it
+option.AUTO_EXPOSURE_STRENGTH=Auto exposure strength
+option.AUTO_EXPOSURE_SPEED=Auto exposure speed §e[?]
+option.AUTO_EXPOSURE_SPEED.comment=How fast exposure adapts when you move between dark and bright places
+option.VL=God rays / light shafts
+option.VL.comment=Look toward the sun through leaves/windows. Needs shadows on. Open sun is suppressed; shafts through canopy stay. ~0.3 usually looks good
+option.VL_STRENGTH=God ray strength
+option.VL_SAMPLES=God ray samples
+option.VL_SAMPLES.comment=More samples = cleaner shafts. Grain is often dither/leaf shadows, not just sample count; 12–16 is usually enough
 
-screen.SHADOWS_SCREEN=Shadows
+screen.SHADOWS_SCREEN=Lighting
+screen.SHADOW_MAP_SCREEN=Shadow map
+screen.AO_SCREEN=Ambient occlusion
+screen.VL_SCREEN=God rays
+screen.LIGHT_FX_SCREEN=Fill light
 option.SHADOW_BLUENESS=Shadow blueness
 option.shadowDistance=Shadow distance
 option.shadowMapResolution=Shadow resolution
@@ -50,7 +200,16 @@ option.shadowIntervalSize=Shadow refocus rate §e[?]
 option.shadowIntervalSize.comment=Determines after how many blocks shadows refocus on the player
 option.entityShadowDistanceMul=Entity shadow distance §e[?]
 option.entityShadowDistanceMul.comment=As a percentage of shadow distance
-option.SHADOW_PIXEL=Shadow pixelization
+option.SHADOW_PIXEL=Shadow pixelization §e[?]
+option.SHADOW_PIXEL.comment=Snaps shadows to a block grid. Keep at 0 for geometry-accurate hard shadows
+option.SHADOW_FILTER=Shadow filtering §e[?]
+option.SHADOW_FILTER.comment=Off = sharp edge with a 2-texel AA (hides shadow-map squares). Higher = softer penumbra
+value.SHADOW_FILTER.0=§eOff (sharp)
+value.SHADOW_FILTER.1=§eLow
+value.SHADOW_FILTER.2=§eMedium
+value.SHADOW_FILTER.3=§eHigh
+option.SHADOW_SHARPNESS=Shadow sharpness §e[?]
+option.SHADOW_SHARPNESS.comment=10 = tight AA, 0 = slightly wider. Keep Off + 10 for crisp shadows without pixel stairs
 option.LIGHT_BRIGHTNESS=Sun brightness
 option.sunPathRotation=Sun path angle §e[!]
 option.sunPathRotation.comment=Miniature was designed with straight shadows in mind and may produce artifacts if changed
@@ -62,21 +221,186 @@ option.SHADOW_ENTITY=Entity shadows
 value.SHADOW_ENTITY.-1=§aOff
 value.SHADOW_ENTITY.0=§ePlayer
 value.SHADOW_ENTITY.1=§eAll
+option.SSAO=SSAO / GTAO
+option.SSAO.comment=Darkens crevices and corners (screen-space ambient occlusion)
+option.AO_MODE=AO mode
+value.AO_MODE.0=§eSSAO
+value.AO_MODE.1=§eGTAO-ish
+option.AO_STRENGTH=AO strength
+option.AO_RADIUS=AO radius
+option.AO_SAMPLES=AO samples
 
 screen.REFLECTIONS_SCREEN=Reflections
 option.REFLECTIONS=Reflection opacity
+option.SUN_MOON_GLINT=Sun / moon glint §e[?]
+option.SUN_MOON_GLINT.comment=Specular highlights of the sun and moon on water, glass, ice and other reflective surfaces
 option.BLOCK_REFLECTIONS=Block reflection opacity §e[?]
-option.BLOCK_REFLECTIONS.comment=Adds reflections to blocks such as stone bricks, quartz, etc.
+option.BLOCK_REFLECTIONS.comment=Strength of reflections on iPBR / reflective blocks
 option.SSR_MAX_STEPS=Maximum steps
 option.SSR_BINARY_STEPS=Maximum refining steps
 option.SSR_STEP_SIZE=Step size
 
-screen.OTHER_SCREEN=Other
+screen.IPBR_SCREEN=Integrated PBR
+option.GENERATED_SPECULAR=Generated specular §e[?]
+option.GENERATED_SPECULAR.comment=Procedural smoothness and metalness from block type and texture brightness (no PBR resource pack)
+option.GENERATED_EMISSION=Generated emission §e[?]
+option.GENERATED_EMISSION.comment=Procedural glow for ores, glowstone, sculk and light sources from texture color
+option.GENERATED_NORMALS=Generated normals §e[?]
+option.GENERATED_NORMALS.comment=Fake bump mapping from texture brightness differences
+option.GENERATED_SPECULAR_ON_ALL=Specular on all blocks §e[?]
+option.GENERATED_SPECULAR_ON_ALL.comment=Adds a tiny base shine to every block
+option.EMISSION_STRENGTH=Emission strength
+option.IPBR_REFLECTION_STRENGTH=Reflection strength
+option.NORMAL_STRENGTH=Normal strength
+option.NORMAL_RESOLUTION=Normal resolution
+option.NORMAL_THRESHOLD=Normal threshold
+
+screen.OTHER_SCREEN=World
+option.WAVING_LEAVES=Waving leaves
+option.WAVING_PLANTS=Waving plants
+option.WAVING_CYCLE=Waving cycle §e[?]
+option.WAVING_CYCLE.comment=Seconds until foliage motion repeats exactly, frame for frame
+option.WAVING_WAVES=Waves per cycle §e[?]
+option.WAVING_WAVES.comment=How many sways fit into one cycle in clear weather. Must stay a whole number to keep the loop exact
+option.WAVING_WAVES_RAIN=Rain waves per cycle §e[?]
+option.WAVING_WAVES_RAIN.comment=Wave count at full rain. Fades in as a separate motion so rain start/stop does not fast-forward the sway
+option.WAVING_AMPLITUDE=Waving strength
+option.WAVING_RAIN_MULT=Rain waving boost §e[?]
+option.WAVING_RAIN_MULT.comment=How much stronger plants and leaves sway in rain. Motion stops while it is snowing
+option.FOLIAGE_SSS=Foliage SSS
+option.FOLIAGE_SSS.comment=Leaf subsurface scattering against the sun. 0.4 = medium, 0.8 = max
+option.FOLIAGE_SSS_STRENGTH=Foliage SSS strength
 option.HIGHLIGHT_WAXED=Highlight waxed blocks §e[?]
 option.HIGHLIGHT_WAXED.comment=Holding a honeycomb highlights waxed blocks
 option.GLOWING_ORES=Glowing ores
-option.NETHER_COLOR_GRADING=Nether color grading
+option.NETHER_COLOR_GRADING=Nether color grading §e[?]
+option.NETHER_COLOR_GRADING.comment=Slight warmth and a highlight shoulder so lava stays orange instead of white
+option.NETHER_AMBIENT=Nether brightness §e[?]
+option.NETHER_AMBIENT.comment=Fills the cavern a little. 0.95 default — Photon-like, slightly dim. Raise if it feels too dark
+option.NETHER_FOG=Nether haze §e[?]
+option.NETHER_FOG.comment=Photon-like: thick dark murk. Distance sinks into crimson shadow; lava stays the bright accent. Not a glowing orange sky
+option.NETHER_FOG_STRENGTH=Haze strength
+option.NETHER_FOG_DENSITY=Haze density §e[?]
+option.NETHER_FOG_DENSITY.comment=How fast the cavern goes dark. 1.15 default. Higher = heavier smoke
+option.NETHER_FOG_GLOW=Lava glow in haze §e[?]
+option.NETHER_FOG_GLOW.comment=Warm underlight only near lava seas. Keep low so the air stays dark
+option.NETHER_BLOOM=Lava bloom §e[?]
+option.NETHER_BLOOM.comment=Tight glow on lava/fire. Low by default so bloom does not fill the cavern
+option.NETHER_FOG_SAMPLES=Haze samples
+option.NETHER_FOG_SAMPLES.comment=More steps = smoother layers. 12 is usually enough
+option.NETHER_FOG_EMBERS=Ash clouds §e[?]
+option.NETHER_FOG_EMBERS.comment=Large slow ash patches in the haze. Off by default — can look grainy without TAA
 option.HAND_DYNAMIC_LIGHTING=Hand dynamic lighting
 value.HAND_DYNAMIC_LIGHTING.-1=§aOff
 value.HAND_DYNAMIC_LIGHTING.0=§eWith light
 value.HAND_DYNAMIC_LIGHTING.1=§eAlways
+
+screen.DH_SCREEN=Distant Horizons
+option.DH_SEAM_MARGIN=LoD seam margin §e[?]
+option.DH_SEAM_MARGIN.comment=How many blocks before vanilla render distance DH terrain is fully faded in. Lower = LoD starts closer and hides the vanilla/DH seam
+option.DH_SEAM_WIDTH=LoD seam width
+option.DH_SEAM_DITHER=Dithered LoD seam §e[?]
+option.DH_SEAM_DITHER.comment=Softens the vanilla/DH transition. Disable only if you see noisy dots at the seam
+option.DH_TERRAIN_NOISE=LOD terrain noise
+option.DH_SHADOW_ENABLED=LOD shadow casters §e[?]
+option.DH_SHADOW_ENABLED.comment=Lets Distant Horizons write into the shadow map. Does not shade LoD past shadow distance — use contact shadows for that
+option.DH_FOLIAGE_SSS=LOD foliage SSS §e[?]
+option.DH_FOLIAGE_SSS.comment=Wrap lighting on LoD leaves so tree cubes are not full-bright
+option.DH_AO=LOD ambient occlusion §e[?]
+option.DH_AO.comment=Screen-space AO on Distant Horizons terrain (crevices between hills and tree clusters)
+option.DH_DEPTH_SHADOWS=LOD contact shadows §e[?]
+option.DH_DEPTH_SHADOWS.comment=Traces the sun against vanilla + LoD depth so distant trees receive contact shadows without a huge shadow map
+option.DH_DEPTH_SHADOW_STEPS=Contact shadow steps
+
+screen.TMP_SCREEN=TMP §e[temp]
+option.TMP_COLORED_LPV=Colored blocklight / LPV §e[TMP]
+option.TMP_COLORED_LPV.comment=TMP approximate colored floodfill — richer torch chroma and soft wash. Not full voxel LPV yet
+option.TMP_LPV_STRENGTH=LPV strength
+option.AIR_FOG=3D air fog §e[?]
+option.AIR_FOG.comment=Volumetric haze: blue distance (Rayleigh) + ground/sunset glow (Mie). Height-based, so peaks poke through. Replaces overworld distance fog. Marches to Distant Horizons range when DH is loaded
+option.AIR_FOG_STRENGTH=3D fog strength
+option.AIR_FOG_DENSITY=Rayleigh density §e[?]
+option.AIR_FOG_DENSITY.comment=Blue atmospheric haze with distance. Stronger = farther terrain dissolves into sky
+option.AIR_FOG_MIE=Mie haze §e[?]
+option.AIR_FOG_MIE.comment=Low white/golden fog near the ground. Stronger at dawn, dusk and in rain
+option.AIR_FOG_HEIGHT=Altitude falloff §e[?]
+option.AIR_FOG_HEIGHT.comment=How high the fog stays dense. Lower = fog hugs valleys; higher = haze fills more of the sky
+option.AIR_FOG_SAMPLES=3D fog samples
+option.AIR_FOG_SAMPLES.comment=More steps = smoother height layers on DH terrain. 12 is usually enough
+option.AIR_FOG_RAIN=Rain fog boost
+option.AIR_FOG_NOISE=Cloudy fog §e[?]
+option.AIR_FOG_NOISE.comment=Soft noise blobs in the Mie layer. Most visible at dawn in valleys
+
+option.AIR_FOG_RAIN.comment=Rain boost for volumetric air fog.
+option.AIR_FOG_STRENGTH.comment=How strongly 3D fog “eats” the distance and atmospheric depth.
+option.AO_MODE.comment=AO calculation mode (SSAO / GTAO).
+option.AO_RADIUS.comment=Sampling radius for AO.
+option.AO_SAMPLES.comment=Number of AO samples. Higher = smoother, but heavier.
+option.AO_STRENGTH.comment=AO darkening intensity.
+option.AUTO_EXPOSURE_STRENGTH.comment=Auto exposure strength: how actively brightness changes.
+option.CLOUD_LC_DENSITY.comment=Density of the low (LC) cloud layer.
+option.CLOUD_LC_DETAIL.comment=Detail level of the low cloud layer.
+option.CLOUD_LC_DISTANCE.comment=Draw distance of low clouds.
+option.CLOUD_MC_DENSITY.comment=Density of the mid (MC) cloud layer.
+option.CLOUD_MC_DETAIL.comment=Detail level of the mid cloud layer.
+option.CLOUD_MC_DISTANCE.comment=Draw distance of mid clouds.
+option.CLOUD_UC_DENSITY.comment=Density of the high (UC) cloud layer.
+option.CLOUD_UC_DETAIL.comment=Detail level of the high cloud layer.
+option.CLOUD_UC_DISTANCE.comment=Draw distance of high clouds.
+option.DH_DEPTH_SHADOW_STEPS.comment=Contact shadow steps by depth.
+option.DH_SEAM_WIDTH.comment=LoD seam smoothing zone width in Distant Horizons (wider = softer transition).
+option.DH_TERRAIN_NOISE.comment=LoD terrain noise for a more natural level transition.
+option.EMISSION_STRENGTH.comment=Emission strength for materials and blocks with emission.
+option.ENABLE_FOG.comment=Enable fog.
+option.ENABLE_SHADOWS.comment=Enable shadows.
+option.END_STARS_AMOUNT.comment=End starfield density (how many stars are visible).
+option.END_STARS_OPACITY.comment=How visible the End stars are over the sky.
+option.FOLIAGE_SSS_STRENGTH.comment=Foliage SSS strength against the light.
+option.GLOWING_ORES.comment=Enables enhanced glow for glowing ores.
+option.HAND_DYNAMIC_LIGHTING.comment=Dynamic lighting coming from the item in your hand.
+option.IPBR_REFLECTION_STRENGTH.comment=Reflection strength in IPBR.
+option.LIGHT_BRIGHTNESS.comment=Sunlight brightness.
+option.MOON_B.comment=Moon blue color component.
+option.MOON_G.comment=Moon green color component.
+option.MOON_R.comment=Moon red color component.
+option.NETHER_FOG_STRENGTH.comment=Fog strength in the Nether.
+option.NORMAL_RESOLUTION.comment=Resolution of procedural normals. Higher = more accurate.
+option.NORMAL_STRENGTH.comment=Strength of procedural normals.
+option.NORMAL_THRESHOLD.comment=Normal generation threshold: separates weak details from noise.
+option.OVERWORLD_FOG_MIN_SLIDER.comment=Minimum Overworld fog intensity.
+option.REFLECTIONS.comment=Overall reflection opacity (SSR visibility).
+option.SHADOW_BLUENESS.comment=Shadow tint: how cold/bluish shadows look.
+option.SHADOW_DARKNESS.comment=Overall shadow darkness: how strongly shadows darken areas.
+option.SHADOW_ENTITY.comment=Entity shadows.
+option.SSR_BINARY_STEPS.comment=Refinement steps at the end of SSR (higher = more accurate, but heavier).
+option.SSR_MAX_STEPS.comment=Maximum SSR ray-tracing steps.
+option.SSR_STEP_SIZE.comment=SSR step size (smaller = more accurate, larger = faster).
+option.STAR_AMOUNT.comment=Starfield density (how many stars are visible).
+option.STAR_BRIGHTNESS.comment=Star brightness and overall starfield sparkle.
+option.STAR_SIZE.comment=Star size scale.
+option.STYLE_CONTRAST.comment=Color grading contrast.
+option.STYLE_SATURATION.comment=Color grading saturation.
+option.TMP_LPV_STRENGTH.comment=LPV strength: how strong the secondary colored lighting is.
+option.TORCH_INNER_B.comment=Torch color blue component (inner).
+option.TORCH_INNER_G.comment=Torch color green component (inner).
+option.TORCH_INNER_R.comment=Torch color red component (inner).
+option.TORCH_MIDDLE_B.comment=Torch color blue component (middle).
+option.TORCH_MIDDLE_G.comment=Torch color green component (middle).
+option.TORCH_MIDDLE_R.comment=Torch color red component (middle).
+option.TORCH_OUTER_B.comment=Torch color blue component (outer).
+option.TORCH_OUTER_G.comment=Torch color green component (outer).
+option.TORCH_OUTER_R.comment=Torch color red component (outer).
+option.VL_STRENGTH.comment=Volumetric lighting strength (VL).
+option.WATER_A.comment=Water opacity: how strongly it hides the ground and volume.
+option.WATER_B.comment=Water tint: how cold/bluish it looks.
+option.WATER_BRIGHTNESS.comment=How brightly the water surface and nearby reflections glow.
+option.WATER_FOG_DENSITY.comment=Underwater fog density by distance (how quickly it darkens with depth).
+option.WATER_GLINT_BRIGHTNESS.comment=Glint intensity on water.
+option.WATER_GLINT_CUTOFF.comment=Glint visibility threshold: at what angle/brightness glints become stronger.
+option.WATER_WAVE_SIZE.comment=Water wave size.
+option.WAVING_AMPLITUDE.comment=Waving amplitude of leaves/plants: how much they sway.
+option.WAVING_LEAVES.comment=Enable leaf waving.
+option.WAVING_PLANTS.comment=Enable plant waving.
+option.WEATHER_OPACITY.comment=Weather overlay opacity (how visible the weather effect is).
+option.shadowDistance.comment=Shadow distance. Higher = further visible, but heavier.
+option.shadowMapResolution.comment=Shadow map resolution. Higher = sharper, but heavier.

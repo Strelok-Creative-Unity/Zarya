@@ -1,58 +1,78 @@
 #include "/shader.h"
 
-uniform float far;
-uniform int isEyeInWater;
 uniform sampler2D colortex0;
-uniform sampler2D colortex6;
-uniform sampler2D colortex7;
-uniform sampler2D depthtex0;
+uniform sampler2D colortex2;
+uniform float viewWidth;
+uniform float viewHeight;
+uniform float rainStrength;
+#define RAIN_STRENGTH_UNIFORM
+
+#ifndef EYE_BRIGHTNESS_SMOOTH_UNIFORM
+#define EYE_BRIGHTNESS_SMOOTH_UNIFORM
+uniform ivec2 eyeBrightnessSmooth;
+#endif
+
+#ifndef SUN_POSITION_UNIFORM
+#define SUN_POSITION_UNIFORM
+uniform vec3 sunPosition;
+#endif
+
+#ifdef AUTO_EXPOSURE
+   const bool colortex2Clear = false;
+   uniform float frameTime;
+#endif
 
 varying vec2 texUV;
 
 #include "/common/math.glsl"
 #include "/common/transformations.glsl"
-#include "/common/getReflectionColor.fsh"
+#include "/common/getColorGrade.glsl"
+#include "/common/sharpen.glsl"
+
+#ifdef FXAA
+   #include "/common/fxaa.glsl"
+#endif
+
+#ifdef AUTO_EXPOSURE
+   #include "/common/tonemap.glsl"
+#endif
 
 void main() {
    vec4 color = texture2D(colortex0, texUV);
-   vec4 reflectivityAndRoughness = texture2D(colortex7, texUV);
-   float reflectivity = reflectivityAndRoughness.x;
-   float roughness = reflectivityAndRoughness.y;
 
-   if (reflectivity > MIN_REFLECTIVITY && abs(reflectivityAndRoughness.z - 0.5) < 0.01) {
-      // the normal doesn't come premultiplied by the normal matrix to
-      // avoid the modelview transformations when view bobbing is on
-      // which causes severe artifacts when moving
-      vec3 prenormal = screen2ndc(texture2D(colortex6, texUV).xyz);
+   #ifdef FXAA
+      color.rgb = rfFxaa(colortex0, texUV, color.rgb, float(SHARPEN_STRENGTH));
+   #else
+      color.rgb = rfSharpen(colortex0, texUV, color.rgb, float(SHARPEN_STRENGTH));
+   #endif
 
-      #if WATER_WAVE_SIZE > 0
-
-         if ((abs(prenormal.x) > 0.0 || abs(prenormal.z) > 0.0) && abs(prenormal.y) > 0.3333) {
-            prenormal.xyz *= 1.0 / prenormal.y;
-            prenormal.xz *= 0.01 * WATER_WAVE_SIZE;
-         }
-
+   float exposureEv = 1.0;
+   float exposureTarget = 1.0;
+   #ifdef AUTO_EXPOSURE
+      float prevEv = texture2D(colortex2, vec2(0.5 / viewWidth, 0.5 / viewHeight)).a;
+      vec2 eye01 = vec2(eyeBrightnessSmooth) / 240.0;
+      float sunUp = 0.0;
+      #ifdef OVERWORLD
+         sunUp = view2feet(sunPosition).y;
+      #elif defined THE_NETHER
+         sunUp = -1.0;
+      #elif defined THE_END
+         sunUp = -0.25;
       #endif
+      float standL = standIllumination(eye01, sunUp, rainStrength);
+      vec2 ae = autoExposure(standL, prevEv, max(frameTime, 1.0 / 60.0));
+      exposureEv = ae.x;
+      exposureTarget = ae.y;
+      color.rgb *= exposureEv;
+   #endif
 
-      float depth  = texture2D(depthtex0, texUV).x;
-      vec3 normal  = eye2view(prenormal);
-      vec3 viewPos = screen2view(texUV, depth);
-      vec3 feetPos = view2feet(viewPos);
-      vec3 worldPos = feet2world(feetPos);
-      float pixelDistance = min(1.0, length(feetPos)/16.0);
-      float stepSize = stepify(mix(1.0/512.0, 1.0/64.0, pixelDistance), 1.0/512.0);
+   color.rgb = applyColorGrade(color.rgb);
 
-      normal += roughness * random3(stepify(worldPos, stepSize));
-      normal = normalize(normal);
+   #ifdef AUTO_EXPOSURE
+      color.rgb = applyLightBleed(color.rgb, exposureEv, exposureTarget);
+   #endif
 
-      vec4 reflectionColor = getReflectionColor(depth, normal, viewPos);
-
-      color.rgb = mix(
-         color.rgb,
-         reflectionColor.rgb,
-         reflectionColor.a * reflectivity * 0.1*REFLECTIONS
-      );
-   }
-
+   /* DRAWBUFFERS:02 */
    gl_FragData[0] = color;
+   gl_FragData[1] = vec4(color.rgb, exposureEv);
 }
