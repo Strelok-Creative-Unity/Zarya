@@ -54,8 +54,6 @@ vec4 getDhAmbientColor(float skyLight, float sunHeight) {
       vec3 biome = max(fogColor, vec3(0.02));
       vec3 netherAmb = mix(vec3(0.42, 0.28, 0.24), biome, 0.12);
       ambient.rgb = netherAmb * NETHER_AMBIENT;
-   #elif defined THE_END
-      ambient.rgb = vec3(0.28, 0.24, 0.32);
    #else
       float sunset = exp(-sunHeight * sunHeight * 22.0) * smoothstep(-0.32, 0.08, sunHeight);
       ambient.rgb *= mix(vec3(1.0), vec3(1.06, 0.84, 0.64), clamp(sunset * 0.50, 0.0, 1.0));

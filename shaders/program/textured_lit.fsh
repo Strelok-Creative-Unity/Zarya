@@ -193,7 +193,7 @@ void main() {
       clrwl_computeFragment(albedo, albedo, lightUV, ambientOcclusion, entityColor);
    #endif
 
-   #ifdef DH_TERRAIN
+   #if defined DH_TERRAIN && !defined THE_END
       vec4 ambient = getDhAmbientColor(lightUV.t, sunHeight);
    #else
       vec4 ambient = getAmbientColor(lightUV.t, sunHeight);

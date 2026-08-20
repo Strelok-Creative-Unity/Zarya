@@ -177,6 +177,15 @@ option.END_STARS_PHASE=End stars phase §e[?]
 option.END_STARS_PHASE.comment=Loop offset. 0 = start of the clock, 0.5 = halfway through the cycle
 option.END_STARS_AMOUNT=End stars amount
 option.END_STARS_OPACITY=End stars opacity
+option.END_STARS_OPACITY.comment=How visible the End stars are over the sky.
+option.END_FOG=End haze §e[?]
+option.END_FOG.comment=Soft purple distance haze so the End feels less dry. Matches Distant Horizons LODs
+option.END_FOG_STRENGTH=Haze strength
+option.END_FOG_STRENGTH.comment=Overall End haze amount
+option.END_FOG_DENSITY=Haze density §e[?]
+option.END_FOG_DENSITY.comment=How quickly distance sinks into violet murk
+option.END_FOG_SAMPLES=Haze samples
+option.END_FOG_SAMPLES.comment=More steps = softer layers.
 option.AUTO_EXPOSURE=Auto exposure
 option.AUTO_EXPOSURE.comment=Based on light where you stand (eyeBrightness), not where you look. Torches/sun lower EV; caves raise it
 option.AUTO_EXPOSURE_STRENGTH=Auto exposure strength

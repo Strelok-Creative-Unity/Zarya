@@ -61,6 +61,10 @@ varying vec2 texUV;
    #include "/common/netherFog.glsl"
 #endif
 
+#if defined END_FOG && defined THE_END
+   #include "/common/endFog.glsl"
+#endif
+
 #if defined OVERWORLD && defined SHADER_CLOUDS
    #define RF_CLOUD_DRAW
    #include "/common/shaderClouds.glsl"
@@ -118,6 +122,17 @@ void main() {
          vec3 fogScatter;
          vec3 fogT;
          computeNetherFog(fogViewPos, fogSky, fogScatter, fogT);
+         color.rgb = color.rgb * fogT + fogScatter;
+      }
+      #endif
+
+      #if defined END_FOG && defined THE_END
+      {
+         bool fogSky;
+         vec3 fogViewPos = endFogViewPos(texUV, fogSky);
+         vec3 fogScatter;
+         vec3 fogT;
+         computeEndFog(fogViewPos, fogSky, fogScatter, fogT);
          color.rgb = color.rgb * fogT + fogScatter;
       }
       #endif

@@ -106,6 +106,11 @@ const float sunPathRotation = -40.0; //[-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60.
 #define NETHER_BLOOM 0.35 //[0.0 0.1 0.2 0.3 0.35 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.5]
 //#define NETHER_FOG_EMBERS
 
+#define END_FOG
+#define END_FOG_STRENGTH 0.1 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.85 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0]
+#define END_FOG_DENSITY 1.0 //[0.0 0.25 0.5 0.75 1.0 1.1 1.15 1.25 1.5 1.75 2.0 2.5 3.0]
+#define END_FOG_SAMPLES 12 //[6 8 10 12 16 20 24]
+
 #define DH_SEAM_MARGIN 28.0 //[0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19.0 20.0 21.0 22.0 23.0 24.0 25.0 26.0 27.0 28.0 29.0 30.0 31.0 32.0 40.0 48.0 64.0]
 #define DH_SEAM_WIDTH 36.0 //[0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19.0 20.0 21.0 22.0 23.0 24.0 25.0 26.0 27.0 28.0 29.0 30.0 31.0 32.0 36.0 40.0 48.0 64.0]
 #define DH_SEAM_DITHER
@@ -252,6 +257,14 @@ const float sunPathRotation = -40.0; //[-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60.
 #ifdef NETHER_BLOOM
 #endif
 #ifdef NETHER_FOG_EMBERS
+#endif
+#ifdef END_FOG
+#endif
+#ifdef END_FOG_STRENGTH
+#endif
+#ifdef END_FOG_DENSITY
+#endif
+#ifdef END_FOG_SAMPLES
 #endif
 #ifdef DH_SEAM_DITHER
 #endif

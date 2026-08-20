@@ -215,6 +215,14 @@ option.END_STARS_AMOUNT=End-Sternanzahl
 option.END_STARS_AMOUNT.comment=Dichte des End-Sternenfeldes (wie viele Sterne sichtbar sind).
 option.END_STARS_OPACITY=Deckkraft der End-Sterne
 option.END_STARS_OPACITY.comment=Wie sichtbar die End-Sterne über dem Himmel sind.
+option.END_FOG=End-Dunst §e[?]
+option.END_FOG.comment=Weicher violetter Ferndunst, damit das End weniger trocken wirkt. Auch mit Distant Horizons
+option.END_FOG_STRENGTH=Dunststärke
+option.END_FOG_STRENGTH.comment=Gesamtstärke des End-Dunsts
+option.END_FOG_DENSITY=Dunstdichte §e[?]
+option.END_FOG_DENSITY.comment=Wie schnell die Ferne im Violetten versinkt
+option.END_FOG_SAMPLES=Dunst-Samples
+option.END_FOG_SAMPLES.comment=Mehr Schritte = weichere Schichten.
 option.AUTO_EXPOSURE=Auto-Exposition
 option.AUTO_EXPOSURE.comment=Basiert auf dem Licht dort, wo du stehst (eyeBrightness), nicht dort, wo du hinschaust. Fackeln/Sonne senken EV; Höhlen erhöhen ihn
 option.AUTO_EXPOSURE_STRENGTH=Stärke der Auto-Exposition

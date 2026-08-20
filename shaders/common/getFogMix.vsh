@@ -71,9 +71,15 @@ float getTerrainFogMix(vec3 feetPos) {
 
          #ifdef DISTANT_HORIZONS
             float len = mix(length(feetPos), length(feetPos.xz), 0.4);
-            float start = x * max(fogFar * 0.45, far * 2.0);
-            float distant = rescale(len, start, fogFar);
-            float seam = smoothstep(far * 0.55, far * 2.4, len) * 0.32;
+            #ifdef THE_END
+               float start = x * max(fogFar * 0.28, far * 1.15);
+               float distant = rescale(len, start, fogFar);
+               float seam = smoothstep(far * 0.48, far * 2.1, len) * 0.40;
+            #else
+               float start = x * max(fogFar * 0.45, far * 2.0);
+               float distant = rescale(len, start, fogFar);
+               float seam = smoothstep(far * 0.55, far * 2.4, len) * 0.32;
+            #endif
             return max(distant, seam);
          #else
             return calcFogMix(feetPos, x, fogFar);
@@ -99,6 +105,12 @@ float getFogMix(vec3 feetPos) {
    #endif
 
    #if defined NETHER_FOG && defined THE_NETHER && MC_VERSION >= 11700
+      if (!(fogEnd + 1.0 < far)) {
+         return 0.0;
+      }
+   #endif
+
+   #if defined END_FOG && defined THE_END && MC_VERSION >= 11700
       if (!(fogEnd + 1.0 < far)) {
          return 0.0;
       }

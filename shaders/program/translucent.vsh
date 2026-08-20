@@ -82,7 +82,7 @@ void main() {
 
    normal       = gl_Normal;
 
-   #ifdef DH_WATER
+   #if defined DH_WATER && !defined THE_END
       ambient = getDhAmbientColor(lightUV.t, sunHeight);
    #else
       ambient = getAmbientColor(lightUV.t, sunHeight);
@@ -117,7 +117,11 @@ void main() {
    #endif
 
    #ifdef DH_WATER
-      ambient = getDhAmbientColor(AMBIENT_UV.t, sunHeight);
+      #ifndef THE_END
+         ambient = getDhAmbientColor(AMBIENT_UV.t, sunHeight);
+      #else
+         ambient = getAmbientColor(AMBIENT_UV.t, sunHeight);
+      #endif
       reflectivity = WATER_REFLECTIVITY;
       waterTexStrength = WATER_GLINT_CUTOFF;
    #else

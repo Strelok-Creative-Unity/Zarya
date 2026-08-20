@@ -29,6 +29,10 @@ vec3 getFogColor(float fogMix, vec3 feetPos) {
       vec3 mid = mix(hue * 0.28, mix(hue, ember, 0.20), 0.35) * 0.90;
       vec3 col = mix(mid, ember * 0.32, lava * 0.35);
       return mix(col, mix(mid, ash, 0.40), roof * 0.35);
+   #elif defined THE_END
+      vec3 biome = max(fogColor, vec3(0.02));
+      vec3 violet = vec3(0.22, 0.12, 0.34);
+      return mix(violet, mix(biome, END_AMBIENT * 0.28, 0.55), 0.42);
    #else
       return fogColor;
    #endif
