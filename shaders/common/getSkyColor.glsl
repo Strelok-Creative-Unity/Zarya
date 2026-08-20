@@ -171,7 +171,7 @@ vec3 getSkyColorNoStars(vec3 viewDir) {
          + moonGlow * 0.20
       );
    #else
-      night += MOON_COLOR * henyeyGreenstein(VoM, 0.72) * 0.022;
+      night += MOON_COLOR * henyeyGreenstein(VoM, 0.72) * 0.003;
    #endif
    sky = mix(night, sky, sunVis2);
 

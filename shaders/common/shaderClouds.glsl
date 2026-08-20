@@ -547,6 +547,16 @@ vec4 rfDrawClouds(vec3 viewPos, bool sky, vec3 lightColor) {
    float fadeFar  = max(distanceIn * 0.95, fadeNear + 64.0);
    vec3 atmosphere = getSkyColorNoStars(nView);
 
+   float moonCover = 0.0;
+   #ifdef OVERWORLD
+      float moonLen = length(moonPosition);
+      if (moonLen > 1.0e-4 && nightVis > 0.05) {
+         float moonDot = max(dot(nView, moonPosition / moonLen), 0.0);
+         moonCover = smoothstep(0.955, 0.995, moonDot) * nightVis;
+         atmosphere = mix(atmosphere, atmosphere * vec3(0.50, 0.54, 0.68), moonCover * 0.85);
+      }
+   #endif
+
    vec4 far = rfMarchCloudLayer(
       noisetex_uc, rd, sky, sceneLen, cap, dither, lightColor, atmosphere,
       lightOff, phase, sunVis, sunVisSqrt, nightVis, fadeNear, fadeFar,
@@ -572,6 +582,10 @@ vec4 rfDrawClouds(vec3 viewPos, bool sky, vec3 lightColor) {
    vc = rfCloudOverStraight(mid, far);
    vc = rfCloudOverStraight(near, vc);
    vc.a = clamp(vc.a * cave, 0.0, 1.0);
+   if (moonCover > 0.001) {
+      vc.a = mix(vc.a, min(1.0, vc.a * 1.30 + 0.22), moonCover);
+      vc.rgb = mix(vc.rgb, vc.rgb * 0.78, moonCover * 0.45);
+   }
    return vc;
 }
 #endif

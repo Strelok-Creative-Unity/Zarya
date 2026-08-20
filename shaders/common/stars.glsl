@@ -20,10 +20,10 @@ uniform float frameTimeCounter;
    #define STAR_SIZE 1.5
 #endif
 #ifndef STAR_PERIOD
-   #define STAR_PERIOD 120.0
+   #define STAR_PERIOD 600.0
 #endif
 #ifndef STAR_SPEED
-   #define STAR_SPEED 1.0
+   #define STAR_SPEED 0.5
 #endif
 #ifndef STAR_PHASE
    #define STAR_PHASE 0.0
@@ -114,6 +114,13 @@ vec3 getOverworldStars(vec3 viewDir) {
    float slide = wrap * cycles * u;
 
    vec3 stars = starLayer(plane * (97.0 * amount) + vec2(slide, 0.0), 0.11 * dens, 0.145 * size, wrap, u, twinkleTurns);
+
+   float moonLen = length(moonPosition);
+   if (moonLen > 1.0e-4) {
+      float moonAng = acos(clamp(dot(dir, moonPosition / moonLen), -1.0, 1.0));
+      float moonHide = 1.0 - smoothstep(0.072, 0.098, moonAng);
+      stars *= 1.0 - moonHide;
+   }
 
    return stars * vis * STAR_BRIGHTNESS * 2.4;
 }

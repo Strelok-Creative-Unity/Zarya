@@ -71,6 +71,7 @@ void main() {
          discard;
       }
       albedo.rgb *= 0.82;
+      albedo.a = 1.0;
       gl_FragData[0] = albedo;
    #else
       vec4 albedo = texture2D(gtexture, texUV) * color;
@@ -87,6 +88,7 @@ void main() {
       }
       albedo.rgb *= 0.88;
       albedo.rgb += vec3(0.025, 0.032, 0.05) * albedo.a;
+      albedo.a = mix(albedo.a, 1.0, disc);
       gl_FragData[0] = albedo;
    #endif
 }
