@@ -1,0 +1,12 @@
+{
+  "name": "zarya",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:modrinth": "node build-modrinth.js"
+  },
+  "devDependencies": {
+    "archiver": "^7.0.1"
+  }
+}
