@@ -370,6 +370,17 @@ value.HAND_DYNAMIC_LIGHTING.-1=§aAus
 value.HAND_DYNAMIC_LIGHTING.0=§eMit Lichtquelle
 value.HAND_DYNAMIC_LIGHTING.1=§eImmer
 
+screen.EVENTS_SCREEN=Events
+screen.FLOWER_FESTIVAL_SCREEN=Blütenfest
+option.FLOWER_FESTIVAL=Blütenfest
+option.FLOWER_FESTIVAL.comment=Blumen beginnen in der Farbe ihrer Blütenblätter zu leuchten. Je näher am Spieler, desto heller; entfernte blenden aus. Mit aktivem LPV leuchten Blumen auch den Boden in ihrer eigenen Farbe aus.
+option.EVENT_FLOWER_BRIGHTNESS=Leuchtstärke
+option.EVENT_FLOWER_BRIGHTNESS.comment=Wie stark Blumen während des Events leuchten.
+option.EVENT_FLOWER_FADE_START=Ausblend-Beginn
+option.EVENT_FLOWER_FADE_START.comment=Entfernung zum Spieler, in der Blumen maximal leuchten. Danach beginnt das Ausblenden.
+option.EVENT_FLOWER_FADE_END=Ausblend-Ende
+option.EVENT_FLOWER_FADE_END.comment=Entfernung zum Spieler, bei der das Leuchten vollständig verschwindet.
+
 screen.DH_SCREEN=Distant Horizons
 option.DH_SEAM_MARGIN=LoD-Nahtabstand §e[?]
 option.DH_SEAM_MARGIN.comment=Wie viele Blöcke vor der Vanilla-Sichtweite das DH-Terrain vollständig eingeblendet wird. Weniger = LoD beginnt näher und versteckt die Vanilla/DH-Naht besser

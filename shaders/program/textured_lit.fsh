@@ -51,6 +51,10 @@ varying vec3 gradientFogColor;
    flat varying float blockFlags;
 #endif
 
+#ifdef FLOWER_FESTIVAL
+   flat varying float isFlower;
+#endif
+
 #ifdef GENERATED_NORMALS
    #if (defined GBUFFERS_TERRAIN || defined GBUFFERS_BLOCK || defined GBUFFERS_ENTITIES || defined GBUFFERS_HAND) && !defined DH_TERRAIN
       varying vec3 tangent;
@@ -222,7 +226,16 @@ void main() {
    #endif
 
    float albedoLuma = luma(albedo.rgb);
-   float emissionLevel = lightSourceLevel;
+
+   #ifdef FLOWER_FESTIVAL
+      float flowerFalloff = clamp((length(litFeet) - EVENT_FLOWER_FADE_START) / max(EVENT_FLOWER_FADE_END - EVENT_FLOWER_FADE_START, 0.001), 0.0, 1.0);
+      float flowerFade = 1.0 - flowerFalloff * flowerFalloff * (3.0 - 2.0 * flowerFalloff);
+      float flowerGlow = isFlower * flowerFade;
+   #else
+      float flowerGlow = 0.0;
+   #endif
+
+   float emissionLevel = max(lightSourceLevel, flowerGlow * EVENT_FLOWER_BRIGHTNESS);
 
    #if defined GENERATED_SPECULAR || defined GENERATED_EMISSION
       vec4 ipbr = generateIPBR(materialId, blockFlags, albedo.rgb);
@@ -355,6 +368,10 @@ void main() {
 
    #ifdef GENERATED_EMISSION
       ambient.rgb += albedo.rgb * ipbr.z * EMISSION_STRENGTH;
+   #endif
+
+   #ifdef FLOWER_FESTIVAL
+      ambient.rgb += albedo.rgb * flowerGlow * EVENT_FLOWER_BRIGHTNESS;
    #endif
 
    vec3 baseAlbedo = albedo.rgb;

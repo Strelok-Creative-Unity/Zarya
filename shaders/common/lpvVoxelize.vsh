@@ -50,6 +50,18 @@ int lpvBlockId(float matId) {
    if (mat == 21061) return LPV_ID_EMIT + LPV_EMIT_TORCHFLOWER;
    if (mat == 21062) return LPV_ID_EMIT + LPV_EMIT_AMETHYST;
 
+   #ifdef FLOWER_FESTIVAL
+      if (mat == 10060 || mat == 10071) return LPV_ID_EMIT + LPV_EMIT_FLOWER_YELLOW;
+      if (mat == 10063 || mat == 10073) return LPV_ID_EMIT + LPV_EMIT_FLOWER_RED;
+      if (mat == 10064) return LPV_ID_EMIT + LPV_EMIT_FLOWER_BLUE;
+      if (mat == 10065 || mat == 10074) return LPV_ID_EMIT + LPV_EMIT_FLOWER_PURPLE;
+      if (mat == 10066) return LPV_ID_EMIT + LPV_EMIT_FLOWER_WHITE;
+      if (mat == 10067 || mat == 10075) return LPV_ID_EMIT + LPV_EMIT_FLOWER_PINK;
+      if (mat == 10069) return LPV_ID_EMIT + LPV_EMIT_FLOWER_ORANGE;
+      if (mat == 10070) return LPV_ID_EMIT + LPV_EMIT_FLOWER_DARK;
+      if (mat == 10062) return LPV_ID_EMIT + LPV_EMIT_FLOWER;
+   #endif
+
    if (mat == 10068) return LPV_ID_EMIT + LPV_EMIT_LAVA;
    if (mat == 21020) return LPV_ID_EMIT + LPV_EMIT_GLOWSTONE;
    if (mat == 21021) return LPV_ID_EMIT + LPV_EMIT_SHROOMLIGHT;
@@ -77,7 +89,14 @@ bool lpvIsPartialEmitter(int mat) {
        || mat == 21035 || mat == 21036 || mat == 21041 || mat == 21044
        || mat == 21050 || mat == 21051 || mat == 21053 || mat == 21054
        || mat == 21055 || mat == 21056 || mat == 21057 || mat == 21058
-       || mat == 21059 || mat == 21060 || mat == 21061 || mat == 21062;
+       || mat == 21059 || mat == 21060 || mat == 21061 || mat == 21062
+   #ifdef FLOWER_FESTIVAL
+       || mat == 10060 || mat == 10062 || mat == 10063 || mat == 10064
+       || mat == 10065 || mat == 10066 || mat == 10067 || mat == 10069
+       || mat == 10070 || mat == 10071 || mat == 10073 || mat == 10074
+       || mat == 10075
+   #endif
+   ;
 }
 
 void lpvVoxelizeVertex(float matId) {

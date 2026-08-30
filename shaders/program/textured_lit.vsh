@@ -75,6 +75,10 @@ varying vec3 gradientFogColor;
    flat varying float blockFlags;
 #endif
 
+#ifdef FLOWER_FESTIVAL
+   flat varying float isFlower;
+#endif
+
 #ifdef GENERATED_NORMALS
    #if (defined GBUFFERS_TERRAIN || defined GBUFFERS_BLOCK || defined GBUFFERS_ENTITIES || defined GBUFFERS_HAND) && !defined DH_TERRAIN
       varying vec3 tangent;
@@ -220,6 +224,14 @@ void main() {
       #else
          materialId = 0.0;
          blockFlags = 0.0;
+      #endif
+   #endif
+
+   #ifdef FLOWER_FESTIVAL
+      #ifdef HAS_BLOCK_ATTRIBUTES
+         isFlower = float((block.flags & RF_FLOWER) != 0);
+      #else
+         isFlower = 0.0;
       #endif
    #endif
 

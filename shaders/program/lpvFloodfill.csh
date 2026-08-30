@@ -28,7 +28,7 @@ uniform sampler3D lpvLightSamplerB;
 layout(rgba16f) uniform writeonly image3D lpvLightImgA;
 layout(rgba16f) uniform writeonly image3D lpvLightImgB;
 
-void lpvDecodeCell(int id, bool porous, out vec3 inject, out vec3 trans) {
+void lpvDecodeCell(int id, bool porous, ivec3 pos, out vec3 inject, out vec3 trans) {
    inject = vec3(0.0);
    trans = vec3(1.0);
 
@@ -39,7 +39,16 @@ void lpvDecodeCell(int id, bool porous, out vec3 inject, out vec3 trans) {
       vec3 tint = lpvTintRgb(id - LPV_ID_TINT);
       trans = exp((tint - vec3(1.0)) * 2.2);
    } else if (id >= LPV_ID_EMIT) {
-      inject = lpvEmitRgb(id - LPV_ID_EMIT);
+      float intensity = 1.0;
+      #ifdef FLOWER_FESTIVAL
+         if (id >= LPV_ID_EMIT + LPV_EMIT_FLOWER && id <= LPV_ID_EMIT + LPV_EMIT_FLOWER_DARK) {
+            vec3 rel = vec3(pos) - 0.5 * LPV_VOLUME_SIZEF;
+            float falloff = clamp((length(rel) - EVENT_FLOWER_FADE_START) / max(EVENT_FLOWER_FADE_END - EVENT_FLOWER_FADE_START, 0.001), 0.0, 1.0);
+            float fade = 1.0 - falloff * falloff * (3.0 - 2.0 * falloff);
+            intensity = fade * EVENT_FLOWER_BRIGHTNESS;
+         }
+      #endif
+      inject = lpvEmitRgb(id - LPV_ID_EMIT) * intensity;
       trans = porous ? vec3(1.0) : vec3(0.0);
    } else if (id == LPV_ID_SOLID) {
       trans = porous ? vec3(1.0) : vec3(0.0);
@@ -94,7 +103,7 @@ void main() {
 
    vec3 inject;
    vec3 trans;
-   lpvDecodeCell(id, porous, inject, trans);
+   lpvDecodeCell(id, porous, pos, inject, trans);
 
    float decay = mix(0.70, 0.88, clamp((LPV_FALLOFF - 0.88) / 0.11, 0.0, 1.0));
    vec3 light = inject;

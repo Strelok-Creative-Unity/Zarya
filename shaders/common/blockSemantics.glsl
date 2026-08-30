@@ -15,6 +15,7 @@
 #define RF_FIRE_ALPHA   512
 #define RF_EMIT_STRONG 1024
 #define RF_EMIT_TORCH  2048
+#define RF_FLOWER      4096
 
 struct RfBlockInfo {
    int flags;
@@ -49,6 +50,13 @@ void rfSetBehaviorFlags(int id, inout int flags) {
       flags |= RF_ORE;
    } else if (id == 10031 || id == 10059) {
       flags |= RF_WAVE_PLANT | RF_THIN;
+   } else if (id == 10060 || id == 10063 || id == 10064 || id == 10065
+           || id == 10066 || id == 10067 || id == 10069 || id == 10070) {
+      flags |= RF_WAVE_PLANT | RF_THIN | RF_FLOWER;
+   } else if (id == 10071 || id == 10073 || id == 10074 || id == 10075) {
+      flags |= RF_WAVE_UPPER | RF_THIN | RF_FLOWER;
+   } else if (id == 10062) {
+      flags |= RF_FLOWER;
    } else if (id == 10175 || id == 10176) {
       flags |= RF_THIN;
    } else if (id == 10068) {

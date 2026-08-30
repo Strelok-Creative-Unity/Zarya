@@ -304,6 +304,17 @@ value.HAND_DYNAMIC_LIGHTING.-1=§aOff
 value.HAND_DYNAMIC_LIGHTING.0=§eWith light
 value.HAND_DYNAMIC_LIGHTING.1=§eAlways
 
+screen.EVENTS_SCREEN=Events
+screen.FLOWER_FESTIVAL_SCREEN=Flower Festival
+option.FLOWER_FESTIVAL=Flower Festival
+option.FLOWER_FESTIVAL.comment=Flowers start to glow with the color of their petals. The closer a flower is to the player, the brighter; distant ones fade out. With LPV enabled, flowers also light up the ground around them in their own color.
+option.EVENT_FLOWER_BRIGHTNESS=Glow brightness
+option.EVENT_FLOWER_BRIGHTNESS.comment=How strongly flowers glow during the event.
+option.EVENT_FLOWER_FADE_START=Fade start
+option.EVENT_FLOWER_FADE_START.comment=Distance to the player where flowers glow at full strength. Fading begins beyond it.
+option.EVENT_FLOWER_FADE_END=Fade end
+option.EVENT_FLOWER_FADE_END.comment=Distance to the player at which the glow disappears completely.
+
 screen.DH_SCREEN=Distant Horizons
 option.DH_SEAM_MARGIN=LoD seam margin §e[?]
 option.DH_SEAM_MARGIN.comment=How many blocks before vanilla render distance DH terrain is fully faded in. Lower = LoD starts closer and hides the vanilla/DH seam

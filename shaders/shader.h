@@ -192,6 +192,12 @@ const float sunPathRotation = -40.0; //[-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60.
 #define FOLIAGE_SSS_STRENGTH 0.40 //[0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8]
 
 //----------------------------------------------------------------------------//
+//#define FLOWER_FESTIVAL
+#define EVENT_FLOWER_BRIGHTNESS 0.5 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.25 2.5 2.75 3.0]
+#define EVENT_FLOWER_FADE_START 16.0 //[4.0 6.0 8.0 10.0 12.0 14.0 16.0 20.0 24.0 28.0 32.0 40.0 48.0 56.0 64.0]
+#define EVENT_FLOWER_FADE_END 64.0 //[16.0 20.0 24.0 28.0 32.0 40.0 48.0 56.0 64.0 80.0 96.0 112.0 128.0]
+
+//----------------------------------------------------------------------------//
 //#define LPV_ENABLED
 #define LPV_SIZE 128 //[64 96 128 192]
 #define LPV_BRIGHTNESS 1.0 //[0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0 2.5 3.0]
@@ -486,6 +492,14 @@ const float sunPathRotation = -40.0; //[-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60.
 #ifdef FOLIAGE_SSS
 #endif
 #ifdef FOLIAGE_SSS_STRENGTH
+#endif
+#ifdef FLOWER_FESTIVAL
+#endif
+#ifdef EVENT_FLOWER_BRIGHTNESS
+#endif
+#ifdef EVENT_FLOWER_FADE_START
+#endif
+#ifdef EVENT_FLOWER_FADE_END
 #endif
 
 //----------------------------------------------------------------------------//

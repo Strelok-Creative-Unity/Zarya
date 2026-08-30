@@ -370,6 +370,17 @@ value.HAND_DYNAMIC_LIGHTING.-1=§aВыкл.
 value.HAND_DYNAMIC_LIGHTING.0=§eС источником света
 value.HAND_DYNAMIC_LIGHTING.1=§eВсегда
 
+screen.EVENTS_SCREEN=Ивенты
+screen.FLOWER_FESTIVAL_SCREEN=Праздник цветения
+option.FLOWER_FESTIVAL=Праздник цветения
+option.FLOWER_FESTIVAL.comment=Цветы начинают светиться цветом своих лепестков. Чем ближе цветок к игроку — тем ярче, дальние затухают. С включённым LPV цветы также подсвечивают землю вокруг себя своим цветом.
+option.EVENT_FLOWER_BRIGHTNESS=Яркость свечения
+option.EVENT_FLOWER_BRIGHTNESS.comment=Насколько ярко светятся цветы во время ивента.
+option.EVENT_FLOWER_FADE_START=Начало затухания
+option.EVENT_FLOWER_FADE_START.comment=Расстояние до игрока, на котором цветы светятся на максимум. Дальше начинается затухание.
+option.EVENT_FLOWER_FADE_END=Конец затухания
+option.EVENT_FLOWER_FADE_END.comment=Расстояние до игрока, на котором свечение полностью исчезает.
+
 screen.DH_SCREEN=Distant Horizons
 option.DH_SEAM_MARGIN=Отступ шва LoD §e[?]
 option.DH_SEAM_MARGIN.comment=На каком расстоянии до ванильной дальности отрисовки LoD полностью проявляется. Меньше = LoD ближе и лучше прячет шов vanilla/DH
