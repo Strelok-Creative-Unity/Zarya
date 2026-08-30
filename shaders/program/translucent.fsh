@@ -97,7 +97,8 @@ void main() {
       vec4 vanilla = albedo * color * ambient;
    #endif
 
-   ambient.rgb += getTorchColor(lightUV.s, ambient.rgb, feetPos);
+   
+   ambient.rgb += getTorchColor(lightUV.s, ambient.rgb, feetPos, screen2ndc(normal));
 
    vec3 packedNormal = normal;
 

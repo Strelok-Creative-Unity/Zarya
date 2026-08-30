@@ -1,14 +1,11 @@
+#include "/common/blockSemantics.glsl"
 
-bool isWavingBlock(float blockId) {
-   #ifdef WAVING_LEAVES
-      if (blockId == 30001.0) return true;
+bool isWavingBlock(int flags) {
+   #if defined WAVING_LEAVES || defined WAVING_PLANTS
+      return (flags & (RF_WAVE_LEAVES | RF_WAVE_PLANT | RF_WAVE_UPPER)) != 0;
+   #else
+      return false;
    #endif
-
-   #ifdef WAVING_PLANTS
-      if (blockId == 10031.0 || blockId == 10059.0 || blockId == 300010.0) return true;
-   #endif
-
-   return false;
 }
 
 vec3 wavingHarmonics(float a, vec3 phase) {
@@ -18,19 +15,10 @@ vec3 wavingHarmonics(float a, vec3 phase) {
         + 0.25 * sin(vec3(4.0 * a) + phase);
 }
 
-vec3 getWavingOffset(vec3 feetPos, float blockId, float skyLight, float isTop) {
-   bool isLeaves = false;
-   bool isPlant = false;
-   bool isPlantUpper = false;
-
-   #ifdef WAVING_LEAVES
-      isLeaves = blockId == 30001.0;
-   #endif
-
-   #ifdef WAVING_PLANTS
-      isPlant = blockId == 10031.0 || blockId == 10059.0;
-      isPlantUpper = blockId == 300010.0;
-   #endif
+vec3 getWavingOffset(vec3 feetPos, int flags, float skyLight, float isTop) {
+   bool isLeaves = (flags & RF_WAVE_LEAVES) != 0;
+   bool isPlant = (flags & RF_WAVE_PLANT) != 0;
+   bool isPlantUpper = (flags & RF_WAVE_UPPER) != 0;
 
    if (!(isLeaves || isPlant || isPlantUpper)) {
       return vec3(0.0);

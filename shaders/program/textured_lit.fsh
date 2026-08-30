@@ -48,6 +48,7 @@ varying vec3 gradientFogColor;
 
 #if defined GENERATED_SPECULAR || defined GENERATED_EMISSION || defined GENERATED_NORMALS
    flat varying float materialId;
+   flat varying float blockFlags;
 #endif
 
 #ifdef GENERATED_NORMALS
@@ -224,7 +225,7 @@ void main() {
    float emissionLevel = lightSourceLevel;
 
    #if defined GENERATED_SPECULAR || defined GENERATED_EMISSION
-      vec4 ipbr = generateIPBR(materialId, albedo.rgb);
+      vec4 ipbr = generateIPBR(materialId, blockFlags, albedo.rgb);
       #ifdef GENERATED_EMISSION
          emissionLevel = max(emissionLevel, ipbr.z);
       #endif
@@ -339,7 +340,17 @@ void main() {
       ambient.rgb += vec3(0.80, 0.30, 0.08) * underGlow * 0.035 * NETHER_AMBIENT;
    #endif
 
-   ambient.rgb += getTorchColor(lightUV.s, ambient.rgb, litFeet);
+   
+
+   
+   vec3 lpvNormal = outNormalModel;
+   #ifdef DH_TERRAIN
+      lpvNormal = dhWorldNormal;
+   #elif !(BLOCK_REFLECTIONS > 0 || defined GENERATED_SPECULAR || defined GENERATED_NORMALS) && defined ENABLE_SHADOWS
+      lpvNormal = shadowNormal;
+   #endif
+
+   ambient.rgb += getTorchColor(lightUV.s, ambient.rgb, litFeet, lpvNormal);
    ambient.rgb *= ambBump;
 
    #ifdef GENERATED_EMISSION

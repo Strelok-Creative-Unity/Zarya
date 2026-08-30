@@ -72,6 +72,7 @@ varying vec3 gradientFogColor;
 
 #if defined GENERATED_SPECULAR || defined GENERATED_EMISSION || defined GENERATED_NORMALS
    flat varying float materialId;
+   flat varying float blockFlags;
 #endif
 
 #ifdef GENERATED_NORMALS
@@ -89,6 +90,7 @@ varying vec3 gradientFogColor;
 
 #include "/common/math.glsl"
 #include "/common/transformations.glsl"
+#include "/common/blockSemantics.glsl"
 #include "/common/getFogMix.vsh"
 #include "/common/getFogColor.vsh"
 
@@ -119,6 +121,10 @@ varying vec3 gradientFogColor;
 #endif
 
 void main() {
+   #ifdef HAS_BLOCK_ATTRIBUTES
+      RfBlockInfo block = rfDecodeBlock(mc_Entity.x);
+   #endif
+
    vec4 viewPos;
 
    #ifdef DH_TERRAIN
@@ -141,10 +147,10 @@ void main() {
    #endif
 
    #if defined GBUFFERS_TERRAIN && !defined DH_TERRAIN && (defined WAVING_LEAVES || defined WAVING_PLANTS)
-      if (isWavingBlock(mc_Entity.x)) {
+      if (isWavingBlock(block.flags)) {
          float isTop = float(gl_MultiTexCoord0.t < mc_midTexCoord.t);
          vec3 wavedFeet = view2feet(viewPos.xyz);
-         wavedFeet += getWavingOffset(wavedFeet, mc_Entity.x, clamp(lightUV.t, 0.0, 1.0), isTop);
+         wavedFeet += getWavingOffset(wavedFeet, block.flags, clamp(lightUV.t, 0.0, 1.0), isTop);
          viewPos = vec4(feet2view(wavedFeet), 1.0);
       }
    #endif
@@ -177,25 +183,19 @@ void main() {
          color.rgb = mix(vec3(0.8, 0.5, 0.3), vec3(1.0), rescale(color.rgb, vec3(0.54), vec3(0.9)));
       }
    #elif defined HAS_BLOCK_ATTRIBUTES
-      lightSourceLevel = float(mc_Entity.x == 10068.0 || mc_Entity.x == 10072.0 ||
-                               mc_Entity.x == 10076.0 || mc_Entity.x == 10496.0 ||
-                               mc_Entity.x == 10528.0 || mc_Entity.x == 10604.0 ||
-                               mc_Entity.x == 10652.0 || mc_Entity.x == 10656.0 ||
-                               mc_Entity.x == 10984.0);
+      lightSourceLevel = float((block.flags & RF_LIGHT) != 0);
 
       #ifdef IRIS_FEATURE_BLOCK_EMISSION_ATTRIBUTE
          lightSourceLevel = max(lightSourceLevel, at_midBlock.w < 16.0 ? at_midBlock.w / 15.0 : 0.0);
       #endif
 
       #ifdef FOLIAGE_SSS
-         isFoliage = float(mc_Entity.x == 30001.0);
+         isFoliage = float((block.flags & RF_FOLIAGE_SSS) != 0);
       #endif
 
-      bool isThin = mc_Entity.x == 10031.0 || mc_Entity.x == 10059.0
-                 || mc_Entity.x == 300010.0
-                 || mc_Entity.x == 10175.0 || mc_Entity.x == 10176.0;
+      bool isThin = (block.flags & RF_THIN) != 0;
 
-      if (mc_Entity.x == 10068.0) {
+      if ((block.flags & RF_LAVA_TINT) != 0) {
          color.rgb = mix(vec3(0.8, 0.5, 0.3), vec3(1.0), rescale(color.rgb, vec3(0.54), vec3(0.9)));
       }
    #else
@@ -213,10 +213,13 @@ void main() {
    #if defined GENERATED_SPECULAR || defined GENERATED_EMISSION || defined GENERATED_NORMALS
       #ifdef DH_TERRAIN
          materialId = 0.0;
+         blockFlags = 0.0;
       #elif defined HAS_BLOCK_ATTRIBUTES
-         materialId = mc_Entity.x;
+         materialId = float(block.matClass);
+         blockFlags = float(block.flags);
       #else
          materialId = 0.0;
+         blockFlags = 0.0;
       #endif
    #endif
 
@@ -228,13 +231,7 @@ void main() {
       #elif defined GENERATED_SPECULAR
          blockReflectivity = vec3(0.0);
       #elif defined HAS_BLOCK_ATTRIBUTES
-         float rfReflectId = mc_Entity.x;
-         if (rfReflectId == 30001.0 || rfReflectId == 300010.0) {
-            // Эти ID начинаются с 30xxx: без правки попадают в другой индекс BLOCK_REFLECTIVITY.
-            // Чтобы сохранить визуальную схему как у прежних 100xx, принудительно мапим на индекс 0.
-            rfReflectId = 19999.0;
-         }
-         blockReflectivity = BLOCK_REFLECTIVITY[int(clamp(rfReflectId - 20000.0, 0.0, 39.0))];
+         blockReflectivity = BLOCK_REFLECTIVITY[int(clamp(float(block.matClass), 0.0, 39.0))];
       #else
          blockReflectivity = vec3(0.0);
       #endif
@@ -254,7 +251,7 @@ void main() {
 
    #ifdef GLOWING_ORES
       #ifdef HAS_BLOCK_ATTRIBUTES
-         isOre = float(mc_Entity.x == 10014.0);
+         isOre = float((block.flags & RF_ORE) != 0);
       #else
          isOre = 0.0;
       #endif
@@ -262,7 +259,7 @@ void main() {
 
    #ifdef HAS_BLOCK_ATTRIBUTES
       #ifdef HIGHLIGHT_WAXED
-         color.rgb *= (heldItemId == 20007 || heldItemId2 == 20007) && mc_Entity.x == 20007.0 ? 0.4 : 1.0;
+         color.rgb *= (heldItemId == 20007 || heldItemId2 == 20007) && block.rawId == 20007 ? 0.4 : 1.0;
       #endif
    #endif
 

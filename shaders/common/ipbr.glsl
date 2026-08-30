@@ -2,6 +2,8 @@
 #ifndef IPBR_GLSL
 #define IPBR_GLSL
 
+#include "/common/blockSemantics.glsl"
+
 #define IPBR_METAL_HEAVY       1
 #define IPBR_DEEPSLATE_BRICK   2
 #define IPBR_POLISHED_TUFF     3
@@ -50,7 +52,7 @@ float ipbrChroma(vec3 c) {
    return mx - mn;
 }
 
-vec4 generateIPBR(float materialId, vec3 albedo) {
+vec4 generateIPBR(float matClass, float flags, vec3 albedo) {
    float lumaA = clamp(luma(albedo), 0.0, 1.0);
    float luma2 = lumaA * lumaA;
    float luma3 = luma2 * lumaA;
@@ -60,19 +62,18 @@ vec4 generateIPBR(float materialId, vec3 albedo) {
    float metalness = 0.0;
    float emission = 0.0;
 
-   int mat = int(materialId);
-   int cls = int(max(0.0, materialId - 20000.0));
+   int cls = int(matClass);
+   int f = int(flags);
 
    #ifdef GENERATED_SPECULAR_ON_ALL
       smoothness = 0.03 * lumaA;
    #endif
 
-   if (mat == 10014) {
+   if ((f & RF_ORE) != 0) {
       emission = clamp(chroma * 2.2 - 0.1, 0.0, 1.0) * lumaA;
-   } else if (mat == 10068 || mat == 10072 || mat == 10076) {
+   } else if ((f & RF_EMIT_STRONG) != 0) {
       emission = max(emission, 0.9);
-   } else if (mat == 10496 || mat == 10528 || mat == 10604 ||
-              mat == 10652 || mat == 10656 || mat == 10984) {
+   } else if ((f & RF_EMIT_TORCH) != 0) {
       emission = max(emission, 0.65 + 0.3 * lumaA);
    }
 

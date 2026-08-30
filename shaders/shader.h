@@ -192,8 +192,13 @@ const float sunPathRotation = -40.0; //[-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60.
 #define FOLIAGE_SSS_STRENGTH 0.40 //[0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8]
 
 //----------------------------------------------------------------------------//
-//#define TMP_COLORED_LPV
-#define TMP_LPV_STRENGTH 1.0 //[0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0]
+//#define LPV_ENABLED
+#define LPV_SIZE 128 //[64 96 128 192]
+#define LPV_BRIGHTNESS 1.0 //[0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0 2.5 3.0]
+#define LPV_FALLOFF 0.96 //[0.88 0.90 0.92 0.94 0.95 0.96 0.97 0.98 0.99]
+#define LPV_SATURATION 1.0 //[0.0 0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0]
+#define LPV_TINT_SATURATION 0.5 //[0.0 0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0]
+#define LPV_DAY_LEAK 0.25 //[0.0 0.05 0.1 0.15 0.2 0.25 0.3 0.4 0.5 0.75 1.0]
 
 #define AIR_FOG
 #define AIR_FOG_STRENGTH 1.25 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0]
@@ -448,9 +453,19 @@ const float sunPathRotation = -40.0; //[-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60.
 #endif
 #ifdef AO_SAMPLES
 #endif
-#ifdef TMP_COLORED_LPV
+#ifdef LPV_ENABLED
 #endif
-#ifdef TMP_LPV_STRENGTH
+#ifdef LPV_SIZE
+#endif
+#ifdef LPV_BRIGHTNESS
+#endif
+#ifdef LPV_FALLOFF
+#endif
+#ifdef LPV_SATURATION
+#endif
+#ifdef LPV_TINT_SATURATION
+#endif
+#ifdef LPV_DAY_LEAK
 #endif
 #ifdef AIR_FOG
 #endif
