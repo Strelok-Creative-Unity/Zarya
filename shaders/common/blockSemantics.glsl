@@ -34,7 +34,8 @@ float rfEffectiveId(float rawId) {
    if (mat >= 21020 && mat <= 21026) return 20039.0;
    if (mat == 21043) return 20025.0;
    if (mat >= 21061) return 10014.0;
-   if (mat >= 21056 && mat <= 21059) return 10059.0;
+   if (mat == 21056) return 10077.0;
+   if (mat >= 21057 && mat <= 21059) return 10059.0;
 
    return 0.0;
 }
@@ -50,6 +51,8 @@ void rfSetBehaviorFlags(int id, inout int flags) {
       flags |= RF_ORE;
    } else if (id == 10031 || id == 10059) {
       flags |= RF_WAVE_PLANT | RF_THIN;
+   } else if (id == 10077) {
+      flags |= RF_THIN;
    } else if (id == 10060 || id == 10063 || id == 10064 || id == 10065
            || id == 10066 || id == 10067 || id == 10069 || id == 10070) {
       flags |= RF_WAVE_PLANT | RF_THIN | RF_FLOWER;
