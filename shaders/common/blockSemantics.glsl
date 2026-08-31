@@ -89,12 +89,12 @@ RfBlockInfo rfDecodeBlock(float rawId) {
 
    if (info.rawId >= 20001 && info.rawId <= 20040) {
       info.matClass = info.rawId - 20000;
-   } else if (info.rawId == 20041) {
-      info.matClass = 41;
+   } else if (info.rawId >= 20041 && info.rawId <= 20044) {
+      info.matClass = info.rawId - 20000;
    } else if (id >= 20001 && id <= 20040) {
       info.matClass = id - 20000;
-   } else if (id == 20041) {
-      info.matClass = 41;
+   } else if (id >= 20041 && id <= 20044) {
+      info.matClass = id - 20000;
    }
 
    if (info.matClass == 39) {

@@ -243,7 +243,7 @@ void main() {
       #elif defined GENERATED_SPECULAR
          blockReflectivity = vec3(0.0);
       #elif defined HAS_BLOCK_ATTRIBUTES
-         blockReflectivity = BLOCK_REFLECTIVITY[int(clamp(float(block.matClass), 0.0, 39.0))];
+         blockReflectivity = BLOCK_REFLECTIVITY[int(clamp(float(block.matClass), 0.0, 44.0))];
       #else
          blockReflectivity = vec3(0.0);
       #endif
@@ -271,7 +271,8 @@ void main() {
 
    #ifdef HAS_BLOCK_ATTRIBUTES
       #ifdef HIGHLIGHT_WAXED
-         color.rgb *= (heldItemId == 20007 || heldItemId2 == 20007) && block.rawId == 20007 ? 0.4 : 1.0;
+         color.rgb *= (heldItemId == 20007 || heldItemId2 == 20007)
+                   && (block.rawId == 20007 || block.rawId == 20043) ? 0.4 : 1.0;
       #endif
    #endif
 

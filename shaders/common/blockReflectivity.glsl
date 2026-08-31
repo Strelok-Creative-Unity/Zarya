@@ -1,7 +1,7 @@
 // x = reflection strength  (0-1)
 // y = reflection min luma  (0-1)
 // z = reflection roughness (0-1)
-const vec3 BLOCK_REFLECTIVITY[40] = vec3[](
+const vec3 BLOCK_REFLECTIVITY[45] = vec3[](
    vec3(0.0),
    vec3(0.60, 0.05, 0.07),
    vec3(0.60, 0.10, 0.11),
@@ -41,5 +41,10 @@ const vec3 BLOCK_REFLECTIVITY[40] = vec3[](
    vec3(0.18, 0.25, 0.18),
    vec3(0.08, 0.20, 0.25),
    vec3(0.0),
+   vec3(0.15, 0.00, 0.20),
+   vec3(0.0),
+   vec3(0.15, 0.00, 0.20),
+   vec3(0.65, 0.30, 0.07),
+   vec3(0.65, 0.30, 0.07),
    vec3(0.15, 0.00, 0.20)
 );

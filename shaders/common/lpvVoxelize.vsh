@@ -99,6 +99,15 @@ bool lpvIsPartialEmitter(int mat) {
    ;
 }
 
+bool lpvIsPorousBlock(int mat) {
+   return mat == 10078 || mat == 20013 || mat == 10031 || mat == 10059
+       || mat == 10077 || mat == 10302
+       || mat == 20042 || mat == 20043 || mat == 20044
+       || (mat >= 10060 && mat <= 10067)
+       || (mat >= 10069 && mat <= 10071)
+       || (mat >= 10073 && mat <= 10075);
+}
+
 void lpvVoxelizeVertex(float matId) {
    if (renderStage != MC_RENDER_STAGE_TERRAIN_SOLID
     && renderStage != MC_RENDER_STAGE_TERRAIN_TRANSLUCENT
@@ -125,7 +134,10 @@ void lpvVoxelizeVertex(float matId) {
    } else {
       int level = int(at_midBlock.w + 0.5);
       id = (level > 0 && level < 16) ? LPV_ID_LEVEL + level : LPV_ID_SOLID;
-      porous = renderStage != MC_RENDER_STAGE_TERRAIN_SOLID;
+      porous = lpvIsPorousBlock(mat)
+            || renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT
+            || renderStage == MC_RENDER_STAGE_TERRAIN_CUTOUT
+            || renderStage == MC_RENDER_STAGE_TERRAIN_CUTOUT_MIPPED;
    }
 
    imageStore(lpvVoxelImg, ivec3(voxelPos), vec4(lpvPackCell(id, porous), 0.0, 0.0, 0.0));

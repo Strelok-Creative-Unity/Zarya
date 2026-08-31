@@ -13,6 +13,9 @@
 #define IPBR_WAXED_COPPER      7
 #define IPBR_COPPER            8
 #define IPBR_COPPER_OXIDIZED   41
+#define IPBR_COPPER_POROUS     42
+#define IPBR_COPPER_WAXED_POROUS 43
+#define IPBR_COPPER_OXIDIZED_POROUS 44
 #define IPBR_COBBLE            9
 #define IPBR_POLISHED_GRANITE  10
 #define IPBR_POLISHED_ANDESITE 11
@@ -80,10 +83,11 @@ vec4 generateIPBR(float matClass, float flags, vec3 albedo) {
    if (cls == IPBR_METAL_HEAVY) {
       smoothness = min(0.95, 0.78 + lumaA * 0.17);
       metalness = 0.98;
-   } else if (cls == IPBR_WAXED_COPPER || cls == IPBR_COPPER) {
+   } else if (cls == IPBR_WAXED_COPPER || cls == IPBR_COPPER
+           || cls == IPBR_COPPER_POROUS || cls == IPBR_COPPER_WAXED_POROUS) {
       smoothness = min(0.95, 0.82 + lumaA * 0.12);
       metalness = 0.96;
-   } else if (cls == IPBR_COPPER_OXIDIZED) {
+   } else if (cls == IPBR_COPPER_OXIDIZED || cls == IPBR_COPPER_OXIDIZED_POROUS) {
       smoothness = 0.0;
       metalness = 0.0;
    } else if (cls == IPBR_IRON_BARS) {
