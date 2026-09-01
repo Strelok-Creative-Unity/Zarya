@@ -7,18 +7,8 @@
 
 #ifdef LPV_ACTIVE
 
-const ivec3 LPV_VOLUME_SIZE  = ivec3(LPV_SIZE);
-const vec3  LPV_VOLUME_SIZEF = vec3(LPV_SIZE);
-
-#if LPV_SIZE == 64
-   const float voxelDistance = 32.0;
-#elif LPV_SIZE == 96
-   const float voxelDistance = 48.0;
-#elif LPV_SIZE == 128
-   const float voxelDistance = 64.0;
-#else
-   const float voxelDistance = 96.0;
-#endif
+const ivec3 LPV_VOLUME_SIZE  = ivec3(LPV_SIZE_XZ, LPV_SIZE_Y, LPV_SIZE_XZ);
+const vec3  LPV_VOLUME_SIZEF = vec3(LPV_VOLUME_SIZE);
 
 #define LPV_ID_AIR   0
 #define LPV_ID_SOLID 1

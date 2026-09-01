@@ -29,6 +29,61 @@ varying vec2 texUV;
 #include "/common/getColorGrade.glsl"
 #include "/common/sharpen.glsl"
 
+#include "/common/lpvCommon.glsl"
+
+#if LPV_DEBUG_BOUNDS && defined LPV_ACTIVE
+   uniform sampler2D depthtex0;
+
+   vec3 rfLpvDebugOverlay(vec3 color, vec2 uv) {
+      float depth = texture2D(depthtex0, uv).x;
+
+      vec3 center  = floor(cameraPosition);
+      vec3 halfSiz = 0.5 * LPV_VOLUME_SIZEF;
+      vec3 lo      = center - halfSiz;
+      vec3 hi      = center + halfSiz;
+
+      vec3 p;
+      if (depth < 1.0) {
+         p = screen2world(uv, depth);
+      } else {
+         vec4 ndc = vec4(screen2ndc(vec3(uv, 1.0)), 1.0);
+         vec3 viewDir  = normalize(nvec3(gbufferProjectionInverse * ndc));
+         vec3 worldDir = normalize(mat3(gbufferModelViewInverse) * viewDir);
+         vec3 origin   = cameraPosition;
+
+         vec3 invD = 1.0 / worldDir;
+         vec3 t0   = (lo - origin) * invD;
+         vec3 t1   = (hi - origin) * invD;
+         vec3 tmin = min(t0, t1);
+         vec3 tmax = max(t0, t1);
+         float tNear = max(max(tmin.x, tmin.y), tmin.z);
+         float tFar  = min(min(tmax.x, tmax.y), tmax.z);
+
+         if (tNear > tFar || tFar < 0.0) {
+            return color;
+         }
+         p = origin + worldDir * max(tNear, 0.0);
+      }
+
+      vec3  q    = abs(p - center) - halfSiz;
+      float maxQ = max(q.x, max(q.y, q.z));
+      float sd   = length(max(q, vec3(0.0))) + min(maxQ, 0.0);
+
+      vec3  inD      = max(halfSiz - abs(p - center), vec3(0.0));
+      float edgeDist = min(max(inD.x, inD.y), min(max(inD.x, inD.z), max(inD.y, inD.z)));
+
+      float lineW = max(0.08, distance(p, cameraPosition) * 0.012);
+
+      float edge = 1.0 - smoothstep(0.0, lineW, edgeDist);
+      float face = 1.0 - smoothstep(0.0, lineW, abs(sd));
+
+      vec3 boxCol = vec3(0.25, 1.0, 0.55);
+      color = mix(color, boxCol * 2.0, edge);
+      color = mix(color, boxCol * 0.15, face * (1.0 - edge));
+      return color;
+   }
+#endif
+
 #ifdef FXAA
    #include "/common/fxaa.glsl"
 #endif
@@ -70,6 +125,10 @@ void main() {
 
    #ifdef AUTO_EXPOSURE
       color.rgb = applyLightBleed(color.rgb, exposureEv, exposureTarget);
+   #endif
+
+   #if LPV_DEBUG_BOUNDS && defined LPV_ACTIVE
+      color.rgb = rfLpvDebugOverlay(color.rgb, texUV);
    #endif
 
    /* DRAWBUFFERS:02 */

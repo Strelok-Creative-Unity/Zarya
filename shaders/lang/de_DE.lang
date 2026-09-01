@@ -403,9 +403,13 @@ option.DH_DEPTH_SHADOW_STEPS.comment=Kontaktschatten-Schritte nach Tiefe.
 
 screen.LPV_SCREEN=Farbiges Blocklicht
 option.LPV_ENABLED=Farbiges Blocklicht (LPV) §e[?]
-option.LPV_ENABLED.comment=Echte Voxel-Flutbeleuchtung. Das Gelände um dich herum wird aus dem Shadow-Pass in ein Lichtvolumen geschrieben und jedes Bild nach außen geflutet, sodass Fackeln, Glowstone und Lava ihre eigene Farbe werfen und das Licht um Ecken läuft. Ersetzt die Vanilla-Blocklicht-Rampe vollständig. Nur Iris, und es kommt ein Shadow-Pass im Nether und im End hinzu
-option.LPV_SIZE=Volumengröße §e[?]
-option.LPV_SIZE.comment=Kantenlänge des Voxelwürfels in Blöcken, um dich zentriert. Außerhalb gibt es kein Licht, das ist also auch die Reichweite. Speicher- und Rechenaufwand wachsen kubisch
+option.LPV_ENABLED.comment=Fackeln, Glowstone und Lava leuchten in ihrer eigenen Farbe. Ersetzt das Vanilla-Blocklicht vollständig. VRAM: 1024×512 — etwa 10 GiB, 1024×256 — etwa 5 GiB, Standard 128×64 — etwa 20 MiB
+option.LPV_SIZE_XZ=Volumenbreite §e[?]
+option.LPV_SIZE_XZ.comment=Horizontale Seite (X/Z) des Voxelvolumens in Blöcken, zentriert auf dich. 1 Chunk = 16 Blöcke. Außerhalb gibt es kein Voxellicht, die Reichweite beträgt die halbe Seitenlänge. Speicher und Rechenaufwand wachsen mit Breite² × Höhe
+option.LPV_SIZE_Y=Volumenhöhe §e[?]
+option.LPV_SIZE_Y.comment=Vertikale Seite (Y) des Voxelvolumens in Blöcken, zentriert auf deine Augenhöhe. Für die meisten Spielerbauten und Wohnorte eignen sich 96 Blöcke (48 nach oben und unten). Speicher und Rechenaufwand wachsen mit Breite² × Höhe
+option.LPV_DEBUG_BOUNDS=Volumengrenzen anzeigen §e[?]
+option.LPV_DEBUG_BOUNDS.comment=Debug
 option.LPV_BRIGHTNESS=Helligkeit
 option.LPV_BRIGHTNESS.comment=1.0 entspricht der Vanilla-Fackelrampe. Höhere Werte legen nur extra Energie darüber.
 option.LPV_FALLOFF=Abfall §e[?]

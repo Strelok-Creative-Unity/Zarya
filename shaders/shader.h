@@ -199,7 +199,9 @@ const float sunPathRotation = -40.0; //[-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60.
 
 //----------------------------------------------------------------------------//
 //#define LPV_ENABLED
-#define LPV_SIZE 128 //[64 96 128 192]
+#define LPV_SIZE_XZ 128 //[64 96 128 192 256 384 512 1024]
+#define LPV_SIZE_Y 64 //[32 64 96 128 192 256 384 512]
+#define LPV_DEBUG_BOUNDS 0 //[0 1]
 #define LPV_BRIGHTNESS 1.0 //[0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0 2.5 3.0]
 #define LPV_FALLOFF 0.96 //[0.88 0.90 0.92 0.94 0.95 0.96 0.97 0.98 0.99]
 #define LPV_SATURATION 1.0 //[0.0 0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0]
@@ -461,7 +463,9 @@ const float sunPathRotation = -40.0; //[-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60.
 #endif
 #ifdef LPV_ENABLED
 #endif
-#ifdef LPV_SIZE
+#ifdef LPV_SIZE_XZ
+#endif
+#ifdef LPV_SIZE_Y
 #endif
 #ifdef LPV_BRIGHTNESS
 #endif

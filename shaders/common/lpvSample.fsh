@@ -32,8 +32,8 @@ vec3 lpvSample(vec3 feetPos, vec3 worldNormal, out float coverage) {
       return vec3(0.0);
    }
 
-   float range = 0.5 * float(LPV_SIZE);
-   coverage = 1.0 - smoothstep(range * 0.64, range * 0.93, length(feetPos));
+   float range = 0.5 * float(LPV_SIZE_XZ);
+   coverage = 1.0 - smoothstep(range * 0.64, range * 0.93, length(feetPos.xz));
 
    vec3 n = worldNormal;
    float nLen = length(n);

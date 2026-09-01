@@ -3,14 +3,150 @@
 
 layout(local_size_x = 4, local_size_y = 4, local_size_z = 4) in;
 
-#if LPV_SIZE == 64
-   const ivec3 workGroups = ivec3(16, 16, 16);
-#elif LPV_SIZE == 96
-   const ivec3 workGroups = ivec3(24, 24, 24);
-#elif LPV_SIZE == 128
-   const ivec3 workGroups = ivec3(32, 32, 32);
-#else
-   const ivec3 workGroups = ivec3(48, 48, 48);
+#if LPV_SIZE_XZ == 64
+   #if LPV_SIZE_Y == 32
+      const ivec3 workGroups = ivec3(16, 8, 16);
+   #elif LPV_SIZE_Y == 64
+      const ivec3 workGroups = ivec3(16, 16, 16);
+   #elif LPV_SIZE_Y == 96
+      const ivec3 workGroups = ivec3(16, 24, 16);
+   #elif LPV_SIZE_Y == 128
+      const ivec3 workGroups = ivec3(16, 32, 16);
+   #elif LPV_SIZE_Y == 192
+      const ivec3 workGroups = ivec3(16, 48, 16);
+   #elif LPV_SIZE_Y == 256
+      const ivec3 workGroups = ivec3(16, 64, 16);
+   #elif LPV_SIZE_Y == 384
+      const ivec3 workGroups = ivec3(16, 96, 16);
+   #else
+      const ivec3 workGroups = ivec3(16, 128, 16);
+   #endif
+#elif LPV_SIZE_XZ == 96
+   #if LPV_SIZE_Y == 32
+      const ivec3 workGroups = ivec3(24, 8, 24);
+   #elif LPV_SIZE_Y == 64
+      const ivec3 workGroups = ivec3(24, 16, 24);
+   #elif LPV_SIZE_Y == 96
+      const ivec3 workGroups = ivec3(24, 24, 24);
+   #elif LPV_SIZE_Y == 128
+      const ivec3 workGroups = ivec3(24, 32, 24);
+   #elif LPV_SIZE_Y == 192
+      const ivec3 workGroups = ivec3(24, 48, 24);
+   #elif LPV_SIZE_Y == 256
+      const ivec3 workGroups = ivec3(24, 64, 24);
+   #elif LPV_SIZE_Y == 384
+      const ivec3 workGroups = ivec3(24, 96, 24);
+   #else
+      const ivec3 workGroups = ivec3(24, 128, 24);
+   #endif
+#elif LPV_SIZE_XZ == 128
+   #if LPV_SIZE_Y == 32
+      const ivec3 workGroups = ivec3(32, 8, 32);
+   #elif LPV_SIZE_Y == 64
+      const ivec3 workGroups = ivec3(32, 16, 32);
+   #elif LPV_SIZE_Y == 96
+      const ivec3 workGroups = ivec3(32, 24, 32);
+   #elif LPV_SIZE_Y == 128
+      const ivec3 workGroups = ivec3(32, 32, 32);
+   #elif LPV_SIZE_Y == 192
+      const ivec3 workGroups = ivec3(32, 48, 32);
+   #elif LPV_SIZE_Y == 256
+      const ivec3 workGroups = ivec3(32, 64, 32);
+   #elif LPV_SIZE_Y == 384
+      const ivec3 workGroups = ivec3(32, 96, 32);
+   #else
+      const ivec3 workGroups = ivec3(32, 128, 32);
+   #endif
+#elif LPV_SIZE_XZ == 192
+   #if LPV_SIZE_Y == 32
+      const ivec3 workGroups = ivec3(48, 8, 48);
+   #elif LPV_SIZE_Y == 64
+      const ivec3 workGroups = ivec3(48, 16, 48);
+   #elif LPV_SIZE_Y == 96
+      const ivec3 workGroups = ivec3(48, 24, 48);
+   #elif LPV_SIZE_Y == 128
+      const ivec3 workGroups = ivec3(48, 32, 48);
+   #elif LPV_SIZE_Y == 192
+      const ivec3 workGroups = ivec3(48, 48, 48);
+   #elif LPV_SIZE_Y == 256
+      const ivec3 workGroups = ivec3(48, 64, 48);
+   #elif LPV_SIZE_Y == 384
+      const ivec3 workGroups = ivec3(48, 96, 48);
+   #else
+      const ivec3 workGroups = ivec3(48, 128, 48);
+   #endif
+#elif LPV_SIZE_XZ == 256
+   #if LPV_SIZE_Y == 32
+      const ivec3 workGroups = ivec3(64, 8, 64);
+   #elif LPV_SIZE_Y == 64
+      const ivec3 workGroups = ivec3(64, 16, 64);
+   #elif LPV_SIZE_Y == 96
+      const ivec3 workGroups = ivec3(64, 24, 64);
+   #elif LPV_SIZE_Y == 128
+      const ivec3 workGroups = ivec3(64, 32, 64);
+   #elif LPV_SIZE_Y == 192
+      const ivec3 workGroups = ivec3(64, 48, 64);
+   #elif LPV_SIZE_Y == 256
+      const ivec3 workGroups = ivec3(64, 64, 64);
+   #elif LPV_SIZE_Y == 384
+      const ivec3 workGroups = ivec3(64, 96, 64);
+   #else
+      const ivec3 workGroups = ivec3(64, 128, 64);
+   #endif
+#elif LPV_SIZE_XZ == 384
+   #if LPV_SIZE_Y == 32
+      const ivec3 workGroups = ivec3(96, 8, 96);
+   #elif LPV_SIZE_Y == 64
+      const ivec3 workGroups = ivec3(96, 16, 96);
+   #elif LPV_SIZE_Y == 96
+      const ivec3 workGroups = ivec3(96, 24, 96);
+   #elif LPV_SIZE_Y == 128
+      const ivec3 workGroups = ivec3(96, 32, 96);
+   #elif LPV_SIZE_Y == 192
+      const ivec3 workGroups = ivec3(96, 48, 96);
+   #elif LPV_SIZE_Y == 256
+      const ivec3 workGroups = ivec3(96, 64, 96);
+   #elif LPV_SIZE_Y == 384
+      const ivec3 workGroups = ivec3(96, 96, 96);
+   #else
+      const ivec3 workGroups = ivec3(96, 128, 96);
+   #endif
+#elif LPV_SIZE_XZ == 512
+   #if LPV_SIZE_Y == 32
+      const ivec3 workGroups = ivec3(128, 8, 128);
+   #elif LPV_SIZE_Y == 64
+      const ivec3 workGroups = ivec3(128, 16, 128);
+   #elif LPV_SIZE_Y == 96
+      const ivec3 workGroups = ivec3(128, 24, 128);
+   #elif LPV_SIZE_Y == 128
+      const ivec3 workGroups = ivec3(128, 32, 128);
+   #elif LPV_SIZE_Y == 192
+      const ivec3 workGroups = ivec3(128, 48, 128);
+   #elif LPV_SIZE_Y == 256
+      const ivec3 workGroups = ivec3(128, 64, 128);
+   #elif LPV_SIZE_Y == 384
+      const ivec3 workGroups = ivec3(128, 96, 128);
+   #else
+      const ivec3 workGroups = ivec3(128, 128, 128);
+   #endif
+#elif LPV_SIZE_XZ == 1024
+   #if LPV_SIZE_Y == 32
+      const ivec3 workGroups = ivec3(256, 8, 256);
+   #elif LPV_SIZE_Y == 64
+      const ivec3 workGroups = ivec3(256, 16, 256);
+   #elif LPV_SIZE_Y == 96
+      const ivec3 workGroups = ivec3(256, 24, 256);
+   #elif LPV_SIZE_Y == 128
+      const ivec3 workGroups = ivec3(256, 32, 256);
+   #elif LPV_SIZE_Y == 192
+      const ivec3 workGroups = ivec3(256, 48, 256);
+   #elif LPV_SIZE_Y == 256
+      const ivec3 workGroups = ivec3(256, 64, 256);
+   #elif LPV_SIZE_Y == 384
+      const ivec3 workGroups = ivec3(256, 96, 256);
+   #else
+      const ivec3 workGroups = ivec3(256, 128, 256);
+   #endif
 #endif
 
 #ifdef LPV_ACTIVE

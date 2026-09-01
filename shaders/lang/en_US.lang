@@ -334,9 +334,13 @@ option.DH_DEPTH_SHADOW_STEPS=Contact shadow steps
 
 screen.LPV_SCREEN=Colored blocklight
 option.LPV_ENABLED=Colored blocklight (LPV) §e[?]
-option.LPV_ENABLED.comment=True voxel flood fill. Terrain around you is written into a light volume from the shadow pass and flooded outwards every frame, so torches, glowstone and lava each cast their own color and it bends around corners. Replaces the vanilla blocklight ramp entirely. Iris only, and it adds a shadow pass in the Nether and the End
-option.LPV_SIZE=Volume size §e[?]
-option.LPV_SIZE.comment=Side of the voxel cube in blocks, centered on you. Light outside it is gone, so this is also the range. Costs memory and compute as the cube of itself
+option.LPV_ENABLED.comment=Torches, glowstone and lava glow in their own color. Fully replaces vanilla block lighting. VRAM: 1024×512 — about 10 GiB, 1024×256 — about 5 GiB, defaults 128×64 — about 20 MiB
+option.LPV_SIZE_XZ=Volume width §e[?]
+option.LPV_SIZE_XZ.comment=Horizontal side (X/Z) of the voxel volume in blocks, centered on you. 1 chunk = 16 blocks. Voxel light does not exist outside it; reach is half the side length. Memory and compute scale with width² × height
+option.LPV_SIZE_Y=Volume height §e[?]
+option.LPV_SIZE_Y.comment=Vertical side (Y) of the voxel volume in blocks, centered on your eye height. 96 blocks (48 up and down) suits most player builds and homes. Memory and compute scale with width² × height
+option.LPV_DEBUG_BOUNDS=Show volume bounds §e[?]
+option.LPV_DEBUG_BOUNDS.comment=Debug
 option.LPV_BRIGHTNESS=Brightness
 option.LPV_BRIGHTNESS.comment=1.0 matches the vanilla torch ramp. Higher values only add extra energy on top of that.
 option.LPV_FALLOFF=Falloff §e[?]
