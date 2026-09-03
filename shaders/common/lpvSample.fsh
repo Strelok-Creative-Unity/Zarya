@@ -14,6 +14,7 @@ uniform int frameCounter;
 
 uniform sampler3D lpvLightSamplerA;
 uniform sampler3D lpvLightSamplerB;
+uniform sampler3D lpvVoxelSampler;
 
 vec3 lpvReadVolume(vec3 unitPos) {
    if ((frameCounter & 1) == 0) {
@@ -38,6 +39,17 @@ vec3 lpvSample(vec3 feetPos, vec3 worldNormal, out float coverage) {
    vec3 n = worldNormal;
    float nLen = length(n);
    n = nLen > 1.0e-4 ? n / nLen : vec3(0.0, 1.0, 0.0);
+
+   vec3 backCell = floor(voxelPos - n * 0.02);
+   int backId = -1;
+   if (all(greaterThanEqual(backCell, vec3(0.0)))
+    && all(lessThan(backCell, LPV_VOLUME_SIZEF))) {
+      vec3 backC = (backCell + 0.5) / LPV_VOLUME_SIZEF;
+      backId = lpvUnpackId(texture3D(lpvVoxelSampler, backC).r);
+   }
+   if (backId >= LPV_ID_EMIT && backId < LPV_ID_TINT) {
+      return vec3(0.0);
+   }
 
    vec3 samplePos = voxelPos + n * 0.47;
    vec3 unitPos = clamp(samplePos / LPV_VOLUME_SIZEF, 0.0, 1.0);
