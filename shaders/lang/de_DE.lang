@@ -401,8 +401,8 @@ option.DH_DEPTH_SHADOWS.comment=Verfolgt die Sonne gegen Vanilla- + LoD-Tiefe, s
 option.DH_DEPTH_SHADOW_STEPS=Kontaktschatten-Schritte
 option.DH_DEPTH_SHADOW_STEPS.comment=Kontaktschatten-Schritte nach Tiefe.
 
-screen.LPV_SCREEN=Farbiges Blocklicht
-option.LPV_ENABLED=Farbiges Blocklicht (LPV) §e[?]
+screen.LPV_SCREEN=Lichtvoxelisierung
+option.LPV_ENABLED=Lichtvoxelisierung (LPV) §e[?]
 option.LPV_ENABLED.comment=Fackeln, Glowstone und Lava leuchten in ihrer eigenen Farbe. Ersetzt das Vanilla-Blocklicht vollständig. VRAM: 1024×512 — etwa 10 GiB, 1024×256 — etwa 5 GiB, Standard 128×64 — etwa 20 MiB
 option.LPV_SIZE_XZ=Volumenbreite §e[?]
 option.LPV_SIZE_XZ.comment=Horizontale Seite (X/Z) des Voxelvolumens in Blöcken, zentriert auf dich. 1 Chunk = 16 Blöcke. Außerhalb gibt es kein Voxellicht, die Reichweite beträgt die halbe Seitenlänge. Speicher und Rechenaufwand wachsen mit Breite² × Höhe

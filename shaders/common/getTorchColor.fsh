@@ -24,6 +24,9 @@ vec3 getTorchColor(float torchLight, vec3 ambient, vec3 feetPos, vec3 worldNorma
    #endif
 
    float fill = max(0.0, 1.0 - luma(ambient));
+   #ifdef THE_END
+      fill = max(fill, 0.88);
+   #endif
    float gloom = fill * fill;
    float intensity = mix(1.0, 1.38, gloom);
 

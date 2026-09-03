@@ -291,7 +291,7 @@ void main() {
       #endif
    #endif
 
-   #ifdef ENABLE_SHADOWS
+   #if defined ENABLE_SHADOWS && !defined THE_END
       vec3 lightEye = vec3(0.0);
       float wrapT = 0.0;
       float foliageAmt = 0.0;

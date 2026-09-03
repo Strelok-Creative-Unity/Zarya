@@ -332,8 +332,8 @@ option.DH_DEPTH_SHADOWS=LOD contact shadows §e[?]
 option.DH_DEPTH_SHADOWS.comment=Traces the sun against vanilla + LoD depth so distant trees receive contact shadows without a huge shadow map
 option.DH_DEPTH_SHADOW_STEPS=Contact shadow steps
 
-screen.LPV_SCREEN=Colored blocklight
-option.LPV_ENABLED=Colored blocklight (LPV) §e[?]
+screen.LPV_SCREEN=Light voxelization
+option.LPV_ENABLED=Light voxelization (LPV) §e[?]
 option.LPV_ENABLED.comment=Torches, glowstone and lava glow in their own color. Fully replaces vanilla block lighting. VRAM: 1024×512 — about 10 GiB, 1024×256 — about 5 GiB, defaults 128×64 — about 20 MiB
 option.LPV_SIZE_XZ=Volume width §e[?]
 option.LPV_SIZE_XZ.comment=Horizontal side (X/Z) of the voxel volume in blocks, centered on you. 1 chunk = 16 blocks. Voxel light does not exist outside it; reach is half the side length. Memory and compute scale with width² × height
