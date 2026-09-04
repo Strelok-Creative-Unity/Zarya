@@ -242,27 +242,14 @@ void main() {
    lpvDecodeCell(id, porous, pos, inject, trans);
 
    float decay = mix(0.70, 0.88, clamp((LPV_FALLOFF - 0.88) / 0.11, 0.0, 1.0));
-   const float smoothK = 0.25;
-
    vec3 light = inject;
 
    if (frameCounter > 0 && lpvPeak(trans) > 1.0e-5) {
-      vec3 prevState;
-      vec3 incoming;
-      if (writeA) {
-         prevState = lpvLoadPrev(lpvLightSamplerB, prevPos);
-         incoming  = lpvFaceFlow(lpvLightSamplerB, prevPos);
-      } else {
-         prevState = lpvLoadPrev(lpvLightSamplerA, prevPos);
-         incoming  = lpvFaceFlow(lpvLightSamplerA, prevPos);
-      }
+      vec3 incoming = writeA
+         ? lpvFaceFlow(lpvLightSamplerB, prevPos)
+         : lpvFaceFlow(lpvLightSamplerA, prevPos);
 
-      incoming *= trans * decay;
-
-      vec3 next = lpvPickStronger(inject, incoming);
-      next = mix(prevState, next, smoothK);
-
-      light = lpvPickStronger(inject, next);
+      light = lpvPickStronger(inject, incoming * trans * decay);
    }
 
    light = lpvLimitPeak(light, 14.0);

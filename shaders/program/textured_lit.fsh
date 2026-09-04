@@ -356,11 +356,13 @@ void main() {
    
 
    
-   vec3 lpvNormal = outNormalModel;
+   vec3 lpvNormal = vec3(0.0, 1.0, 0.0);
    #ifdef DH_TERRAIN
       lpvNormal = dhWorldNormal;
-   #elif !(BLOCK_REFLECTIONS > 0 || defined GENERATED_SPECULAR || defined GENERATED_NORMALS) && defined ENABLE_SHADOWS
+   #elif defined ENABLE_SHADOWS
       lpvNormal = shadowNormal;
+   #elif BLOCK_REFLECTIONS > 0 || defined GENERATED_SPECULAR || defined GENERATED_NORMALS
+      lpvNormal = outNormalModel;
    #endif
 
    ambient.rgb += getTorchColor(lightUV.s, ambient.rgb, litFeet, lpvNormal);
