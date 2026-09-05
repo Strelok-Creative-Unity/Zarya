@@ -26,14 +26,15 @@ struct RfBlockInfo {
 float rfEffectiveId(float rawId) {
    int mat = int(rawId + 0.5);
 
-   if (mat < 21000 || mat > 21062) {
+   if (mat < 21000 || mat > 21085) {
       return rawId;
    }
    if (mat <= 21016) return 20018.0;
    if (mat == 21017) return 20034.0;
    if (mat >= 21020 && mat <= 21026) return 20039.0;
+   if (mat >= 21070 && mat <= 21085) return 20039.0;
    if (mat == 21043) return 20025.0;
-   if (mat >= 21061) return 10014.0;
+   if (mat >= 21061 && mat <= 21062) return 10014.0;
    if (mat == 21056) return 10077.0;
    if (mat >= 21057 && mat <= 21059) return 10059.0;
 

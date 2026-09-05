@@ -76,6 +76,22 @@ const vec3  LPV_VOLUME_SIZEF = vec3(LPV_VOLUME_SIZE);
 #define LPV_EMIT_FLOWER_PINK      52
 #define LPV_EMIT_FLOWER_ORANGE    53
 #define LPV_EMIT_FLOWER_DARK      54
+#define LPV_EMIT_DYE_WHITE        55
+#define LPV_EMIT_DYE_LIGHT_GRAY   56
+#define LPV_EMIT_DYE_GRAY         57
+#define LPV_EMIT_DYE_BLACK        58
+#define LPV_EMIT_DYE_BROWN        59
+#define LPV_EMIT_DYE_RED          60
+#define LPV_EMIT_DYE_ORANGE       61
+#define LPV_EMIT_DYE_YELLOW       62
+#define LPV_EMIT_DYE_LIME         63
+#define LPV_EMIT_DYE_GREEN        64
+#define LPV_EMIT_DYE_CYAN         65
+#define LPV_EMIT_DYE_LIGHT_BLUE   66
+#define LPV_EMIT_DYE_BLUE         67
+#define LPV_EMIT_DYE_PURPLE       68
+#define LPV_EMIT_DYE_MAGENTA      69
+#define LPV_EMIT_DYE_PINK         70
 
 #define LPV_TINT_WHITE      0
 #define LPV_TINT_ORANGE     1

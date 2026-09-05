@@ -80,6 +80,23 @@ int lpvBlockId(float matId) {
    if (mat == 21040) return LPV_ID_EMIT + LPV_EMIT_CREAKING_HEART;
    if (mat == 21043) return LPV_ID_EMIT + LPV_EMIT_CRYING_OBSIDIAN;
 
+   if (mat == 21070) return LPV_ID_EMIT + LPV_EMIT_DYE_WHITE;
+   if (mat == 21071) return LPV_ID_EMIT + LPV_EMIT_DYE_LIGHT_GRAY;
+   if (mat == 21072) return LPV_ID_EMIT + LPV_EMIT_DYE_GRAY;
+   if (mat == 21073) return LPV_ID_EMIT + LPV_EMIT_DYE_BLACK;
+   if (mat == 21074) return LPV_ID_EMIT + LPV_EMIT_DYE_BROWN;
+   if (mat == 21075) return LPV_ID_EMIT + LPV_EMIT_DYE_RED;
+   if (mat == 21076) return LPV_ID_EMIT + LPV_EMIT_DYE_ORANGE;
+   if (mat == 21077) return LPV_ID_EMIT + LPV_EMIT_DYE_YELLOW;
+   if (mat == 21078) return LPV_ID_EMIT + LPV_EMIT_DYE_LIME;
+   if (mat == 21079) return LPV_ID_EMIT + LPV_EMIT_DYE_GREEN;
+   if (mat == 21080) return LPV_ID_EMIT + LPV_EMIT_DYE_CYAN;
+   if (mat == 21081) return LPV_ID_EMIT + LPV_EMIT_DYE_LIGHT_BLUE;
+   if (mat == 21082) return LPV_ID_EMIT + LPV_EMIT_DYE_BLUE;
+   if (mat == 21083) return LPV_ID_EMIT + LPV_EMIT_DYE_PURPLE;
+   if (mat == 21084) return LPV_ID_EMIT + LPV_EMIT_DYE_MAGENTA;
+   if (mat == 21085) return LPV_ID_EMIT + LPV_EMIT_DYE_PINK;
+
    return -1;
 }
 
