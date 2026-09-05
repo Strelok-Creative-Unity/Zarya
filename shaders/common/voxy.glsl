@@ -29,6 +29,10 @@ bool isVxLodSurface(float mcDepth, float vxDepth) {
    return mcDepth >= 1.0 && isVxDepthValid(vxDepth);
 }
 
+bool isVxLodVisible(float depth0, float depth1, float vxDepth) {
+   return isVxDepthValid(vxDepth) && (depth0 >= 1.0 || depth1 >= 1.0);
+}
+
 float vxSampleOpaqueDepth(vec2 uv) {
    float opaque = texture2D(vxDepthTexOpaque, uv).x;
    return isVxDepthValid(opaque) ? opaque : 1.0;

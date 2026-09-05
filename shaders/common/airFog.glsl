@@ -45,6 +45,11 @@ uniform vec3 fogColor;
 uniform vec3 skyColor;
 #endif
 
+#ifndef DEPTHTEX1_UNIFORM
+#define DEPTHTEX1_UNIFORM
+uniform sampler2D depthtex1;
+#endif
+
 #ifndef SUN_POSITION_UNIFORM
 #define SUN_POSITION_UNIFORM
 uniform vec3 sunPosition;
@@ -217,7 +222,7 @@ void computeAirFog(vec3 viewPos, bool sky, vec3 sunCol, out vec3 scattering, out
       vec3 worldPos = worldStart + worldDir * t;
       vec2 density = airFogDensity(worldPos) * stepLen;
 
-      float sunLit = 1.0;
+      vec3 sunLit = vec3(1.0);
       #if defined ENABLE_SHADOWS
          sunLit = shadowVisibility(world2feet(worldPos));
       #endif
@@ -226,8 +231,8 @@ void computeAirFog(vec3 viewPos, bool sky, vec3 sunCol, out vec3 scattering, out
       vec3 stepT = exp(-optical);
       vec3 vis = ((1.0 - stepT) / max(optical, vec3(1e-6))) * T;
 
-      float rlhSun = density.x * mix(0.55, 1.0, sunLit);
-      float mieSun = density.y * sunLit;
+      vec3 rlhSun = vec3(density.x) * mix(vec3(0.55), vec3(1.0), sunLit);
+      vec3 mieSun = vec3(density.y) * sunLit;
 
       sunRlh += vis * rlhSun;
       sunMie += vis * mieSun;
@@ -251,9 +256,9 @@ void computeAirFog(vec3 viewPos, bool sky, vec3 sunCol, out vec3 scattering, out
    fogLit = min(fogLit, vec3(1.05));
 
    float cave = smoothstep(0.10, 0.55, float(eyeBrightnessSmooth.y) / 240.0);
-   scattering *= mix(0.28, 1.0, cave);
-   T = mix(vec3(1.0), T, mix(0.35, 1.0, cave));
-   fogLit *= mix(0.50, 1.0, cave);
+   scattering *= cave;
+   T = mix(vec3(1.0), T, cave);
+   fogLit *= cave;
 
    #if defined DISTANT_HORIZONS || defined VOXY
       float seam = smoothstep(far * 0.50, max(far * 2.1, 64.0), rayLen);
@@ -273,12 +278,13 @@ void computeAirFog(vec3 viewPos, bool sky, vec3 sunCol, out vec3 scattering, out
 }
 
 vec3 airFogViewPos(vec2 uv, out bool sky) {
-   float depth = texture2D(depthtex0, uv).x;
-   sky = depth >= 1.0;
+   float depth0 = texture2D(depthtex0, uv).x;
+   float depth1 = texture2D(depthtex1, uv).x;
+   sky = depth0 >= 1.0;
 
    #ifdef DISTANT_HORIZONS
       float dhDepth = texture2D(dhDepthTex0, uv).x;
-      if (isDhLodSurface(depth, dhDepth)) {
+      if (isDhLodVisible(depth0, depth1, dhDepth)) {
          sky = false;
          return dhScreenToView(uv, dhDepth);
       }
@@ -287,19 +293,20 @@ vec3 airFogViewPos(vec2 uv, out bool sky) {
 
    #ifdef VOXY
       float vxDepth = vxSampleClosestDepth(uv);
-      if (isVxLodSurface(depth, vxDepth)) {
+      if (isVxLodVisible(depth0, depth1, vxDepth)) {
          sky = false;
          return vxScreenToVanillaView(uv, vxDepth);
       }
       sky = sky && !isVxDepthValid(vxDepth);
    #endif
 
-   if (sky) {
+   if (sky || depth1 >= 1.0) {
+      sky = true;
       vec3 dir = normalize(screen2view(uv, 0.999));
       return dir * airFogFar();
    }
 
-   return screen2view(uv, depth);
+   return screen2view(uv, depth1);
 }
 
 #endif

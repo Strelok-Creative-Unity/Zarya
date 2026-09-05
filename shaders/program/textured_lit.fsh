@@ -131,7 +131,6 @@ varying vec3 gradientFogColor;
 #ifdef ENABLE_SHADOWS
    uniform mat4 shadowModelView;
    uniform mat4 shadowProjection;
-   uniform sampler2D shadowtex1;
    uniform vec3 shadowLightPosition;
 
    varying vec3 lightColor;
@@ -302,9 +301,9 @@ void main() {
       #endif
 
       #ifdef DH_TERRAIN
-         float lightStrength = getLightStrength(diffuse, lightUV.t, litFeet, dhWorldNormal);
+         vec3 lightStrength = getLightStrength(diffuse, lightUV.t, litFeet, dhWorldNormal);
       #else
-         float lightStrength = getLightStrength(diffuse, lightUV.t, litFeet, litNormal) * bumpShade;
+         vec3 lightStrength = getLightStrength(diffuse, lightUV.t, litFeet, litNormal) * bumpShade;
       #endif
 
       #if defined FOLIAGE_SSS || defined DH_FOLIAGE_SSS
@@ -316,19 +315,19 @@ void main() {
             lightEye = normalize(view2eye(shadowLightPosition));
             wrapT = pow(clamp(dot(normalize(foliageN), lightEye) * 0.62 + 0.38, 0.0, 1.0), 1.35);
             float shadow = diffuse > 1.0e-4
-               ? clamp(lightStrength / max(diffuse, 1.0e-4), 0.0, 1.0)
+               ? clamp(luma(lightStrength) / max(diffuse, 1.0e-4), 0.0, 1.0)
                : 1.0;
             float s = FOLIAGE_SSS_STRENGTH * 2.5;
             float mixAmt = clamp(s * 0.48, 0.0, 0.95);
             float sss = 0.18 + 0.64 * wrapT * wrapT;
-            lightStrength = mix(max(diffuse, 0.0), sss, mixAmt) * mix(0.34, 1.0, shadow);
+            lightStrength = vec3(mix(max(diffuse, 0.0), sss, mixAmt) * mix(0.34, 1.0, shadow));
          }
       #endif
       float lightBrightness = max(0.0, LIGHT_BRIGHTNESS - 0.5*pow3(albedoLuma));
 
-      lightStrength = max(lightStrength, 0.75 * emissionLevel);
+      lightStrength = max(lightStrength, vec3(0.75 * emissionLevel));
 
-      ambient.rgb *= mix(SHADOW_COLOR, vec3(1.0), lightStrength);
+      ambient.rgb *= mix(SHADOW_COLOR, vec3(1.0), clamp(luma(lightStrength), 0.0, 1.0));
       ambient.rgb *= 0.70 + (lightBrightness * lightStrength) * lightColor;
 
       #if defined FOLIAGE_SSS || defined DH_FOLIAGE_SSS
@@ -389,7 +388,7 @@ void main() {
    #if defined GENERATED_SPECULAR && defined ENABLE_SHADOWS && !defined DH_TERRAIN
       if (ipbr.x > 0.04) {
          vec3 viewPos = feet2view(litFeet);
-         float specLight = max(lightStrength, ipbr.y * 0.4);
+         float specLight = max(luma(lightStrength), ipbr.y * 0.4);
          albedo.rgb += ipbrSpecularHighlight(
             viewLitNormal, viewPos, shadowLightPosition,
             ipbr.x, ipbr.y, baseAlbedo,

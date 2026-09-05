@@ -1,3 +1,6 @@
+#ifndef RF_SHADOW_DISTORTION_GLSL
+#define RF_SHADOW_DISTORTION_GLSL
+
 const bool shadowtex0Nearest = true;
 const bool shadowtex1Nearest = true;
 
@@ -16,3 +19,5 @@ vec3 getShadowDistortion(vec3 shadowClipPos) {
    shadowClipPos.z *= mix(SHADOW_DEPTH_SCALE, SHADOW_DEPTH_SCALE * 0.84, clamp(r, 0.0, 1.0));
    return shadowClipPos;
 }
+
+#endif

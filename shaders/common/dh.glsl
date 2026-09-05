@@ -43,6 +43,10 @@ bool isDhLodSurface(float mcDepth, float dhDepth) {
    return mcDepth >= 1.0 && dhDepth < 1.0;
 }
 
+bool isDhLodVisible(float depth0, float depth1, float dhDepth) {
+   return dhDepth < 1.0 && (depth0 >= 1.0 || depth1 >= 1.0);
+}
+
 vec3 dhNdcToView(vec3 ndc) {
    return nvec3(dhProjectionInverse * vec4(ndc, 1.0));
 }

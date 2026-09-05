@@ -17,7 +17,10 @@ uniform sampler2D colortex0;
 uniform sampler2D colortex6;
 uniform sampler2D colortex7;
 uniform sampler2D depthtex0;
+#ifndef DEPTHTEX1_UNIFORM
+#define DEPTHTEX1_UNIFORM
 uniform sampler2D depthtex1;
+#endif
 uniform float viewWidth;
 uniform float viewHeight;
 

@@ -9,6 +9,11 @@ uniform float rainStrength;
 #if defined VL && defined OVERWORLD && defined ENABLE_SHADOWS
 #include "/common/shadowVis.glsl"
 
+#ifndef EYE_BRIGHTNESS_SMOOTH_UNIFORM
+#define EYE_BRIGHTNESS_SMOOTH_UNIFORM
+uniform ivec2 eyeBrightnessSmooth;
+#endif
+
 // MIT ref: David Hoskins — Hash without Sine (hash12)
 // Source: https://www.shadertoy.com/view/4djSRW
 // License text: THIRD_PARTY_NOTICES.md
@@ -21,7 +26,9 @@ float volumetricsDither(vec2 p) {
 vec3 computeVolumetrics(vec3 viewPos, vec3 sunCol) {
    float sceneDist = length(viewPos);
    float maxDist = min(sceneDist, min(shadowDistance * 0.85, 160.0));
-   if (maxDist < 1.0) {
+   float nearFade = smoothstep(0.45, 2.8, maxDist);
+   float cave = smoothstep(0.10, 0.55, float(eyeBrightnessSmooth.y) / 240.0);
+   if (nearFade * cave < 1.0e-3) {
       return vec3(0.0);
    }
 
@@ -34,7 +41,7 @@ vec3 computeVolumetrics(vec3 viewPos, vec3 sunCol) {
 
    vec3 accum = vec3(0.0);
    float weightSum = 0.0;
-   float litSum = 0.0;
+   vec3 litSum = vec3(0.0);
    float stepLen = maxDist / float(VL_SAMPLES);
 
    for (int i = 0; i < VL_SAMPLES; i++) {
@@ -54,12 +61,12 @@ vec3 computeVolumetrics(vec3 viewPos, vec3 sunCol) {
          vec3 pos = posFeet;
       #endif
 
-      float lit = shadowVisibility(pos);
+      vec3 lit = shadowVisibility(pos);
       float worldY = feet2world(posFeet).y;
       float heightAtt = exp(-max(worldY - 64.0, 0.0) * 0.008);
       float sampleW = w * heightAtt;
 
-      accum += vec3(lit) * sampleW;
+      accum += lit * sampleW;
       litSum += lit * sampleW;
       weightSum += sampleW;
    }
@@ -69,7 +76,7 @@ vec3 computeVolumetrics(vec3 viewPos, vec3 sunCol) {
    }
 
    accum /= weightSum;
-   float avgLit = litSum / weightSum;
+   float avgLit = luma(litSum / weightSum);
 
    float openWash = smoothstep(0.70, 0.94, avgLit) * pow(VoL, 4.5);
    float sunKeep = mix(1.0, 0.12, openWash);
@@ -78,7 +85,7 @@ vec3 computeVolumetrics(vec3 viewPos, vec3 sunCol) {
    float duskBoost = 1.0 + 1.15 * exp(-sunUp * sunUp * 28.0) * smoothstep(-0.25, 0.08, sunUp);
    float intensity = VL_STRENGTH * 1.85 * duskBoost * (1.0 - rainStrength * 0.65);
 
-   return accum * sunCol * phase * intensity * sunKeep;
+   return accum * sunCol * phase * intensity * sunKeep * nearFade * cave;
 }
 #endif
 

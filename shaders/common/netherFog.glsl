@@ -31,6 +31,11 @@
 uniform vec3 fogColor;
 #endif
 
+#ifndef DEPTHTEX1_UNIFORM
+#define DEPTHTEX1_UNIFORM
+uniform sampler2D depthtex1;
+#endif
+
 #ifdef NETHER_FOG_EMBERS
    #ifndef NOISETEX_UNIFORM
    #define NOISETEX_UNIFORM
@@ -173,12 +178,13 @@ vec3 netherLavaBloom(vec2 uv) {
 }
 
 vec3 netherFogViewPos(vec2 uv, out bool sky) {
-   float depth = texture2D(depthtex0, uv).x;
-   sky = depth >= 1.0;
+   float depth0 = texture2D(depthtex0, uv).x;
+   float depth1 = texture2D(depthtex1, uv).x;
+   sky = depth0 >= 1.0;
 
    #ifdef DISTANT_HORIZONS
       float dhDepth = texture2D(dhDepthTex0, uv).x;
-      if (isDhLodSurface(depth, dhDepth)) {
+      if (isDhLodVisible(depth0, depth1, dhDepth)) {
          sky = false;
          return dhScreenToView(uv, dhDepth);
       }
@@ -187,19 +193,20 @@ vec3 netherFogViewPos(vec2 uv, out bool sky) {
 
    #ifdef VOXY
       float vxDepth = vxSampleClosestDepth(uv);
-      if (isVxLodSurface(depth, vxDepth)) {
+      if (isVxLodVisible(depth0, depth1, vxDepth)) {
          sky = false;
          return vxScreenToVanillaView(uv, vxDepth);
       }
       sky = sky && !isVxDepthValid(vxDepth);
    #endif
 
-   if (sky) {
+   if (sky || depth1 >= 1.0) {
+      sky = true;
       vec3 dir = normalize(screen2view(uv, 0.999));
       return dir * netherFogFar();
    }
 
-   return screen2view(uv, depth);
+   return screen2view(uv, depth1);
 }
 
 #endif

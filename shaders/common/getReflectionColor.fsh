@@ -1,5 +1,10 @@
 #define SSR_BINARY_Z_CUTOFF 16.0
 
+#ifndef DEPTHTEX1_UNIFORM
+#define DEPTHTEX1_UNIFORM
+uniform sampler2D depthtex1;
+#endif
+
 float getReflectionVignette(vec2 uv) {
    uv.y = min(uv.y, 1.0 - uv.y);
    uv.x *= 1.0 - uv.x;
@@ -29,12 +34,14 @@ vec3 reflectionViewToScreen(vec3 view, bool useLod) {
 }
 
 void sampleSceneDepth(vec2 uv, out float depth, out bool useLod) {
-   depth = texture2D(depthtex0, uv).x;
+   float depth0 = texture2D(depthtex0, uv).x;
+   float depth1 = texture2D(depthtex1, uv).x;
+   depth = depth0;
    useLod = false;
 
    #ifdef DISTANT_HORIZONS
       float dhDepth = texture2D(dhDepthTex0, uv).x;
-      if (isDhLodSurface(depth, dhDepth)) {
+      if (isDhLodVisible(depth0, depth1, dhDepth)) {
          depth = dhDepth;
          useLod = true;
          return;
@@ -43,7 +50,7 @@ void sampleSceneDepth(vec2 uv, out float depth, out bool useLod) {
 
    #ifdef VOXY
       float vxDepth = vxSampleClosestDepth(uv);
-      if (isVxLodSurface(depth, vxDepth)) {
+      if (isVxLodVisible(depth0, depth1, vxDepth)) {
          depth = vxDepth;
          useLod = true;
       }

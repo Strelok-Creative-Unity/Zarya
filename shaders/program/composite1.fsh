@@ -2,6 +2,10 @@
 
 uniform sampler2D colortex0;
 uniform sampler2D depthtex0;
+#ifndef DEPTHTEX1_UNIFORM
+#define DEPTHTEX1_UNIFORM
+uniform sampler2D depthtex1;
+#endif
 uniform float viewWidth;
 uniform float viewHeight;
 uniform float near;
@@ -17,7 +21,6 @@ uniform float rainStrength;
    uniform vec3 shadowLightPosition;
    uniform mat4 shadowModelView;
    uniform mat4 shadowProjection;
-   uniform sampler2D shadowtex1;
 #endif
 
 varying vec2 texUV;
@@ -47,12 +50,13 @@ void main() {
       #if defined VL && defined OVERWORLD && defined ENABLE_SHADOWS
       {
          float depth = texture2D(depthtex0, texUV).x;
+         float depth1 = texture2D(depthtex1, texUV).x;
          vec3 viewPos;
          bool gotLod = false;
 
          #ifdef DISTANT_HORIZONS
             float dhDepth = texture2D(dhDepthTex0, texUV).x;
-            if (isDhLodSurface(depth, dhDepth)) {
+            if (isDhLodVisible(depth, depth1, dhDepth)) {
                viewPos = dhScreenToView(texUV, dhDepth);
                gotLod = true;
             }
@@ -60,18 +64,18 @@ void main() {
          #ifdef VOXY
             if (!gotLod) {
                float vxDepth = vxSampleClosestDepth(texUV);
-               if (isVxLodSurface(depth, vxDepth)) {
+               if (isVxLodVisible(depth, depth1, vxDepth)) {
                   viewPos = vxScreenToVanillaView(texUV, vxDepth);
                   gotLod = true;
                }
             }
          #endif
          if (!gotLod) {
-            if (depth >= 1.0) {
+            if (depth >= 1.0 || depth1 >= 1.0) {
                viewPos = screen2view(texUV, 0.999);
                viewPos = normalize(viewPos) * min(far * 0.85, 220.0);
             } else {
-               viewPos = screen2view(texUV, depth);
+               viewPos = screen2view(texUV, depth1);
             }
          }
 

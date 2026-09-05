@@ -5,9 +5,15 @@
 
 #ifdef LPV_ACTIVE
 
+#ifndef AT_MIDBLOCK_ATTR
+#define AT_MIDBLOCK_ATTR
 attribute vec4 at_midBlock;
+#endif
 
+#ifndef RENDER_STAGE_UNIFORM
+#define RENDER_STAGE_UNIFORM
 uniform int renderStage;
+#endif
 
 layout(r32f) uniform writeonly image3D lpvVoxelImg;
 
