@@ -118,7 +118,7 @@ const float sunPathRotation = -40.0; //[-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60.
 #define DH_SHADOW_ENABLED
 #define DH_FOLIAGE_SSS
 // #define DH_AO
-// #define DH_DEPTH_SHADOWS
+#define DH_DEPTH_SHADOWS
 #define DH_DEPTH_SHADOW_STEPS 10 //[4 6 8 10 12 14 16 20 24]
 
 #define VANILLA_LIKE_SUN

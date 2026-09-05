@@ -9,6 +9,12 @@ vec3 sampleViewPos(vec2 uv) {
          return dhScreenToView(uv, dh);
       }
    #endif
+   #ifdef VOXY
+      float vx = vxSampleClosestDepth(uv);
+      if (isVxLodSurface(d, vx)) {
+         return vxScreenToVanillaView(uv, vx);
+      }
+   #endif
    return screen2view(uv, d);
 }
 

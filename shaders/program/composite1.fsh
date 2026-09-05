@@ -28,6 +28,9 @@ varying vec2 texUV;
 #include "/common/math.glsl"
 #include "/common/transformations.glsl"
 #include "/common/dh.glsl"
+#ifdef VOXY
+   #include "/common/voxy.glsl"
+#endif
 
 #if defined OVERWORLD && defined ENABLE_SHADOWS && defined VL
    #include "/common/getShadowDistortion.glsl"
@@ -45,14 +48,25 @@ void main() {
       {
          float depth = texture2D(depthtex0, texUV).x;
          vec3 viewPos;
+         bool gotLod = false;
 
          #ifdef DISTANT_HORIZONS
             float dhDepth = texture2D(dhDepthTex0, texUV).x;
             if (isDhLodSurface(depth, dhDepth)) {
                viewPos = dhScreenToView(texUV, dhDepth);
-            } else
+               gotLod = true;
+            }
          #endif
-         {
+         #ifdef VOXY
+            if (!gotLod) {
+               float vxDepth = vxSampleClosestDepth(texUV);
+               if (isVxLodSurface(depth, vxDepth)) {
+                  viewPos = vxScreenToVanillaView(texUV, vxDepth);
+                  gotLod = true;
+               }
+            }
+         #endif
+         if (!gotLod) {
             if (depth >= 1.0) {
                viewPos = screen2view(texUV, 0.999);
                viewPos = normalize(viewPos) * min(far * 0.85, 220.0);

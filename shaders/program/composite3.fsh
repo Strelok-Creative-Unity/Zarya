@@ -36,6 +36,9 @@ varying vec2 texUV;
 #include "/common/math.glsl"
 #include "/common/transformations.glsl"
 #include "/common/dh.glsl"
+#ifdef VOXY
+   #include "/common/voxy.glsl"
+#endif
 #include "/common/getReflectionColor.fsh"
 #include "/common/getWaterSurface.glsl"
 #include "/common/getWaterFog.glsl"
@@ -48,7 +51,7 @@ varying vec2 texUV;
    #include "/common/shaderClouds.glsl"
 #endif
 
-#if defined OVERWORLD && defined DISTANT_HORIZONS && (defined DH_DEPTH_SHADOWS || defined DH_AO)
+#if defined OVERWORLD && (defined DISTANT_HORIZONS || defined VOXY) && (defined DH_DEPTH_SHADOWS || defined DH_AO)
    #include "/common/dhScreenShadows.glsl"
 #endif
 
@@ -89,11 +92,18 @@ void main() {
       #endif
 
       float depth;
-      bool useDh;
-      sampleSceneDepth(texUV, depth, useDh);
+      bool useLod;
+      sampleSceneDepth(texUV, depth, useLod);
 
-      vec3 normal  = eye2view(prenormal);
-      vec3 viewPos = reflectionScreenToView(texUV, depth, useDh);
+      vec3 normal;
+      #if defined VOXY && !defined DISTANT_HORIZONS
+         normal = useLod
+            ? normalize(mat3(vxModelView) * prenormal)
+            : eye2view(prenormal);
+      #else
+         normal = eye2view(prenormal);
+      #endif
+      vec3 viewPos = reflectionScreenToView(texUV, depth, useLod);
 
       vec3 viewDir = normalize(viewPos);
       float NoV = max(dot(normal, -viewDir), 0.0);
@@ -101,11 +111,16 @@ void main() {
       float fresnelTerm = nv * nv * nv * nv * nv;
       float waterFresnel = isWater ? mix(0.24, 1.0, fresnelTerm) : fresnelTerm;
 
-      vec4 reflectionColor = getReflectionColor(depth, normal, viewPos, useDh, roughness);
+      vec4 reflectionColor = getReflectionColor(depth, normal, viewPos, useLod, roughness);
 
       #ifdef OVERWORLD
          if (reflectionColor.a < 0.15) {
             vec3 reflected = reflect(viewDir, normal);
+            #if defined VOXY && !defined DISTANT_HORIZONS
+               if (useLod) {
+                  reflected = normalize(mat3(gbufferModelView) * (mat3(vxModelViewInv) * reflected));
+               }
+            #endif
             float skyF = mix(isWater ? 0.22 : 0.08, 1.0, fresnelTerm);
             reflectionColor = vec4(getSkyColor(reflected), skyF);
             #ifdef SHADER_CLOUDS
@@ -135,7 +150,15 @@ void main() {
 
       #ifdef OVERWORLD
          float glintReflectivity = mix(smoothness, 1.0, metalness * 0.7);
-         vec3 glint = getSunMoonGlint(viewPos, normal, roughness, glintReflectivity);
+         vec3 glintView = viewPos;
+         vec3 glintNormal = normal;
+         #if defined VOXY && !defined DISTANT_HORIZONS
+            if (useLod) {
+               glintView = feet2view(vxViewToFeet(viewPos));
+               glintNormal = eye2view(prenormal);
+            }
+         #endif
+         vec3 glint = getSunMoonGlint(glintView, glintNormal, roughness, glintReflectivity);
          #ifdef GENERATED_SPECULAR
             glint *= mix(1.0, 1.0 + 1.2 * float(IPBR_REFLECTION_STRENGTH), metalness);
          #else
@@ -148,18 +171,28 @@ void main() {
    #ifdef WATER_FOG
       if (isEyeInWater == 1) {
          float depth;
-         bool useDh;
-         sampleSceneDepth(texUV, depth, useDh);
-         vec3 viewPos = reflectionScreenToView(texUV, depth, useDh);
-         if (depth >= 1.0 && !useDh) {
+         bool useLod;
+         sampleSceneDepth(texUV, depth, useLod);
+         vec3 viewPos = reflectionScreenToView(texUV, depth, useLod);
+         if (depth >= 1.0 && !useLod) {
             viewPos = normalize(viewPos) * 48.0;
          }
          float skyLight = float(eyeBrightnessSmooth.y) / 240.0;
 
          vec3 feet = view2feet(viewPos);
+         #if defined VOXY && !defined DISTANT_HORIZONS
+            if (useLod) {
+               feet = vxViewToFeet(viewPos);
+            }
+         #endif
          vec3 world = feet2world(feet);
          float soft = getWaterSoftFilm(world);
          vec3 viewUp = mat3(gbufferModelView) * vec3(0.0, 1.0, 0.0);
+         #if defined VOXY && !defined DISTANT_HORIZONS
+            if (useLod) {
+               viewUp = normalize(vxModelView[1].xyz);
+            }
+         #endif
          float lookUp = max(dot(normalize(viewPos), viewUp), 0.0);
          float nearSurface = exp(-length(viewPos) * 0.08);
          float glow = soft * skyLight * (0.18 + 0.55 * lookUp + 0.35 * nearSurface);
@@ -171,37 +204,51 @@ void main() {
          color.rgb = mix(color.rgb, vec3(0.85, 0.18, 0.04), 0.92);
       } else if (isEyeInWater == 3) {
          float depth;
-         bool useDh;
-         sampleSceneDepth(texUV, depth, useDh);
-         float dist = length(reflectionScreenToView(texUV, depth, useDh));
+         bool useLod;
+         sampleSceneDepth(texUV, depth, useLod);
+         float dist = length(reflectionScreenToView(texUV, depth, useLod));
          color.rgb = mix(color.rgb, vec3(0.72, 0.82, 0.92), clamp(dist * 0.08, 0.0, 0.95));
       }
    #endif
 
-   #if defined OVERWORLD && defined DISTANT_HORIZONS && (defined DH_DEPTH_SHADOWS || defined DH_AO)
+   #if defined OVERWORLD && (defined DISTANT_HORIZONS || defined VOXY) && (defined DH_DEPTH_SHADOWS || defined DH_AO)
       if (isEyeInWater == 0) {
          float sceneDepth;
-         bool useDh;
-         sampleSceneDepth(texUV, sceneDepth, useDh);
+         bool useLod;
+         sampleSceneDepth(texUV, sceneDepth, useLod);
 
-         if (useDh || sceneDepth < 1.0) {
-            vec3 viewPos = reflectionScreenToView(texUV, sceneDepth, useDh);
+         if (useLod || sceneDepth < 1.0) {
+            vec3 viewPos = reflectionScreenToView(texUV, sceneDepth, useLod);
             vec3 prenormal = screen2ndc(texture2D(colortex6, texUV).xyz);
             vec3 viewN = squaredLength(prenormal) > 0.01
                ? normalize(mat3(gbufferModelView) * prenormal)
                : -normalize(viewPos);
+            #if defined VOXY && !defined DISTANT_HORIZONS
+               if (useLod && squaredLength(prenormal) > 0.01) {
+                  viewN = normalize(mat3(vxModelView) * prenormal);
+               }
+            #endif
 
             #ifdef DH_DEPTH_SHADOWS
-               bool doContact = useDh || length(viewPos) > shadowDistance * 0.55;
-               if (doContact) {
-                  float lit = dhContactShadow(viewPos, viewN);
-                  color.rgb *= mix(SHADOW_COLOR, vec3(1.0), lit);
+               vec3 contactFeet = view2feet(viewPos);
+               #if defined VOXY && !defined DISTANT_HORIZONS
+                  if (useLod) {
+                     contactFeet = vxViewToFeet(viewPos);
+                  }
+               #endif
+               float sd = max(shadowDistance, 16.0);
+               float contactAmt = smoothe(rescale(length(contactFeet), sd * 0.68, sd * 1.02));
+               float plantMask = float(matData.y > 0.12 && matData.y < 0.28);
+               contactAmt *= mix(1.0, 0.42, plantMask);
+               if (contactAmt > 0.004) {
+                  float lit = dhContactShadow(viewPos, viewN, useLod);
+                  color.rgb *= mix(vec3(1.0), mix(SHADOW_COLOR, vec3(1.0), lit), contactAmt);
                }
             #endif
 
             #ifdef DH_AO
-               if (useDh) {
-                  color.rgb *= dhScreenAo(texUV, viewPos, viewN, useDh);
+               if (useLod) {
+                  color.rgb *= dhScreenAo(texUV, viewPos, viewN, useLod);
                }
             #endif
          }

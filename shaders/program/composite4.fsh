@@ -45,6 +45,9 @@ varying vec2 texUV;
 #include "/common/math.glsl"
 #include "/common/transformations.glsl"
 #include "/common/dh.glsl"
+#ifdef VOXY
+   #include "/common/voxy.glsl"
+#endif
 
 #if defined AIR_FOG && defined OVERWORLD && defined ENABLE_SHADOWS
    uniform sampler2D shadowtex1;
@@ -91,6 +94,17 @@ void main() {
                float dhLen = length(dhScreenToView(texUV, cloudDhDepth));
                if (dhLen > 64.0 && dhLen < cloudMaxDist) {
                   cloudMaxDist = dhLen;
+                  cloudSky = false;
+               }
+            }
+         #endif
+
+         #ifdef VOXY
+            float cloudVxDepth = vxSampleClosestDepth(texUV);
+            if (isVxLodSurface(cloudDepth, cloudVxDepth)) {
+               float vxLen = length(vxScreenToVanillaView(texUV, cloudVxDepth));
+               if (vxLen > 64.0 && vxLen < cloudMaxDist) {
+                  cloudMaxDist = vxLen;
                   cloudSky = false;
                }
             }

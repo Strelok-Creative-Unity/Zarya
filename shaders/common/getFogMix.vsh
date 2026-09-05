@@ -12,6 +12,13 @@ uniform float near, far;
    #endif
 #endif
 
+#ifdef VOXY
+   #ifndef VOXY_RANGE_UNIFORM
+   #define VOXY_RANGE_UNIFORM
+   uniform int vxRenderDistance;
+   #endif
+#endif
+
 float calcFogMix(vec3 feetPos, float fogStartMult, float fogFar) {
    float len = length(feetPos);
    float horiz = length(feetPos.xz);
@@ -26,7 +33,7 @@ float getFogFarLimit() {
    #ifdef DISTANT_HORIZONS
       return max(far, max(dhFarPlane, float(dhRenderDistance)));
    #elif defined VOXY && !defined GBUFFERS_SKYBASIC && !defined GBUFFERS_CLOUDS
-      return 48000.0;
+      return max(far, float(vxRenderDistance) * 16.0);
    #else
       return far;
    #endif
@@ -34,10 +41,6 @@ float getFogFarLimit() {
 
 float getTerrainFogMix(vec3 feetPos) {
    float fogFar = getFogFarLimit();
-
-   #if defined VOXY && !defined GBUFFERS_SKYBASIC && !defined GBUFFERS_CLOUDS
-      float near = 16.0;
-   #endif
 
    #ifndef ENABLE_FOG
       if (fogEnd >= fogFar) {
@@ -55,7 +58,12 @@ float getTerrainFogMix(vec3 feetPos) {
       #if defined GBUFFERS_SKYBASIC
          return 0.0;
       #elif defined GBUFFERS_CLOUDS
-         return clamp((length(feetPos) - fogFar) * (near * 0.01), 0.0, 1.0);
+         #if defined VOXY
+            float cloudFogNear = 16.0;
+         #else
+            float cloudFogNear = near;
+         #endif
+         return clamp((length(feetPos) - fogFar) * (cloudFogNear * 0.01), 0.0, 1.0);
       #else
          #ifdef OVERWORLD
             float x = worldTime * NORMALIZE_TIME;
@@ -69,7 +77,7 @@ float getTerrainFogMix(vec3 feetPos) {
             float x = 1.0;
          #endif
 
-         #ifdef DISTANT_HORIZONS
+         #if defined DISTANT_HORIZONS || (defined VOXY && !defined GBUFFERS_SKYBASIC && !defined GBUFFERS_CLOUDS)
             float len = mix(length(feetPos), length(feetPos.xz), 0.4);
             #ifdef THE_END
                float start = x * max(fogFar * 0.28, far * 1.15);

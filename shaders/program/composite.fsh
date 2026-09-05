@@ -13,6 +13,9 @@ varying vec2 texUV;
 #include "/common/math.glsl"
 #include "/common/transformations.glsl"
 #include "/common/dh.glsl"
+#ifdef VOXY
+   #include "/common/voxy.glsl"
+#endif
 #include "/common/ssao.glsl"
 
 void main() {
@@ -24,6 +27,10 @@ void main() {
       #ifdef DISTANT_HORIZONS
          float dhDepth = texture2D(dhDepthTex0, texUV).x;
          sky = sky && dhDepth >= 1.0;
+      #endif
+      #ifdef VOXY
+         float vxDepth = vxSampleClosestDepth(texUV);
+         sky = sky && !isVxDepthValid(vxDepth);
       #endif
 
       if (!sky) {

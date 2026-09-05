@@ -28,10 +28,6 @@ varying vec3 normal;
 varying vec4 ambient;
 varying vec4 color;
 
-#ifdef VOXY
-   varying float vanillaMix;
-#endif
-
 #ifdef DH_WATER
    varying float dhIsWater;
 #endif
@@ -111,10 +107,6 @@ void main() {
       }
    #endif
    color.a = 1.0;
-
-   #ifdef VOXY
-      vanillaMix = calcFogMix(feetPos, 0.3, far);
-   #endif
 
    #ifdef DH_WATER
       #ifndef THE_END

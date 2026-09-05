@@ -16,6 +16,9 @@ varying vec2 texUV;
 #include "/common/math.glsl"
 #include "/common/transformations.glsl"
 #include "/common/dh.glsl"
+#ifdef VOXY
+   #include "/common/voxy.glsl"
+#endif
 #include "/common/taaResolve.glsl"
 
 void main() {

@@ -1,11 +1,14 @@
 #ifndef TRANSFORMATIONS_GLSL
 #define TRANSFORMATIONS_GLSL
 
+#ifndef TRANSFORMATIONS_UNIFORMS
+#define TRANSFORMATIONS_UNIFORMS
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjection;
 uniform mat4 gbufferProjectionInverse;
 uniform vec3 cameraPosition;
+#endif
 
 vec3 nvec3(vec4 pos) {
    return pos.xyz / pos.w;

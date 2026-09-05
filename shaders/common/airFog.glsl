@@ -23,6 +23,13 @@
    #define AIR_FOG_RAIN 1.0
 #endif
 
+#ifdef VOXY
+   #ifndef VOXY_RANGE_UNIFORM
+   #define VOXY_RANGE_UNIFORM
+   uniform int vxRenderDistance;
+   #endif
+#endif
+
 #ifndef RAIN_STRENGTH_UNIFORM
 #define RAIN_STRENGTH_UNIFORM
 uniform float rainStrength;
@@ -70,6 +77,8 @@ float tmpFogHG(float cosT, float g) {
 float airFogFar() {
    #ifdef DISTANT_HORIZONS
       return max(far, max(dhFarPlane, float(dhRenderDistance)));
+   #elif defined VOXY
+      return max(far, float(vxRenderDistance) * 16.0);
    #else
       return far;
    #endif
@@ -246,7 +255,7 @@ void computeAirFog(vec3 viewPos, bool sky, vec3 sunCol, out vec3 scattering, out
    T = mix(vec3(1.0), T, mix(0.35, 1.0, cave));
    fogLit *= mix(0.50, 1.0, cave);
 
-   #ifdef DISTANT_HORIZONS
+   #if defined DISTANT_HORIZONS || defined VOXY
       float seam = smoothstep(far * 0.50, max(far * 2.1, 64.0), rayLen);
       T *= vec3(1.0 - 0.48 * seam);
    #endif
@@ -274,6 +283,15 @@ vec3 airFogViewPos(vec2 uv, out bool sky) {
          return dhScreenToView(uv, dhDepth);
       }
       sky = sky && dhDepth >= 1.0;
+   #endif
+
+   #ifdef VOXY
+      float vxDepth = vxSampleClosestDepth(uv);
+      if (isVxLodSurface(depth, vxDepth)) {
+         sky = false;
+         return vxScreenToVanillaView(uv, vxDepth);
+      }
+      sky = sky && !isVxDepthValid(vxDepth);
    #endif
 
    if (sky) {

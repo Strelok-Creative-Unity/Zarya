@@ -57,8 +57,8 @@ void sampleWaterSwell(vec3 worldPos, out float height, out vec2 grad, out float 
    float speed = max(float(WATER_WAVE_SPEED), 1.0);
    vec2 xz = worldPos.xz;
    float base = waterFlowAngle();
-   float patch = waterPatch(xz);
-   float live = mix(0.42, 1.18, patch);
+   float seaPatch = waterPatch(xz);
+   float live = mix(0.42, 1.18, seaPatch);
 
    height = 0.0;
    grad = vec2(0.0);
@@ -82,8 +82,8 @@ void sampleWaterField(vec3 worldPos, out float height, out vec2 grad, out float 
    float speed = max(float(WATER_WAVE_SPEED), 1.0);
    vec2 xz = worldPos.xz;
    float base = waterFlowAngle();
-   float patch = waterPatch(xz);
-   float live = mix(0.36, 1.28, patch * patch * (3.0 - 2.0 * patch));
+   float seaPatch = waterPatch(xz);
+   float live = mix(0.36, 1.28, seaPatch * seaPatch * (3.0 - 2.0 * seaPatch));
 
    height = 0.0;
    grad = vec2(0.0);
@@ -107,7 +107,7 @@ void sampleWaterField(vec3 worldPos, out float height, out vec2 grad, out float 
    float nF = waterNoiseSample(xz + flow * eps, u, 0.038, 4.0 * speed);
    float nP = waterNoiseSample(xz + perp * eps, u, 0.038, 4.0 * speed);
    float nFine = waterNoiseSample(xz, u, 0.086, 7.0 * speed);
-   float microAmp = mix(0.05, 0.13, patch);
+   float microAmp = mix(0.05, 0.13, seaPatch);
    height += ((n0 + nFine) * 0.5 - 0.5) * microAmp;
    grad += flow * ((nF - n0) / eps) * microAmp;
    grad += perp * ((nP - n0) / eps) * microAmp;
@@ -244,8 +244,8 @@ vec3 applyWaterNoiseColor(vec3 albedo, vec3 worldPos, float cau) {
 
    float tex = waterNoiseSample(xz, u, 0.042, 3.0 * speed);
    float tex2 = waterNoiseSample(xz, u, 0.11, 6.0 * speed);
-   float patch = waterPatch(xz);
-   float wobble = ((tex - 0.5) * 1.20 + (tex2 - 0.5) * 0.50) * mix(0.10, 0.22, patch);
+   float seaPatch = waterPatch(xz);
+   float wobble = ((tex - 0.5) * 1.20 + (tex2 - 0.5) * 0.50) * mix(0.10, 0.22, seaPatch);
 
    float sparkle = pow(max(cau - 0.35, 0.0), 1.4) * 0.28;
 

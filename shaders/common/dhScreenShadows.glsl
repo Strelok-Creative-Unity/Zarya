@@ -6,7 +6,7 @@
    #define DH_DEPTH_SHADOW_STEPS 10
 #endif
 
-float dhContactShadow(vec3 viewPos, vec3 viewNormal) {
+float dhContactShadow(vec3 viewPos, vec3 viewNormal, bool useLod) {
    vec3 rayDir = normalize(shadowLightPosition);
    float NoL = dot(viewNormal, rayDir);
    if (NoL < 0.0) {
@@ -16,8 +16,13 @@ float dhContactShadow(vec3 viewPos, vec3 viewNormal) {
    vec3 origin = viewPos + viewNormal * 0.18 + rayDir * 0.12;
    vec3 farPoint = origin + rayDir * mix(18.0, 52.0, clamp(length(viewPos) / 220.0, 0.0, 1.0));
 
-   vec3 s0 = view2screen(origin);
-   vec3 s1 = view2screen(farPoint);
+   #if defined VOXY && !defined DISTANT_HORIZONS
+      vec3 s0 = useLod ? vxViewToScreen(origin) : view2screen(origin);
+      vec3 s1 = useLod ? vxViewToScreen(farPoint) : view2screen(farPoint);
+   #else
+      vec3 s0 = view2screen(origin);
+      vec3 s1 = view2screen(farPoint);
+   #endif
    vec3 delta = s1 - s0;
    float span = length(delta.xy);
    if (span < 1.0e-5) {
@@ -37,7 +42,11 @@ float dhContactShadow(vec3 viewPos, vec3 viewNormal) {
       }
 
       if (p.x > 0.001 && p.x < 0.999 && p.y > 0.001 && p.y < 0.999 && p.z > 0.0 && p.z < 1.0) {
-         vec3 rayView = screen2view(p.xy, p.z);
+         #if defined VOXY && !defined DISTANT_HORIZONS
+            vec3 rayView = useLod ? vxScreenToView(p.xy, p.z) : screen2view(p.xy, p.z);
+         #else
+            vec3 rayView = screen2view(p.xy, p.z);
+         #endif
          float rayLen = length(rayView);
          float t = float(i) / float(max(steps - 1, 1));
          float minDelta = 0.28 + 0.55 * t;
@@ -66,6 +75,21 @@ float dhContactShadow(vec3 viewPos, vec3 viewNormal) {
                }
             }
          #endif
+
+         #if defined VOXY && !defined DISTANT_HORIZONS
+            vec3 vxUv = useLod ? p : vxViewToScreen(rayView);
+            if (vxUv.x > 0.001 && vxUv.x < 0.999 && vxUv.y > 0.001 && vxUv.y < 0.999) {
+               float vxZ = vxSampleOpaqueDepth(vxUv.xy);
+               if (isVxDepthValid(vxZ)) {
+                  float hitVx = rayLen - length(vxScreenToView(vxUv.xy, vxZ));
+                  float maxVx = 6.0 + 16.0 * t;
+                  float rangeVx = max(maxVx - minDelta * 1.3, 0.12);
+                  if (hitVx > minDelta * 1.3 && hitVx < maxVx) {
+                     occ = max(occ, 1.0 - abs(hitVx - mix(minDelta * 1.3, maxVx, 0.4)) / rangeVx);
+                  }
+               }
+            }
+         #endif
       }
 
       if (p.x < -0.02 || p.x > 1.02 || p.y < -0.02 || p.y > 1.02) {
@@ -78,7 +102,7 @@ float dhContactShadow(vec3 viewPos, vec3 viewNormal) {
    return 1.0 - occ;
 }
 
-float dhScreenAo(vec2 uv, vec3 viewPos, vec3 viewNormal, bool useDh) {
+float dhScreenAo(vec2 uv, vec3 viewPos, vec3 viewNormal, bool useLod) {
    vec2 pixel = vec2(1.0 / viewWidth, 1.0 / viewHeight);
    float dither = random(gl_FragCoord.xy + vec2(13.7, 5.1));
    float occ = 0.0;
@@ -92,13 +116,13 @@ float dhScreenAo(vec2 uv, vec3 viewPos, vec3 viewNormal, bool useDh) {
       vec2 suv = clamp(uv + vec2(cos(a), sin(a)) * pixel * radius * r, pixel, vec2(1.0) - pixel);
 
       float sd;
-      bool sDh;
-      sampleSceneDepth(suv, sd, sDh);
-      if (sd >= 1.0 && !sDh) {
+      bool sLod;
+      sampleSceneDepth(suv, sd, sLod);
+      if (sd >= 1.0 && !sLod) {
          continue;
       }
 
-      vec3 sp = reflectionScreenToView(suv, sd, sDh);
+      vec3 sp = reflectionScreenToView(suv, sd, sLod);
       vec3 dir = sp - viewPos;
       float len = length(dir);
       if (len < 0.10) {

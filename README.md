@@ -23,13 +23,14 @@ with a large visual extension layer added by **Throw New Error**.
 - **Procedural stars** — twinkle, color temperature, density control
 - **Waving foliage** — leaves and tall plants with snow / rain amplitude modulation
 - **Distant Horizons support** — LOD seam dithering, DH shadow pass, DH water
+- **Voxy support** — LoD terrain and water share lighting, fog, and screen-space reflections with vanilla chunks
 
 ---
 
 ## Compatibility
 
 - Iris 1.7+
-- OptiFine (limited — DH and some Iris-only uniforms will not work)
+- OptiFine (limited — DH, Voxy and some Iris-only uniforms will not work)
 - Minecraft 1.21+
 
 ---

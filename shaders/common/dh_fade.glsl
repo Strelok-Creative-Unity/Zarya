@@ -44,4 +44,17 @@ float getWaterLodMix(vec3 feetPos) {
    return smoothe(rescale(d, far * 0.58, far * 0.86));
 }
 
+vec3 applyLodTerrainNoise(vec3 albedo, vec3 worldPos, vec3 worldNormal) {
+   #ifndef DH_TERRAIN_NOISE
+      return albedo;
+   #else
+      vec3 cell = floor(worldPos * 4.0 + 0.01);
+      float grain = random(cell) - 0.5;
+      float amount = (1.0 - luma(albedo) * luma(albedo)) * 0.12;
+      float weight = abs(worldNormal.x) + abs(worldNormal.y) + abs(worldNormal.z);
+
+      return clamp(albedo + grain * amount * max(weight, 0.001), 0.0, 1.0);
+   #endif
+}
+
 #endif

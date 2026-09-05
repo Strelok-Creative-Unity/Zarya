@@ -13,6 +13,13 @@
    #define END_FOG_SAMPLES 12
 #endif
 
+#ifdef VOXY
+   #ifndef VOXY_RANGE_UNIFORM
+   #define VOXY_RANGE_UNIFORM
+   uniform int vxRenderDistance;
+   #endif
+#endif
+
 #ifndef FOG_COLOR_UNIFORM
 #define FOG_COLOR_UNIFORM
 uniform vec3 fogColor;
@@ -21,6 +28,8 @@ uniform vec3 fogColor;
 float endFogFar() {
    #ifdef DISTANT_HORIZONS
       return max(far, max(dhFarPlane, float(dhRenderDistance)));
+   #elif defined VOXY
+      return max(far, float(vxRenderDistance) * 16.0);
    #else
       return far;
    #endif
@@ -124,6 +133,15 @@ vec3 endFogViewPos(vec2 uv, out bool sky) {
          return dhScreenToView(uv, dhDepth);
       }
       sky = sky && dhDepth >= 1.0;
+   #endif
+
+   #ifdef VOXY
+      float vxDepth = vxSampleClosestDepth(uv);
+      if (isVxLodSurface(depth, vxDepth)) {
+         sky = false;
+         return vxScreenToVanillaView(uv, vxDepth);
+      }
+      sky = sky && !isVxDepthValid(vxDepth);
    #endif
 
    if (sky) {

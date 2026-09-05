@@ -31,10 +31,6 @@ varying vec4 color;
    #define heldBlockLightValue 14
 #endif
 
-#ifdef VOXY
-   varying float vanillaMix;
-#endif
-
 #ifdef DH_WATER
    varying float dhIsWater;
 #endif
@@ -58,6 +54,10 @@ uniform float far;
    #include "/common/dh.glsl"
 #else
    uniform int isEyeInWater;
+#endif
+
+#ifdef VOXY
+   #include "/common/voxy.glsl"
 #endif
 
 void main() {
@@ -93,10 +93,6 @@ void main() {
    vec4 ambient = ambient;
    vec4 color   = color;
 
-   #ifdef VOXY
-      vec4 vanilla = albedo * color * ambient;
-   #endif
-
    
    ambient.rgb += getTorchColor(lightUV.s, ambient.rgb, feetPos, screen2ndc(normal));
 
@@ -121,6 +117,14 @@ void main() {
          if (behindZ < 1.0) {
             thick = max(length(screen2view(waterUV, behindZ)) - length(waterView), 0.0);
          }
+         #ifdef VOXY
+            else {
+               float vxZ = vxSampleOpaqueDepth(waterUV);
+               if (isVxDepthValid(vxZ)) {
+                  thick = max(length(vxScreenToVanillaView(waterUV, vxZ)) - length(waterView), 0.0);
+               }
+            }
+         #endif
       #endif
 
       if (eyeInWater) {
@@ -195,12 +199,6 @@ void main() {
    } else {
       albedo *= color * ambient;
    }
-
-   #ifdef VOXY
-      float reflectivity = mix(reflectivity, 0.0, vanillaMix);
-
-      albedo = mix(albedo, vanilla, vanillaMix);
-   #endif
 
    if (reflectivity <= WATER_REFLECTIVITY - 0.01 && isEyeInWater == 0) {
       albedo.rgb = mix(albedo.rgb, gradientFogColor, fogMix);

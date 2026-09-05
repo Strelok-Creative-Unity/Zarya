@@ -381,13 +381,13 @@ option.EVENT_FLOWER_FADE_START.comment=Entfernung zum Spieler, in der Blumen max
 option.EVENT_FLOWER_FADE_END=Ausblend-Ende
 option.EVENT_FLOWER_FADE_END.comment=Entfernung zum Spieler, bei der das Leuchten vollständig verschwindet.
 
-screen.DH_SCREEN=Distant Horizons
+screen.DH_SCREEN=Distant Horizons / Voxy
 option.DH_SEAM_MARGIN=LoD-Nahtabstand §e[?]
-option.DH_SEAM_MARGIN.comment=Wie viele Blöcke vor der Vanilla-Sichtweite das DH-Terrain vollständig eingeblendet wird. Weniger = LoD beginnt näher und versteckt die Vanilla/DH-Naht besser
+option.DH_SEAM_MARGIN.comment=Wie viele Blöcke vor der Vanilla-Sichtweite das LoD-Terrain vollständig eingeblendet wird. Weniger = LoD beginnt näher und versteckt die Vanilla/LoD-Naht besser
 option.DH_SEAM_WIDTH=LoD-Nahtbreite
-option.DH_SEAM_WIDTH.comment=Breite der LoD-Nahtglättungszone in Distant Horizons (breiter = weicherer Übergang).
+option.DH_SEAM_WIDTH.comment=Breite der LoD-Nahtglättungszone (breiter = weicherer Vanilla/LoD-Übergang).
 option.DH_SEAM_DITHER=Geditherte LoD-Naht §e[?]
-option.DH_SEAM_DITHER.comment=Weicht den Vanilla/DH-Übergang auf. Nur deaktivieren, wenn an der Naht störende Rauschpunkte sichtbar sind
+option.DH_SEAM_DITHER.comment=Weicht den Vanilla/LoD-Übergang auf. Nur deaktivieren, wenn an der Naht störende Rauschpunkte sichtbar sind
 option.DH_TERRAIN_NOISE=LoD-Terrainrauschen
 option.DH_TERRAIN_NOISE.comment=LoD-Terrainrauschen für natürlichere Übergänge zwischen Levels.
 option.DH_SHADOW_ENABLED=LoD-Schattenwerfer §e[?]
@@ -395,7 +395,7 @@ option.DH_SHADOW_ENABLED.comment=Erlaubt Distant Horizons, in die Schattenkarte 
 option.DH_FOLIAGE_SSS=LoD-Laub-SSS §e[?]
 option.DH_FOLIAGE_SSS.comment=Wrap-Lighting auf LoD-Laub, damit Baumwürfel nicht vollhell wirken
 option.DH_AO=LoD-AO §e[?]
-option.DH_AO.comment=Screen-Space-AO auf Distant-Horizons-Terrain (Spalten zwischen Hügeln und Baumgruppen)
+option.DH_AO.comment=Screen-Space-AO auf Distant-Horizons-/Voxy-Terrain (Spalten zwischen Hügeln und Baumgruppen)
 option.DH_DEPTH_SHADOWS=LoD-Kontaktschatten §e[?]
 option.DH_DEPTH_SHADOWS.comment=Verfolgt die Sonne gegen Vanilla- + LoD-Tiefe, sodass entfernte Bäume Kontaktschatten erhalten, ohne riesige Schattenkarte
 option.DH_DEPTH_SHADOW_STEPS=Kontaktschatten-Schritte

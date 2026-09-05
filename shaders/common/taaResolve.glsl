@@ -56,7 +56,7 @@ vec3 rfTaaHistorySample(sampler2D tex, vec2 uv, vec2 res) {
    return s / max(w, 1.0e-5);
 }
 
-void rfTaaClosestDepth(vec2 uv, vec2 texel, out float depth, out bool useDh, out vec2 closestUv) {
+void rfTaaClosestDepth(vec2 uv, vec2 texel, out float depth, out bool useDh, out bool useVx, out vec2 closestUv) {
    vec2 tap[5];
    tap[0] = vec2(0.0);
    tap[1] = vec2(-2.0, -2.0);
@@ -76,6 +76,7 @@ void rfTaaClosestDepth(vec2 uv, vec2 texel, out float depth, out bool useDh, out
    }
 
    useDh = false;
+   useVx = false;
    #ifdef DISTANT_HORIZONS
       float dhBest = 1.0;
       vec2 dhUv = uv;
@@ -91,6 +92,26 @@ void rfTaaClosestDepth(vec2 uv, vec2 texel, out float depth, out bool useDh, out
          depth = dhBest;
          closestUv = dhUv;
          useDh = true;
+      }
+   #endif
+
+   #ifdef VOXY
+      if (!useDh) {
+         float vxBest = 1.0;
+         vec2 vxUv = uv;
+         for (int k = 0; k < 5; k++) {
+            vec2 p = uv + tap[k] * texel;
+            float d = vxSampleClosestDepth(p);
+            if (isVxDepthValid(d) && d < vxBest) {
+               vxBest = d;
+               vxUv = p;
+            }
+         }
+         if (isVxLodSurface(depth, vxBest)) {
+            depth = vxBest;
+            closestUv = vxUv;
+            useVx = true;
+         }
       }
    #endif
 }
@@ -137,10 +158,11 @@ vec3 rfTaaResolveScene(vec3 current, vec2 uv) {
 
    float depth;
    bool useDh;
+   bool useVx;
    vec2 closestUv;
-   rfTaaClosestDepth(uv, texel, depth, useDh, closestUv);
+   rfTaaClosestDepth(uv, texel, depth, useDh, useVx, closestUv);
 
-   vec2 prevUv = rfTaaReproject(closestUv, depth, useDh);
+   vec2 prevUv = rfTaaReproject(closestUv, depth, useDh, useVx);
    bool inScreen = prevUv.x > 0.002 && prevUv.x < 0.998
                 && prevUv.y > 0.002 && prevUv.y < 0.998;
    if (!inScreen) {
@@ -160,7 +182,7 @@ vec3 rfTaaResolveScene(vec3 current, vec2 uv) {
    float blend = mix(0.76, 0.93, 1.0 - smoothstep(0.0, 6.0, speed));
    blend *= mix(1.0, 0.28, smoothstep(6.0, 40.0, speed));
 
-   if (!useDh && depth < 0.56) {
+   if (!useDh && !useVx && depth < 0.56) {
       blend *= 0.12;
    }
 
