@@ -87,8 +87,31 @@ vec3 vxScreenToVanillaView(vec2 uv, float depth) {
    return vxToVanillaView(vxScreenToView(uv, depth));
 }
 
+bool vxFogSolidHit(vec2 uv, float depth0, float depth1, out vec3 vanillaView, out bool skyHit) {
+   float opaque = vxSampleOpaqueDepth(uv);
+   float closest = vxSampleClosestDepth(uv);
+   bool solid = isVxDepthValid(opaque);
+   bool anyLod = isVxDepthValid(closest);
+   vanillaView = vec3(0.0);
+   skyHit = false;
+
+   if (depth0 >= 1.0 && solid) {
+      vanillaView = vxScreenToVanillaView(uv, opaque);
+      return true;
+   }
+   if (depth0 >= 1.0 && anyLod) {
+      skyHit = true;
+      return true;
+   }
+   if (depth1 >= 1.0 && solid) {
+      vanillaView = vxScreenToVanillaView(uv, opaque);
+      return true;
+   }
+   return false;
+}
+
 vec2 vxRemapLightMap(vec2 lightMap) {
-   return clamp((lightMap - 0.03125) * 1.06667, vec2(0.0), vec2(0.9333, 1.0));
+   return clamp((lightMap - 0.03125) * 1.06667, vec2(0.0), vec2(0.9333, AMBIENT_UV.t));
 }
 
 #ifdef VOXY_PATCH
@@ -99,6 +122,36 @@ vec3 vxFaceNormalWorld(uint face) {
       float((face >> 1u) == 1u)
    );
    return n * (float(int(face) & 1) * 2.0 - 1.0);
+}
+
+vec3 vxAlbedoBumpNormal(vec3 albedo, vec3 worldNormal, vec3 feetPos) {
+   #ifndef GENERATED_NORMALS
+      return worldNormal;
+   #else
+      float dist = length(feetPos);
+      float fade = 1.0 - smoothe(clamp((dist - far * 0.62) / max(far * 0.42, 8.0), 0.0, 1.0));
+      if (fade < 0.02) {
+         return worldNormal;
+      }
+
+      float lum = dot(albedo, vec3(0.2126, 0.7152, 0.0722));
+      vec3 dpdx = dFdx(feetPos);
+      vec3 dpdy = dFdy(feetPos);
+      vec3 bump = worldNormal - (dpdx * dFdx(lum) + dpdy * dFdy(lum)) * (NORMAL_STRENGTH * 0.10);
+      return normalize(mix(worldNormal, bump, fade));
+   #endif
+}
+
+float vxAlbedoBumpShade(vec3 worldNormal, vec3 bumpNormal, vec3 feetPos) {
+   #ifndef GENERATED_NORMALS
+      return 1.0;
+   #else
+      float dist = length(feetPos);
+      float fade = 1.0 - smoothe(clamp((dist - far * 0.62) / max(far * 0.42, 8.0), 0.0, 1.0));
+      float flatUp = max(worldNormal.y * 0.5 + 0.5, 0.08);
+      float bumpUp = clamp(bumpNormal.y * 0.5 + 0.5, 0.0, 1.0);
+      return mix(1.0, clamp(bumpUp / flatUp, 0.58, 1.42), 0.55 * fade);
+   #endif
 }
 #endif
 

@@ -83,44 +83,37 @@ void main() {
       #if defined OVERWORLD && defined SHADER_CLOUDS
       {
          float cloudDepth = texture2D(depthtex0, texUV).x;
-         float cloudDepth1 = texture2D(depthtex1, texUV).x;
          vec3 cloudDir = normalize(screen2view(texUV, 0.999));
          float cloudMaxDist = max(max(CLOUD_LC_DISTANCE, CLOUD_MC_DISTANCE), CLOUD_UC_DISTANCE);
          bool cloudSky = cloudDepth >= 1.0;
-         bool gotLod = false;
+
+         if (!cloudSky) {
+            cloudMaxDist = min(length(screen2view(texUV, cloudDepth)), cloudMaxDist);
+         }
 
          #ifdef DISTANT_HORIZONS
             float cloudDhDepth = texture2D(dhDepthTex0, texUV).x;
-            if (isDhLodVisible(cloudDepth, cloudDepth1, cloudDhDepth)) {
+            if (cloudDepth >= 1.0 && cloudDhDepth < 1.0) {
                float dhLen = length(dhScreenToView(texUV, cloudDhDepth));
                if (dhLen > 64.0 && dhLen < cloudMaxDist) {
                   cloudMaxDist = dhLen;
+                  cloudSky = false;
                }
-               cloudSky = false;
-               gotLod = true;
             }
-         #endif
-
-         #ifdef VOXY
+         #elif defined VOXY
+            float cloudDepth1 = texture2D(depthtex1, texUV).x;
             float cloudVxDepth = vxSampleClosestDepth(texUV);
-            if (!gotLod && isVxLodVisible(cloudDepth, cloudDepth1, cloudVxDepth)) {
+            if (isVxLodVisible(cloudDepth, cloudDepth1, cloudVxDepth)) {
                float vxLen = length(vxScreenToVanillaView(texUV, cloudVxDepth));
                if (vxLen > 64.0 && vxLen < cloudMaxDist) {
                   cloudMaxDist = vxLen;
                }
                cloudSky = false;
-               gotLod = true;
-            }
-         #endif
-
-         if (!gotLod) {
-            if (cloudDepth1 >= 1.0) {
-               cloudSky = true;
-            } else {
+            } else if (cloudSky && cloudDepth1 < 1.0) {
                cloudSky = false;
                cloudMaxDist = min(length(screen2view(texUV, cloudDepth1)), cloudMaxDist);
             }
-         }
+         #endif
 
          vec3 cloudViewPos = cloudDir * cloudMaxDist;
          vec4 clouds = rfDrawClouds(cloudViewPos, cloudSky, lightColor);

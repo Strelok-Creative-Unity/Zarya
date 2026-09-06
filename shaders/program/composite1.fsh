@@ -50,32 +50,37 @@ void main() {
       #if defined VL && defined OVERWORLD && defined ENABLE_SHADOWS
       {
          float depth = texture2D(depthtex0, texUV).x;
-         float depth1 = texture2D(depthtex1, texUV).x;
          vec3 viewPos;
          bool gotLod = false;
 
          #ifdef DISTANT_HORIZONS
             float dhDepth = texture2D(dhDepthTex0, texUV).x;
-            if (isDhLodVisible(depth, depth1, dhDepth)) {
+            if (isDhLodSurface(depth, dhDepth)) {
                viewPos = dhScreenToView(texUV, dhDepth);
                gotLod = true;
             }
          #endif
          #ifdef VOXY
             if (!gotLod) {
-               float vxDepth = vxSampleClosestDepth(texUV);
-               if (isVxLodVisible(depth, depth1, vxDepth)) {
-                  viewPos = vxScreenToVanillaView(texUV, vxDepth);
+               float depth1 = texture2D(depthtex1, texUV).x;
+               vec3 vxFogView;
+               bool vxFogSky;
+               if (vxFogSolidHit(texUV, depth, depth1, vxFogView, vxFogSky)) {
+                  if (vxFogSky) {
+                     viewPos = normalize(screen2view(texUV, 0.999)) * min(far * 0.85, 220.0);
+                  } else {
+                     viewPos = vxFogView;
+                  }
                   gotLod = true;
                }
             }
          #endif
          if (!gotLod) {
-            if (depth >= 1.0 || depth1 >= 1.0) {
+            if (depth >= 1.0) {
                viewPos = screen2view(texUV, 0.999);
                viewPos = normalize(viewPos) * min(far * 0.85, 220.0);
             } else {
-               viewPos = screen2view(texUV, depth1);
+               viewPos = screen2view(texUV, depth);
             }
          }
 

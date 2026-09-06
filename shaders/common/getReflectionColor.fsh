@@ -34,14 +34,12 @@ vec3 reflectionViewToScreen(vec3 view, bool useLod) {
 }
 
 void sampleSceneDepth(vec2 uv, out float depth, out bool useLod) {
-   float depth0 = texture2D(depthtex0, uv).x;
-   float depth1 = texture2D(depthtex1, uv).x;
-   depth = depth0;
+   depth = texture2D(depthtex0, uv).x;
    useLod = false;
 
    #ifdef DISTANT_HORIZONS
       float dhDepth = texture2D(dhDepthTex0, uv).x;
-      if (isDhLodVisible(depth0, depth1, dhDepth)) {
+      if (isDhLodSurface(depth, dhDepth)) {
          depth = dhDepth;
          useLod = true;
          return;
@@ -50,7 +48,7 @@ void sampleSceneDepth(vec2 uv, out float depth, out bool useLod) {
 
    #ifdef VOXY
       float vxDepth = vxSampleClosestDepth(uv);
-      if (isVxLodVisible(depth0, depth1, vxDepth)) {
+      if (isVxLodSurface(depth, vxDepth)) {
          depth = vxDepth;
          useLod = true;
       }

@@ -53,16 +53,16 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
 
    int blockId = int(parameters.customId);
    bool isWater = blockId == 10008 || blockId == 8;
-   float waterFade = 1.0;
+   vec3 worldNormal = vxFaceNormalWorld(parameters.face);
 
-   if (isWater) {
-      waterFade = getWaterLodMix(feetPos);
-   } else if (discardHiddenLod(feetPos)) {
+   if (isWater && abs(worldNormal.y) < 0.5) {
+      discard;
+   }
+   if (discardHiddenLod(feetPos)) {
       discard;
    }
 
    vec2 lightUV = vxRemapLightMap(parameters.lightMap);
-   vec3 worldNormal = vxFaceNormalWorld(parameters.face);
    float sunHeight = view2feet(sunPosition).y;
 
    #ifndef THE_END
@@ -87,7 +87,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
       float behindZ = texture2D(vxDepthTexOpaque, fragUV).x;
       float thick = 80.0;
       if (isVxDepthValid(behindZ)) {
-         thick = max(length(vxScreenToView(fragUV, behindZ)) - length(viewPos), 0.0);
+         thick = max(length(vxScreenToVanillaView(fragUV, behindZ)) - length(vanillaView), 0.0);
       } else {
          behindZ = texture2D(depthtex1, fragUV).x;
          if (behindZ < 1.0) {
@@ -100,8 +100,8 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
       }
 
       vec3 waterWorld = feetPos + cameraPosition;
-      vec3 viewDir = normalize(viewPos);
-      vec3 geoN = worldNormal;
+      vec3 viewDir = normalize(vanillaView);
+      vec3 geoN = vec3(0.0, worldNormal.y >= 0.0 ? 1.0 : -1.0, 0.0);
 
       float cau = 0.0;
       vec3 worldN;
@@ -115,8 +115,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
          worldN = getWaterRippleNormalFromGrad(waterWorld, geoN, waveG);
          cau = getWaterCausticsFromField(waterWorld, waveLap);
       }
-      vec3 viewN = normalize(mat3(vxModelView) * worldN);
-      vec3 vanillaN = normalize(mat3(gbufferModelView) * worldN);
+      vec3 viewN = normalize(mat3(gbufferModelView) * worldN);
 
       vec3 glColorM = getWaterBaseTint();
       albedo.rgb = 0.375 * glColorM * ambient.rgb;
@@ -138,15 +137,14 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
          albedo.rgb *= 0.88 + 0.22 * soft;
 
          #ifdef OVERWORLD
-            vec3 vanillaDir = normalize(vanillaView);
-            vec3 refracted = refract(vanillaDir, vanillaN, 1.333);
+            vec3 refracted = refract(viewDir, viewN, 1.333);
             vec3 aboveCol = fogCol * 0.45;
             if (dot(refracted, refracted) > 1.0e-4) {
                aboveCol = getSkyColor(normalize(refracted));
             }
             albedo.rgb = mix(albedo.rgb, aboveCol * (0.50 + 0.50 * skyLight), window * 0.85);
             albedo.rgb += aboveCol * soft * nearSurface * window * 0.22 * skyLight;
-            albedo.rgb += getSunMoonGlint(vanillaView, vanillaN, 0.14, WATER_REFLECTIVITY)
+            albedo.rgb += getSunMoonGlint(vanillaView, viewN, 0.14, WATER_REFLECTIVITY)
                         * (0.10 + 0.35 * tir) * skyLight;
          #endif
 
@@ -172,8 +170,6 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
    if (!isWater && isEyeInWater == 0) {
       albedo.rgb = mix(albedo.rgb, gradientFogColor, fogMixVal);
    }
-
-   albedo.a *= waterFade;
 
    outColor = albedo;
    outNormal = vec4(packedNormal, 1.0);

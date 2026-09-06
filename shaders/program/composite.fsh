@@ -34,13 +34,32 @@ void main() {
       #endif
 
       if (!sky) {
-         vec3 viewPos = sampleViewPos(texUV);
+         bool useLod = false;
+         vec3 viewPos = sampleViewPos(texUV, false);
+         #ifdef DISTANT_HORIZONS
+            if (depth >= 1.0 && dhDepth < 1.0) {
+               useLod = true;
+               viewPos = dhScreenToView(texUV, dhDepth);
+            }
+         #endif
+         #ifdef VOXY
+            if (isVxLodSurface(depth, vxDepth)) {
+               useLod = true;
+               viewPos = vxScreenToView(texUV, vxDepth);
+            }
+         #endif
+
          vec3 prenormal = screen2ndc(texture2D(colortex6, texUV).xyz);
          vec3 viewN = squaredLength(prenormal) > 0.01
             ? normalize(mat3(gbufferModelView) * prenormal)
             : -normalize(viewPos);
+         #if defined VOXY && !defined DISTANT_HORIZONS
+            if (useLod && squaredLength(prenormal) > 0.01) {
+               viewN = normalize(mat3(vxModelView) * prenormal);
+            }
+         #endif
 
-         float ao = computeSSAO(texUV, viewPos, viewN);
+         float ao = computeSSAO(texUV, viewPos, viewN, useLod);
          color.rgb *= ao;
       }
    #endif

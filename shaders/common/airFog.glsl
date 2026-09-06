@@ -279,34 +279,43 @@ void computeAirFog(vec3 viewPos, bool sky, vec3 sunCol, out vec3 scattering, out
 
 vec3 airFogViewPos(vec2 uv, out bool sky) {
    float depth0 = texture2D(depthtex0, uv).x;
-   float depth1 = texture2D(depthtex1, uv).x;
    sky = depth0 >= 1.0;
 
    #ifdef DISTANT_HORIZONS
       float dhDepth = texture2D(dhDepthTex0, uv).x;
-      if (isDhLodVisible(depth0, depth1, dhDepth)) {
+      if (isDhLodSurface(depth0, dhDepth)) {
          sky = false;
          return dhScreenToView(uv, dhDepth);
       }
       sky = sky && dhDepth >= 1.0;
-   #endif
-
-   #ifdef VOXY
-      float vxDepth = vxSampleClosestDepth(uv);
-      if (isVxLodVisible(depth0, depth1, vxDepth)) {
+   #elif defined VOXY
+      float depth1 = texture2D(depthtex1, uv).x;
+      float vxOpaque = vxSampleOpaqueDepth(uv);
+      bool vxSolid = isVxDepthValid(vxOpaque);
+      bool vxAny = isVxDepthValid(vxSampleClosestDepth(uv));
+      if (depth0 >= 1.0 && vxSolid) {
          sky = false;
-         return vxScreenToVanillaView(uv, vxDepth);
+         return vxScreenToVanillaView(uv, vxOpaque);
       }
-      sky = sky && !isVxDepthValid(vxDepth);
+      if (depth1 >= 1.0 && vxSolid) {
+         sky = false;
+         return vxScreenToVanillaView(uv, vxOpaque);
+      }
+      sky = sky && !vxAny;
+      if (sky || depth1 >= 1.0) {
+         sky = true;
+         vec3 dir = normalize(screen2view(uv, 0.999));
+         return dir * airFogFar();
+      }
+      return screen2view(uv, depth1);
    #endif
 
-   if (sky || depth1 >= 1.0) {
-      sky = true;
+   if (sky) {
       vec3 dir = normalize(screen2view(uv, 0.999));
       return dir * airFogFar();
    }
 
-   return screen2view(uv, depth1);
+   return screen2view(uv, depth0);
 }
 
 #endif

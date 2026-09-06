@@ -99,14 +99,20 @@ void main() {
       sampleSceneDepth(texUV, depth, useLod);
 
       vec3 normal;
+      vec3 viewPos = reflectionScreenToView(texUV, depth, useLod);
       #if defined VOXY && !defined DISTANT_HORIZONS
-         normal = useLod
-            ? normalize(mat3(vxModelView) * prenormal)
-            : eye2view(prenormal);
+         if (useLod && isWater) {
+            viewPos = vxToVanillaView(viewPos);
+            normal = eye2view(prenormal);
+            useLod = false;
+         } else {
+            normal = useLod
+               ? normalize(mat3(vxModelView) * prenormal)
+               : eye2view(prenormal);
+         }
       #else
          normal = eye2view(prenormal);
       #endif
-      vec3 viewPos = reflectionScreenToView(texUV, depth, useLod);
 
       vec3 viewDir = normalize(viewPos);
       float NoV = max(dot(normal, -viewDir), 0.0);
@@ -185,17 +191,14 @@ void main() {
          vec3 feet = view2feet(viewPos);
          #if defined VOXY && !defined DISTANT_HORIZONS
             if (useLod) {
-               feet = vxViewToFeet(viewPos);
+               viewPos = vxToVanillaView(viewPos);
+               feet = view2feet(viewPos);
+               useLod = false;
             }
          #endif
          vec3 world = feet2world(feet);
          float soft = getWaterSoftFilm(world);
          vec3 viewUp = mat3(gbufferModelView) * vec3(0.0, 1.0, 0.0);
-         #if defined VOXY && !defined DISTANT_HORIZONS
-            if (useLod) {
-               viewUp = normalize(vxModelView[1].xyz);
-            }
-         #endif
          float lookUp = max(dot(normalize(viewPos), viewUp), 0.0);
          float nearSurface = exp(-length(viewPos) * 0.08);
          float glow = soft * skyLight * (0.18 + 0.55 * lookUp + 0.35 * nearSurface);

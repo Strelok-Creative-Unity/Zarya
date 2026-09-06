@@ -1,7 +1,7 @@
 #ifndef SSAO_GLSL
 #define SSAO_GLSL
 
-vec3 sampleViewPos(vec2 uv) {
+vec3 sampleViewPos(vec2 uv, bool originLod) {
    float d = texture2D(depthtex0, uv).x;
    #ifdef DISTANT_HORIZONS
       float dh = texture2D(dhDepthTex0, uv).x;
@@ -12,13 +12,26 @@ vec3 sampleViewPos(vec2 uv) {
    #ifdef VOXY
       float vx = vxSampleClosestDepth(uv);
       if (isVxLodSurface(d, vx)) {
-         return vxScreenToVanillaView(uv, vx);
+         return originLod ? vxScreenToView(uv, vx) : vxScreenToVanillaView(uv, vx);
+      }
+      if (originLod && d < 1.0) {
+         return vxVanillaToView(screen2view(uv, d));
       }
    #endif
    return screen2view(uv, d);
 }
 
-float computeSSAO(vec2 uv, vec3 viewPos, vec3 viewNormal) {
+vec3 ssaoSampleScreen(vec3 samplePos, bool useLod) {
+   #if defined VOXY && !defined DISTANT_HORIZONS
+      return useLod ? vxViewToScreen(samplePos) : view2screen(samplePos);
+   #elif defined DISTANT_HORIZONS
+      return useLod ? dhViewToScreen(samplePos) : view2screen(samplePos);
+   #else
+      return view2screen(samplePos);
+   #endif
+}
+
+float computeSSAO(vec2 uv, vec3 viewPos, vec3 viewNormal, bool useLod) {
    float dist = length(viewPos);
    if (dist > 120.0) {
       return 1.0;
@@ -48,7 +61,7 @@ float computeSSAO(vec2 uv, vec3 viewPos, vec3 viewNormal) {
       #endif
 
       vec3 samplePos = viewPos + dir * (radius * (0.35 + 0.65 * r));
-      vec3 sampleScreen = view2screen(samplePos);
+      vec3 sampleScreen = ssaoSampleScreen(samplePos, useLod);
       vec2 suv = clamp(sampleScreen.xy, uvMin, uvMax);
       float offX = max(-sampleScreen.x, sampleScreen.x - 1.0);
       float offY = max(-sampleScreen.y, sampleScreen.y - 1.0);
@@ -58,7 +71,7 @@ float computeSSAO(vec2 uv, vec3 viewPos, vec3 viewNormal) {
          continue;
       }
 
-      vec3 scenePos = sampleViewPos(suv);
+      vec3 scenePos = sampleViewPos(suv, useLod);
       vec3 v = scenePos - viewPos;
       float vLen = length(v);
       if (vLen < 0.02) {

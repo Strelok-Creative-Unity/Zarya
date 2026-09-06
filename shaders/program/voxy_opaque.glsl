@@ -81,9 +81,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
    #endif
 
    float nY = clamp(worldNormal.y * 0.5 + 0.5, 0.0, 1.0);
-   float ambientOcclusion = isLeaves > 0.5
-      ? mix(0.52, 1.0, nY * nY)
-      : (isThinPlant > 0.5 ? 1.0 : mix(0.86, 1.0, nY));
+   float ambientOcclusion = isThinPlant > 0.5 ? 1.0 : mix(0.86, 1.0, nY);
 
    float sunHeight = view2feet(sunPosition).y;
    #ifndef THE_END
@@ -93,6 +91,8 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
    #endif
 
    vec4 albedo = parameters.sampledColour * color;
+   vec3 bumpNormal = vxAlbedoBumpNormal(albedo.rgb, worldNormal, feetPos);
+   float ambBump = vxAlbedoBumpShade(worldNormal, bumpNormal, feetPos);
    float albedoLuma = luma(albedo.rgb);
    float fogMixVal = getFogMix(feetPos);
    fogMixVal = mix(fogMixVal, fogMixVal * fogMixVal, lightSourceLevel);
@@ -110,20 +110,17 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
       float diffuse = (isEyeInWater == 0 ? 1.0 : 0.5)
                     * (1.0 - fogMixVal)
                     * (1.0 - rainStrength)
-                    * (isThinPlant > 0.5 ? 0.82 : (isLeaves > 0.5 ? leafLit : NoL))
+                    * (isThinPlant > 0.5 ? 0.75 : (isLeaves > 0.5 ? leafLit : NoL))
                     * clamp(0.1 * abs(sunHeight) - 0.4453, 0.0, 1.0);
 
       vec3 lightColor = getLightColor(sunHeight, skyLight);
       vec3 lightStrength = getLightStrength(diffuse, skyLight, feetPos, worldNormal);
 
-      float beyondShadow = 0.0;
-      if (isLeaves > 0.5) {
-         beyondShadow = smoothe(clamp(length(feetPos) / max(shadowDistance, 16.0) - 0.72, 0.0, 1.0));
-      }
-
+      float wrapT = 0.0;
+      vec3 lightEye = vec3(0.0);
       #if defined FOLIAGE_SSS || defined DH_FOLIAGE_SSS
-         float wrapT = 0.0;
          if (isLeaves > 0.5) {
+            lightEye = lightDirWorld;
             wrapT = pow(clamp(dot(normalize(worldNormal), lightDirWorld) * 0.62 + 0.38, 0.0, 1.0), 1.35);
             float shadow = diffuse > 1.0e-4
                ? clamp(luma(lightStrength) / max(diffuse, 1.0e-4), 0.0, 1.0)
@@ -135,11 +132,6 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
          }
       #endif
 
-      if (isLeaves > 0.5) {
-         float canopy = 0.46 + 0.54 * leafWrap * nY;
-         lightStrength *= mix(1.0, canopy, beyondShadow);
-      }
-
       float lightBrightness = max(0.0, LIGHT_BRIGHTNESS - 0.5 * pow3(albedoLuma));
       lightStrength = max(lightStrength, vec3(0.75 * lightSourceLevel));
 
@@ -149,15 +141,15 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
       #if defined FOLIAGE_SSS || defined DH_FOLIAGE_SSS
          if (isLeaves > 0.5) {
             float s = FOLIAGE_SSS_STRENGTH * 2.5;
-            ambient.rgb += lightColor * wrapT * (0.12 * s) * vec3(0.55, 0.85, 0.35);
-            float towardSun = clamp(dot(normalize(feetPos), lightDirWorld), 0.0, 1.0);
-            ambient.rgb += lightColor * pow(towardSun, 2.2) * (0.18 * s)
-                         * vec3(0.50, 0.92, 0.30) * (1.0 - beyondShadow);
+            ambient.rgb += lightColor * wrapT * (0.16 * s) * vec3(0.55, 0.85, 0.35);
+            float towardSun = clamp(dot(normalize(feetPos), lightEye), 0.0, 1.0);
+            ambient.rgb += lightColor * pow(towardSun, 2.2) * (0.28 * s) * vec3(0.50, 0.92, 0.30);
          }
       #endif
    #endif
 
    ambient.rgb += getTorchColor(lightUV.s, ambient.rgb, feetPos, worldNormal);
+   ambient.rgb *= ambBump;
 
    #ifdef THE_NETHER
       float underGlow = pow(clamp(0.52 - worldNormal.y * 0.52, 0.0, 1.0), 1.12);
@@ -169,7 +161,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
 
    #ifdef OVERWORLD
       albedo.rgb = applyTerrainRainGrade(albedo.rgb, rainStrength, gradientFogColor, 0.58);
-      albedo.rgb = applyTerrainAtmosphereGrade(albedo.rgb, feetPos, gradientFogColor, 0.50, vxFarPlane());
+      albedo.rgb = applyTerrainAtmosphereGrade(albedo.rgb, feetPos, gradientFogColor, 0.50, far);
    #endif
 
    #if defined THE_NETHER && defined NETHER_COLOR_GRADING
@@ -180,6 +172,6 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
    albedo.rgb = mix(albedo.rgb, gradientFogColor, fogMixVal);
 
    outColor = albedo;
-   outNormal = vec4(ndc2screen(worldNormal), 1.0);
+   outNormal = vec4(ndc2screen(bumpNormal), 1.0);
    outMaterial = vec4(0.0, isThinPlant * 0.20, 0.5, 1.0);
 }
