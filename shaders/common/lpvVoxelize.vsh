@@ -45,6 +45,8 @@ int lpvBlockId(float matId) {
    if (mat == 21044) return LPV_ID_EMIT + LPV_EMIT_ENCHANTING_TABLE;
    if (mat == 21050) return LPV_ID_EMIT + LPV_EMIT_LANTERN;
    if (mat == 21051) return LPV_ID_EMIT + LPV_EMIT_SOUL_LANTERN;
+   if (mat == 21063) return LPV_ID_EMIT + LPV_EMIT_COPPER_LANTERN;
+   if (mat == 21064) return LPV_ID_EMIT + LPV_EMIT_COPPER_BULB;
    if (mat == 21053) return LPV_ID_EMIT + LPV_EMIT_END_ROD;
    if (mat == 21054) return LPV_ID_EMIT + LPV_EMIT_CANDLE;
    if (mat == 21055) return LPV_ID_EMIT + LPV_EMIT_BREWING_STAND;
@@ -110,7 +112,8 @@ bool lpvIsPartialEmitter(int mat) {
    return mat == 10496 || mat == 10528 || mat == 10604 || mat == 10984
        || mat == 10652 || mat == 10656 || mat == 10072 || mat == 10076
        || mat == 21035 || mat == 21036 || mat == 21041 || mat == 21044
-       || mat == 21050 || mat == 21051 || mat == 21053 || mat == 21054
+       || mat == 21050 || mat == 21051 || mat == 21063 || mat == 21064
+       || mat == 21053 || mat == 21054
        || mat == 21055 || mat == 21056 || mat == 21057 || mat == 21058
        || mat == 21059 || mat == 21060 || mat == 21061 || mat == 21062
    #ifdef FLOWER_FESTIVAL
