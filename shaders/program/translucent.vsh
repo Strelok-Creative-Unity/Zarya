@@ -18,6 +18,8 @@ uniform vec3 sunPosition;
 #define SUN_POSITION_UNIFORM
 
 varying float fogMix;
+varying float glassLike;
+varying float glassId;
 varying float reflectivity;
 varying float waterTexStrength;
 varying vec2 lightUV;
@@ -30,6 +32,20 @@ varying vec4 color;
 
 #ifdef DH_WATER
    varying float dhIsWater;
+#endif
+
+#if defined GENERATED_NORMALS && !defined DH_WATER
+   attribute vec4 mc_midTexCoord;
+   attribute vec4 at_tangent;
+   varying vec3 tangent;
+   varying vec3 binormal;
+   varying vec2 absMidCoordPos;
+   varying vec2 signMidCoordPos;
+#endif
+
+#ifdef ENABLE_SHADOWS
+   varying float diffuse;
+   varying vec3 lightColor;
 #endif
 
 #include "/common/math.glsl"
@@ -45,6 +61,12 @@ varying vec4 color;
    #include "/common/dh_lightmap.glsl"
 
    uniform mat4 dhProjection;
+#endif
+
+#ifdef ENABLE_SHADOWS
+   uniform vec3 shadowLightPosition;
+   #include "/common/getDiffuse.vsh"
+   #include "/common/getLightColor.vsh"
 #endif
 
 void main() {
@@ -85,6 +107,8 @@ void main() {
    #endif
 
    reflectivity = GLASS_REFLECTIVITY;
+   glassLike = 0.0;
+   glassId = 0.0;
 
    #ifdef GENERATED_SPECULAR
       reflectivity = max(reflectivity, 0.88);
@@ -92,6 +116,11 @@ void main() {
 
    #ifndef DH_WATER
       feetPos = view2feet(getViewPosition());
+      int blockId = int(mc_Entity.x + 0.5);
+      if (blockId == 20018 || (blockId >= 21000 && blockId <= 21016)) {
+         glassLike = 1.0;
+         glassId = float(blockId);
+      }
    #endif
 
    fogMix = getFogMix(feetPos);
@@ -102,7 +131,7 @@ void main() {
    float vertexAlpha = color.a;
 
    #ifndef DH_WATER
-      if (mc_Entity.x != 10008.0) {
+      if (mc_Entity.x != 10008.0 && glassLike < 0.5) {
          ambient.rgb *= vertexAlpha;
       }
    #endif
@@ -124,4 +153,19 @@ void main() {
    #endif
 
    normal = ndc2screen(normal);
+
+   #if defined GENERATED_NORMALS && !defined DH_WATER
+      vec2 midCoord = (gl_TextureMatrix[0] * mc_midTexCoord).st;
+      vec2 texMinMidCoord = texUV - midCoord;
+      signMidCoordPos = sign(texMinMidCoord);
+      absMidCoordPos = abs(texMinMidCoord);
+      tangent = normalize(gl_NormalMatrix * at_tangent.xyz);
+      binormal = normalize(gl_NormalMatrix * cross(at_tangent.xyz, gl_Normal.xyz) * at_tangent.w);
+   #endif
+
+   #ifdef ENABLE_SHADOWS
+      float skyLight = clamp(lightUV.t, 0.0, 1.0);
+      diffuse = getDiffuse(sunHeight, skyLight, false);
+      lightColor = getLightColor(sunHeight, skyLight);
+   #endif
 }

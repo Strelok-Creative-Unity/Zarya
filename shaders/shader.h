@@ -85,6 +85,7 @@ const float sunPathRotation = -40.0; //[-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60.
 
 #define FLAT_LIGHTING
 #define GLOWING_ORES
+#define GLASS_OPAQUE_FRAME
 #define HIGHLIGHT_WAXED
 #define SHADOW_ENTITY 0 //[-1 0 1]
 #define ENABLE_SKY
@@ -543,6 +544,8 @@ const vec4 END_STARS_DRAG = vec4(200, 500, 100, 100);
 const vec3 END_AMBIENT    = vec3(0.83, 0.7, 1.0);
 
 const vec3 SHADOW_COLOR = vec3(1.0 - SHADOW_DARKNESS) + vec3(0.0, 0.3333, 1.0) * SHADOW_BLUENESS;
+
+const vec4 colortex5ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 
 const float SHADOW_MAX_DIST_SQUARED = shadowDistance * shadowDistance;
 const float INV_SHADOW_MAX_DIST_SQUARED = 1.0/SHADOW_MAX_DIST_SQUARED;

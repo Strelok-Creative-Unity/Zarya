@@ -2,6 +2,7 @@
 
 uniform sampler2D colortex0;
 uniform sampler2D colortex2;
+uniform sampler2D colortex5;
 uniform float viewWidth;
 uniform float viewHeight;
 uniform float rainStrength;
@@ -26,6 +27,7 @@ varying vec2 texUV;
 
 #include "/common/math.glsl"
 #include "/common/transformations.glsl"
+#include "/common/glassTint.glsl"
 #include "/common/getColorGrade.glsl"
 #include "/common/sharpen.glsl"
 
@@ -100,6 +102,8 @@ void main() {
    #else
       color.rgb = rfSharpen(colortex0, texUV, color.rgb, float(SHARPEN_STRENGTH));
    #endif
+
+   color.rgb = rfApplyGlassTint(color.rgb, texture2D(colortex5, texUV).rgb);
 
    float exposureEv = 1.0;
    float exposureTarget = 1.0;

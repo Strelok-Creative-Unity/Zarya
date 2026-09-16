@@ -181,10 +181,20 @@ void main() {
    #ifdef DH_TERRAIN
       color.rgb = applyDhTerrainNoise(color.rgb, litFeet + cameraPosition, dhWorldNormal);
       float nY = clamp(dhWorldNormal.y * 0.5 + 0.5, 0.0, 1.0);
-      float ambientOcclusion = mix(0.86, 1.0, nY);
+      float ambientOcclusion = mix(0.70, 1.0, nY);
       color.a = 1.0;
    #elif defined GBUFFERS_TERRAIN
-      float ambientOcclusion = color.a;
+      float aoA = color.a;
+      vec3 tint = color.rgb;
+      float cMax = max(tint.r, max(tint.g, tint.b));
+      float cMin = min(tint.r, min(tint.g, tint.b));
+      if (aoA > 0.98 && (cMax - cMin) < 0.05 && cMax < 0.995) {
+         aoA = max(cMax, 0.04);
+         color.rgb = vec3(1.0);
+      }
+      float ambientOcclusion = clamp(aoA + 0.05, 0.0, 1.0);
+      ambientOcclusion = pow(ambientOcclusion, 1.55);
+      ambientOcclusion = ambientOcclusion * 0.90 + 0.10;
       color.a = 1.0;
    #else
       float ambientOcclusion = 1.0;
@@ -303,7 +313,7 @@ void main() {
       #ifdef DH_TERRAIN
          vec3 lightStrength = getLightStrength(diffuse, lightUV.t, litFeet, dhWorldNormal);
       #else
-         vec3 lightStrength = getLightStrength(diffuse, lightUV.t, litFeet, litNormal) * bumpShade;
+         vec3 lightStrength = getLightStrength(diffuse, lightUV.t, litFeet, shadowNormal) * bumpShade;
       #endif
 
       #if defined FOLIAGE_SSS || defined DH_FOLIAGE_SSS
@@ -328,7 +338,7 @@ void main() {
       lightStrength = max(lightStrength, vec3(0.75 * emissionLevel));
 
       ambient.rgb *= mix(SHADOW_COLOR, vec3(1.0), clamp(luma(lightStrength), 0.0, 1.0));
-      ambient.rgb *= 0.70 + (lightBrightness * lightStrength) * lightColor;
+      ambient.rgb *= 0.52 + (lightBrightness * lightStrength) * lightColor;
 
       #if defined FOLIAGE_SSS || defined DH_FOLIAGE_SSS
          if (foliageAmt > 0.5) {
@@ -377,7 +387,11 @@ void main() {
 
    vec3 baseAlbedo = albedo.rgb;
 
-   albedo.rgb *= ambientOcclusion;
+   float sunVis = 0.0;
+   #if defined ENABLE_SHADOWS && !defined THE_END
+      sunVis = clamp(luma(lightStrength), 0.0, 1.0);
+   #endif
+   albedo.rgb *= mix(ambientOcclusion, 1.0, sunVis * 0.08);
    albedo *= ambient;
 
    #if defined OVERWORLD && (defined GBUFFERS_TERRAIN || defined DH_TERRAIN)

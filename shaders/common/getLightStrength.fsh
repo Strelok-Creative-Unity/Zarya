@@ -54,8 +54,17 @@ vec3 getLightStrength(float diffuse, float skyLight, vec3 feetPos, vec3 worldNor
 
    vec3 sampleFeet = feetPos;
    float dist = length(sampleFeet);
-   float nDotUp = abs(worldNormal.y);
-   sampleFeet += worldNormal * (0.08 + dist * 0.00115 + (1.0 - nDotUp) * 0.045 + nDotUp * 0.05);
+   float nLen = length(worldNormal);
+   vec3 n = nLen > 1.0e-4 ? worldNormal / nLen : vec3(0.0, 1.0, 0.0);
+   float nDotUp = abs(n.y);
+   vec3 lightDir = normalize(view2eye(shadowLightPosition));
+   float NoL = clamp(dot(n, lightDir), 0.0, 1.0);
+   float distanceBias = 0.12 + 0.01 * min(dist, 64.0);
+   vec3 bias = n * (0.30 * distanceBias) * (2.0 - NoL);
+   if (nDotUp < 0.55) {
+      bias.y = max(bias.y, 0.055 * (1.0 - nDotUp));
+   }
+   sampleFeet += bias;
 
    #if SHADOW_PIXEL > 0
       vec3 pos = world2feet(bandify(feet2world(sampleFeet), SHADOW_PIXEL));
@@ -70,7 +79,8 @@ vec3 getLightStrength(float diffuse, float skyLight, vec3 feetPos, vec3 worldNor
    shadowClip.xyz = getShadowDistortion(shadowClip.xyz);
 
    vec3 shadowUV = clip2screen(shadowClip);
-   shadowUV.z += (0.10 + 0.22 * nDotUp) / float(shadowMapResolution);
+   float slope = sqrt(max(0.0, 1.0 - NoL * NoL));
+   shadowUV.z -= (0.05 + 0.40 * slope) / float(shadowMapResolution);
 
    vec3 vis = vec3(1.0);
    if (diffuse > 0.0 &&

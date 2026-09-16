@@ -3,6 +3,7 @@
 #define texture2D texture
 #define texture2DLod textureLod
 #define texture3D texture
+#define RF_GLASS_SAMPLER tex
 
 #include "/shader.h"
 #include "/common/voxyIrisInjected.glsl"
@@ -23,6 +24,7 @@ layout(location = 1) out vec4 outNormal;
 layout(location = 2) out vec4 outMaterial;
 
 #include "/common/math.glsl"
+#include "/common/glassTint.glsl"
 #include "/common/transformations.glsl"
 #include "/common/voxy.glsl"
 #include "/common/dh_fade.glsl"
@@ -35,6 +37,7 @@ layout(location = 2) out vec4 outMaterial;
 
 #ifdef OVERWORLD
    #include "/common/getSkyColor.glsl"
+   #include "/common/waterGbufferReflection.glsl"
 #endif
 
 void voxy_emitFragment(VoxyFragmentParameters parameters) {
@@ -53,6 +56,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
 
    int blockId = int(parameters.customId);
    bool isWater = blockId == 10008 || blockId == 8;
+   bool isGlass = rfIsGlassId(blockId);
    vec3 worldNormal = vxFaceNormalWorld(parameters.face);
 
    if (isWater && abs(worldNormal.y) < 0.5) {
@@ -77,6 +81,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
    vec4 albedo = parameters.sampledColour * vec4(parameters.tinting.rgb, 1.0);
    float reflectivity = GLASS_REFLECTIVITY;
    vec3 packedNormal = ndc2screen(worldNormal);
+   float glassFrame = 0.0;
 
    ambient.rgb += getTorchColor(lightUV.s, ambient.rgb, feetPos, worldNormal);
 
@@ -159,20 +164,53 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
          albedo.rgb += getWaterBaseTint() * cau * shallow * 0.18;
          albedo.a = getWaterSheetAlpha(waterFog, fresnel);
          albedo.rgb *= 0.55 + 0.45 * WATER_BRIGHTNESS;
+
+         #ifdef OVERWORLD
+            vec3 refl = rfWaterPassReflection(vanillaView, viewN, viewDir);
+            float skyF = mix(0.22, 0.90, fresnel * fresnel);
+            albedo.rgb = mix(albedo.rgb, refl, skyF);
+            albedo.rgb += getSunMoonGlint(vanillaView, viewN, 0.0, WATER_REFLECTIVITY);
+            albedo.a = max(albedo.a, mix(0.32, 0.80, skyF));
+         #endif
       }
 
       albedo.a = clamp(albedo.a, 0.0, 1.0);
       packedNormal = ndc2screen(worldN);
+   } else if (isGlass) {
+      vec3 viewDir = normalize(vanillaView);
+      vec3 viewN = normalize(mat3(gbufferModelView) * worldNormal);
+      float NoV = max(dot(viewN, -viewDir), 0.0);
+      float fresnel = clamp(1.0 - NoV, 0.0, 1.0);
+      float fresnel5 = fresnel * fresnel * fresnel * fresnel * fresnel;
+
+      vec3 glassTex = parameters.sampledColour.rgb;
+      float glassA = parameters.sampledColour.a;
+      vec3 glassRgb = rfGlassSheetRgb(parameters.uv, glassTex, parameters.tinting.rgb);
+      float frameMask = rfGlassFrameMask(parameters.uv, glassTex, glassA);
+      albedo = rfGlassSurface(glassRgb, vec3(1.0), ambient.rgb, fresnel5);
+      albedo = rfGlassApplyFrame(albedo, parameters.uv, glassTex, glassA, parameters.tinting.rgb, ambient.rgb);
+      #ifdef GENERATED_SPECULAR
+         reflectivity = mix(GLASS_REFLECTIVITY, 0.96, frameMask);
+      #else
+         reflectivity = GLASS_REFLECTIVITY;
+      #endif
+      glassFrame = frameMask;
    } else {
       albedo *= ambient;
    }
 
-   if (!isWater && isEyeInWater == 0) {
+   if (!isWater && !isGlass && isEyeInWater == 0) {
       albedo.rgb = mix(albedo.rgb, gradientFogColor, fogMixVal);
    }
 
+   #ifdef GLASS_OPAQUE_FRAME
+      float gbufA = isGlass ? glassFrame : 1.0;
+   #else
+      float gbufA = isGlass ? 0.0 : 1.0;
+   #endif
+
    outColor = albedo;
-   outNormal = vec4(packedNormal, 1.0);
+   outNormal = vec4(packedNormal, gbufA);
    #ifdef GENERATED_SPECULAR
       float packSmooth = clamp(max(reflectivity, 0.0), 0.0, 0.98);
       if (packSmooth < 0.5 && packSmooth < WATER_REFLECTIVITY - 0.05) {
@@ -181,12 +219,12 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
       if (isEyeInWater == 1 && packSmooth > WATER_REFLECTIVITY - 0.05) {
          packSmooth = 0.0;
       }
-      outMaterial = vec4(packSmooth, 0.0, 0.5, 1.0);
+      outMaterial = vec4(packSmooth, 0.0, 0.5, gbufA);
    #else
       float packReflect = reflectivity;
       if (isEyeInWater == 1 && packReflect > WATER_REFLECTIVITY - 0.05) {
          packReflect = 0.0;
       }
-      outMaterial = vec4(packReflect, 0.0, 0.5, 1.0);
+      outMaterial = vec4(packReflect, 0.0, 0.5, gbufA);
    #endif
 }

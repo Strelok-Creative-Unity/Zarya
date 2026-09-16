@@ -81,7 +81,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
    #endif
 
    float nY = clamp(worldNormal.y * 0.5 + 0.5, 0.0, 1.0);
-   float ambientOcclusion = isThinPlant > 0.5 ? 1.0 : mix(0.86, 1.0, nY);
+   float ambientOcclusion = isThinPlant > 0.5 ? 1.0 : mix(0.70, 1.0, nY);
 
    float sunHeight = view2feet(sunPosition).y;
    #ifndef THE_END
@@ -101,6 +101,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
    }
    vec3 gradientFogColor = getFogColor(fogMixVal, feetPos);
 
+   float sunVis = 0.0;
    #if defined ENABLE_SHADOWS && !defined THE_END
       float skyLight = clamp(lightUV.t, 0.0, 1.0);
       vec3 lightDirWorld = normalize(view2eye(shadowLightPosition));
@@ -136,7 +137,8 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
       lightStrength = max(lightStrength, vec3(0.75 * lightSourceLevel));
 
       ambient.rgb *= mix(SHADOW_COLOR, vec3(1.0), clamp(luma(lightStrength), 0.0, 1.0));
-      ambient.rgb *= 0.70 + (lightBrightness * lightStrength) * lightColor;
+      ambient.rgb *= 0.52 + (lightBrightness * lightStrength) * lightColor;
+      sunVis = clamp(luma(lightStrength), 0.0, 1.0);
 
       #if defined FOLIAGE_SSS || defined DH_FOLIAGE_SSS
          if (isLeaves > 0.5) {
@@ -156,7 +158,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
       ambient.rgb += vec3(0.80, 0.30, 0.08) * underGlow * 0.035 * NETHER_AMBIENT;
    #endif
 
-   albedo.rgb *= ambientOcclusion;
+   albedo.rgb *= mix(ambientOcclusion, 1.0, sunVis * 0.08);
    albedo *= ambient;
 
    #ifdef OVERWORLD

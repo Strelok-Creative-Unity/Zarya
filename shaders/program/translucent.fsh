@@ -15,6 +15,8 @@ uniform float rainStrength;
 #define RAIN_STRENGTH_UNIFORM
 
 varying float fogMix;
+varying float glassLike;
+varying float glassId;
 varying float reflectivity;
 varying float waterTexStrength;
 varying vec2 lightUV;
@@ -35,7 +37,21 @@ varying vec4 color;
    varying float dhIsWater;
 #endif
 
+#if defined GENERATED_NORMALS && !defined DH_WATER
+   varying vec3 tangent;
+   varying vec3 binormal;
+   varying vec2 absMidCoordPos;
+   varying vec2 signMidCoordPos;
+#endif
+
+#ifdef ENABLE_SHADOWS
+   varying float diffuse;
+   varying vec3 lightColor;
+#endif
+
+#define RF_GLASS_SAMPLER gtexture
 #include "/common/math.glsl"
+#include "/common/glassTint.glsl"
 #include "/common/getTorchColor.fsh"
 #include "/common/transformations.glsl"
 #include "/common/getWaterSurface.glsl"
@@ -43,6 +59,7 @@ varying vec4 color;
 
 #ifdef OVERWORLD
    #include "/common/getSkyColor.glsl"
+   #include "/common/waterGbufferReflection.glsl"
 #endif
 
 uniform float near;
@@ -58,6 +75,24 @@ uniform float far;
 
 #ifdef VOXY
    #include "/common/voxy.glsl"
+#endif
+
+#ifdef GENERATED_SPECULAR
+   #include "/common/ipbr.glsl"
+   #ifdef ENABLE_SHADOWS
+      #include "/common/specularHighlight.glsl"
+   #endif
+#endif
+
+#if defined GENERATED_NORMALS && !defined DH_WATER
+   #include "/common/generatedNormals.glsl"
+#endif
+
+#ifdef ENABLE_SHADOWS
+   uniform mat4 shadowModelView;
+   uniform mat4 shadowProjection;
+   uniform vec3 shadowLightPosition;
+   #include "/common/getLightStrength.fsh"
 #endif
 
 void main() {
@@ -97,6 +132,10 @@ void main() {
    ambient.rgb += getTorchColor(lightUV.s, ambient.rgb, feetPos, screen2ndc(normal));
 
    vec3 packedNormal = normal;
+   vec3 glassAbsorb = vec3(0.0);
+   bool isGlass = glassLike > 0.5;
+   float glassFrame = 0.0;
+   float packReflectivity = reflectivity;
 
    if (reflectivity > WATER_REFLECTIVITY - 0.01) {
       vec2 waterUV = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
@@ -192,15 +231,67 @@ void main() {
 
          albedo.a = getWaterSheetAlpha(waterFog, fresnel);
          albedo.rgb *= 0.55 + 0.45 * WATER_BRIGHTNESS;
+
+         #ifdef OVERWORLD
+            vec3 refl = rfWaterPassReflection(waterView, viewN, viewDir);
+            float skyF = mix(0.22, 0.90, fresnel * fresnel);
+            albedo.rgb = mix(albedo.rgb, refl, skyF);
+            albedo.rgb += getSunMoonGlint(waterView, viewN, 0.0, WATER_REFLECTIVITY);
+            albedo.a = max(albedo.a, mix(0.32, 0.80, skyF));
+         #endif
       }
 
       albedo.a = clamp(albedo.a, 0.0, 1.0);
       packedNormal = ndc2screen(worldN);
+   } else if (isGlass) {
+      vec3 viewDir = normalize(feet2view(feetPos));
+      vec3 geoN = screen2ndc(normal);
+      vec3 viewN = normalize(mat3(gbufferModelView) * geoN);
+      float NoV = max(dot(viewN, -viewDir), 0.0);
+      float fresnel = clamp(1.0 - NoV, 0.0, 1.0);
+      float fresnel5 = fresnel * fresnel * fresnel * fresnel * fresnel;
+
+      int gid = int(glassId + 0.5);
+      vec3 glassTex = albedo.rgb;
+      float glassA = albedo.a;
+      vec3 glassRgb = rfGlassSheetRgb(texUV, glassTex, color.rgb);
+      float frameMask = rfGlassFrameMask(texUV, glassTex, glassA);
+
+      vec3 glassAmbient = ambient.rgb;
+      #if defined GENERATED_NORMALS && !defined DH_WATER && defined GLASS_OPAQUE_FRAME
+         applyGeneratedNormals(viewN, glassTex, tangent, binormal,
+                               texUV, absMidCoordPos, signMidCoordPos);
+         geoN = normalize(mat3(gbufferModelViewInverse) * viewN);
+      #endif
+
+      #if defined ENABLE_SHADOWS && !defined THE_END
+         vec3 lightStrength = getLightStrength(diffuse, lightUV.t, feetPos, geoN);
+         float lightBrightness = max(0.0, LIGHT_BRIGHTNESS - 0.5 * pow3(luma(glassRgb)));
+         glassAmbient *= mix(SHADOW_COLOR, vec3(1.0), clamp(luma(lightStrength), 0.0, 1.0));
+         glassAmbient *= 0.52 + (lightBrightness * lightStrength) * lightColor;
+      #endif
+
+      glassAbsorb = rfGlassAbsorb(rfGlassTransmit(glassRgb, vec3(1.0), gid));
+      albedo = rfGlassSurface(glassRgb, vec3(1.0), glassAmbient, fresnel5);
+      albedo = rfGlassApplyFrame(albedo, texUV, glassTex, glassA, color.rgb, glassAmbient);
+
+      #if defined GENERATED_SPECULAR && defined ENABLE_SHADOWS && !defined THE_END
+         vec4 ipbr = generateIPBR(float(IPBR_GLASS), 0.0, glassTex);
+         albedo.rgb += ipbrSpecularHighlight(
+            viewN, feet2view(feetPos), shadowLightPosition,
+            ipbr.x, ipbr.y, glassTex,
+            max(luma(lightStrength), 0.0), lightColor
+         ) * frameMask;
+         packReflectivity = mix(packReflectivity, ipbr.x, frameMask);
+      #endif
+
+      packedNormal = ndc2screen(geoN);
+      glassFrame = frameMask;
    } else {
       albedo *= color * ambient;
    }
 
-   if (reflectivity <= WATER_REFLECTIVITY - 0.01 && isEyeInWater == 0) {
+   if (!isGlass && reflectivity <= WATER_REFLECTIVITY - 0.01 && isEyeInWater == 0) {
       albedo.rgb = mix(albedo.rgb, gradientFogColor, fogMix);
    }
 
@@ -208,23 +299,31 @@ void main() {
       albedo.a *= dhWaterFade;
    #endif
 
-   /* DRAWBUFFERS:067 */
+   #ifdef GLASS_OPAQUE_FRAME
+      float gbufA = isGlass ? glassFrame : 1.0;
+   #else
+      float gbufA = isGlass ? 0.0 : 1.0;
+   #endif
+
+   /* DRAWBUFFERS:0675 */
+   /* RENDERTARGETS: 0,6,7,5 */
    gl_FragData[0] = albedo;
-   gl_FragData[1] = vec4(packedNormal, 1.0);
+   gl_FragData[1] = vec4(packedNormal, gbufA);
    #ifdef GENERATED_SPECULAR
-      float packSmooth = clamp(max(reflectivity, 0.0), 0.0, 0.98);
+      float packSmooth = clamp(max(packReflectivity, 0.0), 0.0, 0.98);
       if (packSmooth < 0.5 && packSmooth < WATER_REFLECTIVITY - 0.05) {
          packSmooth = 0.0;
       }
       if (isEyeInWater == 1 && packSmooth > WATER_REFLECTIVITY - 0.05) {
          packSmooth = 0.0;
       }
-      gl_FragData[2] = vec4(packSmooth, 0.0, 0.5, 1.0);
+      gl_FragData[2] = vec4(packSmooth, 0.0, 0.5, gbufA);
    #else
-      float packReflect = reflectivity;
+      float packReflect = packReflectivity;
       if (isEyeInWater == 1 && packReflect > WATER_REFLECTIVITY - 0.05) {
          packReflect = 0.0;
       }
-      gl_FragData[2] = vec4(packReflect, 0.0, 0.5, 1.0);
+      gl_FragData[2] = vec4(packReflect, 0.0, 0.5, gbufA);
    #endif
+   gl_FragData[3] = vec4(glassAbsorb, 1.0);
 }
