@@ -32,6 +32,13 @@ uniform float rainStrength;
 uniform float wetness;
 #endif
 
+#ifndef TRANSFORMATIONS_UNIFORMS
+#ifndef CAMERA_POSITION_UNIFORM
+#define CAMERA_POSITION_UNIFORM
+uniform vec3 cameraPosition;
+#endif
+#endif
+
 #ifndef RF_CLOUD_SAMPLE_ONLY
 #ifndef EYE_BRIGHTNESS_SMOOTH_UNIFORM
 #define EYE_BRIGHTNESS_SMOOTH_UNIFORM
@@ -60,6 +67,10 @@ float rfCloudEffectiveAmount(float amount) {
    return amount * mix(1.0, CLOUD_RAIN_AMOUNT, clamp(rainStrength, 0.0, 1.0));
 }
 
+bool rfCloudLayerOff(float amount) {
+   return amount <= 1.0e-4;
+}
+
 float rfCloudCut(float amount) {
    return mix(0.76, 0.28, rfCloudAmount01(amount));
 }
@@ -74,6 +85,40 @@ float rfCloudSpan(float thickness) {
 
 float rfCloudPeriod(float scale) {
    return clamp(scale * 3.8, 170.0, 1050.0);
+}
+
+#define RF_CLOUD_LAYER_LC 0
+#define RF_CLOUD_LAYER_MC 1
+#define RF_CLOUD_LAYER_UC 2
+
+vec2 rfCloudLayerShift(int layer) {
+   if (layer == RF_CLOUD_LAYER_MC) {
+      return vec2(480.0, 160.0);
+   }
+   if (layer == RF_CLOUD_LAYER_UC) {
+      return vec2(-320.0, 440.0);
+   }
+   return vec2(0.0);
+}
+
+#ifndef CLOUD_LC_CIRRUS
+#define CLOUD_LC_CIRRUS 0.0
+#endif
+#ifndef CLOUD_MC_CIRRUS
+#define CLOUD_MC_CIRRUS 0.0
+#endif
+#ifndef CLOUD_UC_CIRRUS
+#define CLOUD_UC_CIRRUS 0.0
+#endif
+
+float rfCloudCirrusOf(int layer) {
+   if (layer == RF_CLOUD_LAYER_MC) {
+      return CLOUD_MC_CIRRUS;
+   }
+   if (layer == RF_CLOUD_LAYER_UC) {
+      return CLOUD_UC_CIRRUS;
+   }
+   return CLOUD_LC_CIRRUS;
 }
 
 vec2 rfCloudDrift(float speed, float loopSec) {
@@ -113,23 +158,37 @@ float rfCloudDensity(
    float period,
    float amount,
    float detail,
-   bool lod
+   bool lod,
+   float cirrus
 ) {
-   vec2 uv = worldXz / period + drift;
+   float cir = clamp(cirrus, 0.0, 1.0);
+   vec2 xz = worldXz;
+   if (cir > 0.001) {
+      vec2 w = vec2(0.95, 0.31);
+      w *= 1.0 / sqrt(dot(w, w));
+      vec2 n = vec2(-w.y, w.x);
+      vec2 local = vec2(dot(xz, w), dot(xz, n));
+      local.x *= mix(1.0, 0.40, cir);
+      local.y *= mix(1.0, 1.75, cir);
+      xz = w * local.x + n * local.y;
+   }
+   vec2 uv = xz / period + drift;
    float shape = rfCloudShape(tex, uv, lod);
    float det = lod ? 0.5 : rfCloudDetail(tex, uv);
    float skirt = smoothstep(0.15, 0.55, shape) * (1.0 - smoothstep(0.55, 0.88, shape));
    float field = shape + (det - 0.5) * (0.16 * detail) * (0.35 + 0.65 * skirt);
+   field = mix(field, field * mix(0.58, 1.16, det), cir * 0.80);
    field = clamp(field, 0.0, 1.0);
 
-   float peak = mix(0.30, 0.50, clamp(shape, 0.0, 1.0));
-   float below = max(peak, 0.18);
-   float above = max(1.0 - peak, 0.22);
+   float peak = mix(mix(0.30, 0.50, clamp(shape, 0.0, 1.0)), 0.36, cir);
+   float below = max(peak, mix(0.18, 0.12, cir));
+   float above = max(1.0 - peak, mix(0.22, 0.14, cir));
    float dh = h < peak ? (peak - h) / below : (h - peak) / above;
    dh = clamp(dh, 0.0, 1.0);
    float env = 1.0 - dh * dh;
    env *= 1.0 - smoothstep(0.72, 1.0, h);
    env *= smoothstep(0.0, 0.12, h);
+   env *= mix(1.0, 1.0 - 0.42 * smoothstep(0.16, 0.58, abs(h - peak)), cir);
 
    float amt = rfCloudAmount01(amount);
    float edgeLo = mix(0.18, 0.28, amt);
@@ -138,11 +197,11 @@ float rfCloudDensity(
    float fieldAdj = clamp(field + lift, 0.0, 1.0);
 
    float dens = smoothstep(cut - edgeLo, cut + edgeHi, fieldAdj);
-   float soft = pow(max(dens, 0.0), 0.78);
+   float soft = pow(max(dens, 0.0), mix(0.78, 1.15, cir));
    float body = dens * dens * (3.0 - 2.0 * dens);
-   dens = mix(soft, body, 0.55);
+   dens = mix(mix(soft, body, 0.55), soft, cir);
    dens *= env;
-   dens *= sigma * 1.15;
+   dens *= sigma * mix(1.15, 0.92, cir);
    dens *= mix(1.0 - 0.18 * wetness, 1.0, clamp(rainStrength, 0.0, 1.0));
    return clamp(dens, 0.0, 1.0);
 }
@@ -157,8 +216,12 @@ float rfCloudAt(
    float amount,
    float density,
    float detail,
-   bool lod
+   bool lod,
+   int layer
 ) {
+   if (rfCloudLayerOff(amount)) {
+      return 0.0;
+   }
    float bottom = height;
    float span = rfCloudSpan(thickness);
    float top = bottom + span;
@@ -167,9 +230,9 @@ float rfCloudAt(
    }
    float h = clamp((worldPos.y - bottom) / max(span, 1.0), 0.0, 1.0);
    return rfCloudDensity(
-      tex, worldPos.xz, drift, h,
+      tex, worldPos.xz + rfCloudLayerShift(layer), drift, h,
       rfCloudCut(amount), rfCloudSigma(density), rfCloudPeriod(scale),
-      amount, detail, lod
+      amount, detail, lod, rfCloudCirrusOf(layer)
    );
 }
 
@@ -184,8 +247,12 @@ float rfCloudShadowLayer(
    float density,
    float detail,
    float speed,
-   float loopSec
+   float loopSec,
+   int layer
 ) {
+   if (rfCloudLayerOff(amount)) {
+      return 1.0;
+   }
    float bottom = height;
    float top = bottom + rfCloudSpan(thickness);
    if (worldPos.y >= top) {
@@ -205,8 +272,8 @@ float rfCloudShadowLayer(
    vec2 drift = rfCloudDrift(speed, loopSec);
    vec3 q0 = worldPos + L * mix(enter, leave, 0.32);
    vec3 q1 = worldPos + L * mix(enter, leave, 0.74);
-   float od = rfCloudAt(tex, q0, drift, height, thickness, scale, amount, density, detail, true) * 0.58
-            + rfCloudAt(tex, q1, drift, height, thickness, scale, amount, density, detail, true) * 0.42;
+   float od = rfCloudAt(tex, q0, drift, height, thickness, scale, amount, density, detail, true, layer) * 0.58
+            + rfCloudAt(tex, q1, drift, height, thickness, scale, amount, density, detail, true, layer) * 0.42;
    return mix(0.22, 1.0, clamp(exp(-4.0 * od), 0.0, 1.0));
 }
 
@@ -222,7 +289,7 @@ float rfCloudShadow(vec3 worldPos, vec3 worldLightDir) {
       noisetex, worldPos, L,
       CLOUD_LC_HEIGHT, CLOUD_LC_THICKNESS, CLOUD_LC_SCALE,
       rfCloudEffectiveAmount(CLOUD_LC_AMOUNT), CLOUD_LC_DENSITY, CLOUD_LC_DETAIL,
-      CLOUD_LC_SPEED, CLOUD_LC_LOOP_SECONDS
+      CLOUD_LC_SPEED, CLOUD_LC_LOOP_SECONDS, RF_CLOUD_LAYER_LC
    );
    if (sh < 0.24) {
       return sh;
@@ -231,7 +298,7 @@ float rfCloudShadow(vec3 worldPos, vec3 worldLightDir) {
       noisetex_mc, worldPos, L,
       CLOUD_MC_HEIGHT, CLOUD_MC_THICKNESS, CLOUD_MC_SCALE,
       rfCloudEffectiveAmount(CLOUD_MC_AMOUNT), CLOUD_MC_DENSITY, CLOUD_MC_DETAIL,
-      CLOUD_MC_SPEED, CLOUD_MC_LOOP_SECONDS
+      CLOUD_MC_SPEED, CLOUD_MC_LOOP_SECONDS, RF_CLOUD_LAYER_MC
    );
    if (sh < 0.24) {
       return sh;
@@ -240,7 +307,7 @@ float rfCloudShadow(vec3 worldPos, vec3 worldLightDir) {
       noisetex_uc, worldPos, L,
       CLOUD_UC_HEIGHT, CLOUD_UC_THICKNESS, CLOUD_UC_SCALE,
       rfCloudEffectiveAmount(CLOUD_UC_AMOUNT), CLOUD_UC_DENSITY, CLOUD_UC_DETAIL,
-      CLOUD_UC_SPEED, CLOUD_UC_LOOP_SECONDS
+      CLOUD_UC_SPEED, CLOUD_UC_LOOP_SECONDS, RF_CLOUD_LAYER_UC
    );
    return sh;
 }
@@ -258,10 +325,11 @@ vec4 rfCloudSkyHintLayer(
    float detail,
    float speed,
    float loopSec,
-   float opacity
+   float opacity,
+   int layer
 ) {
    vec3 rd = normalize(view2eye(viewDir));
-   if (rd.y < 0.05) {
+   if (rfCloudLayerOff(amount) || rd.y < 0.05) {
       return vec4(0.0);
    }
    float bottom = height;
@@ -272,7 +340,7 @@ vec4 rfCloudSkyHintLayer(
    }
    float n = rfCloudAt(
       tex, cameraPosition + rd * t, rfCloudDrift(speed, loopSec),
-      height, thickness, scale, amount, density, detail, true
+      height, thickness, scale, amount, density, detail, true, layer
    );
    if (n < 0.02) {
       return vec4(0.0);
@@ -285,19 +353,19 @@ vec4 rfCloudSkyHint(vec3 viewDir, vec3 lightColor) {
       noisetex_uc, viewDir, lightColor,
       CLOUD_UC_HEIGHT, CLOUD_UC_THICKNESS, CLOUD_UC_SCALE,
       rfCloudEffectiveAmount(CLOUD_UC_AMOUNT), CLOUD_UC_DENSITY, CLOUD_UC_DETAIL,
-      CLOUD_UC_SPEED, CLOUD_UC_LOOP_SECONDS, CLOUD_UC_OPACITY
+      CLOUD_UC_SPEED, CLOUD_UC_LOOP_SECONDS, CLOUD_UC_OPACITY, RF_CLOUD_LAYER_UC
    );
    vec4 b = rfCloudSkyHintLayer(
       noisetex_mc, viewDir, lightColor,
       CLOUD_MC_HEIGHT, CLOUD_MC_THICKNESS, CLOUD_MC_SCALE,
       rfCloudEffectiveAmount(CLOUD_MC_AMOUNT), CLOUD_MC_DENSITY, CLOUD_MC_DETAIL,
-      CLOUD_MC_SPEED, CLOUD_MC_LOOP_SECONDS, CLOUD_MC_OPACITY
+      CLOUD_MC_SPEED, CLOUD_MC_LOOP_SECONDS, CLOUD_MC_OPACITY, RF_CLOUD_LAYER_MC
    );
    vec4 c = rfCloudSkyHintLayer(
       noisetex, viewDir, lightColor,
       CLOUD_LC_HEIGHT, CLOUD_LC_THICKNESS, CLOUD_LC_SCALE,
       rfCloudEffectiveAmount(CLOUD_LC_AMOUNT), CLOUD_LC_DENSITY, CLOUD_LC_DETAIL,
-      CLOUD_LC_SPEED, CLOUD_LC_LOOP_SECONDS, CLOUD_LC_OPACITY
+      CLOUD_LC_SPEED, CLOUD_LC_LOOP_SECONDS, CLOUD_LC_OPACITY, RF_CLOUD_LAYER_LC
    );
    float a1 = b.a + a.a * (1.0 - b.a);
    vec3 rgb1 = a1 > 1.0e-4 ? (b.rgb * b.a + a.rgb * a.a * (1.0 - b.a)) / a1 : vec3(0.0);
@@ -319,8 +387,12 @@ float rfCloudLayerDensAt(
    float detail,
    float fadeStart,
    float fadeEnd,
-   bool lod
+   bool lod,
+   int layer
 ) {
+   if (rfCloudLayerOff(amount)) {
+      return 0.0;
+   }
    float bottom = height;
    float span = rfCloudSpan(thickness);
    float top = bottom + span;
@@ -335,9 +407,9 @@ float rfCloudLayerDensAt(
    }
    float h = clamp((pos.y - bottom) / max(span, 1.0), 0.0, 1.0);
    float dens = rfCloudDensity(
-      tex, pos.xz, drift, h,
+      tex, pos.xz + rfCloudLayerShift(layer), drift, h,
       rfCloudCut(amount), rfCloudSigma(density), rfCloudPeriod(scale),
-      amount, detail, lod
+      amount, detail, lod, rfCloudCirrusOf(layer)
    );
    float xz = length(pos.xz - cameraPosition.xz);
    dens *= inside * (1.0 - smoothstep(fadeEnd - max(fadeStart * 0.35, 24.0), fadeEnd, xz));
@@ -378,10 +450,11 @@ vec4 rfMarchCloudLayer(
    float speed,
    float loopSec,
    float opacity,
-   int sampleCount
+   int sampleCount,
+   int layer
 ) {
    vec4 vc = vec4(0.0);
-   if (abs(rd.y) < 1.0e-4) {
+   if (rfCloudLayerOff(amount) || abs(rd.y) < 1.0e-4) {
       return vc;
    }
    float span = rfCloudSpan(thickness);
@@ -430,7 +503,7 @@ vec4 rfMarchCloudLayer(
          tex, pos, drift,
          height, thickness, scale,
          amount, density, detail,
-         fadeNear, fadeFar, lod
+         fadeNear, fadeFar, lod, layer
       );
 
       if (dens > 0.0001) {
@@ -438,7 +511,7 @@ vec4 rfMarchCloudLayer(
             tex, pos + lightOff, drift,
             height, thickness, scale,
             amount, density, detail,
-            fadeNear, fadeFar, true
+            fadeNear, fadeFar, true, layer
          );
          float h = clamp((pos.y - height) / max(span, 1.0), 0.0, 1.0);
          float sigma = mix(2.4, 3.8, 1.0 - sunVis);
@@ -562,21 +635,24 @@ vec4 rfDrawClouds(vec3 viewPos, bool sky, vec3 lightColor) {
       lightOff, phase, sunVis, sunVisSqrt, nightVis, fadeNear, fadeFar,
       CLOUD_UC_HEIGHT, CLOUD_UC_THICKNESS, CLOUD_UC_SCALE,
       rfCloudEffectiveAmount(CLOUD_UC_AMOUNT), CLOUD_UC_DENSITY, CLOUD_UC_DETAIL,
-      CLOUD_UC_SPEED, CLOUD_UC_LOOP_SECONDS, CLOUD_UC_OPACITY, CLOUD_UC_SAMPLES
+      CLOUD_UC_SPEED, CLOUD_UC_LOOP_SECONDS, CLOUD_UC_OPACITY, CLOUD_UC_SAMPLES,
+      RF_CLOUD_LAYER_UC
    );
    vec4 mid = rfMarchCloudLayer(
       noisetex_mc, rd, sky, sceneLen, cap, dither, lightColor, atmosphere,
       lightOff, phase, sunVis, sunVisSqrt, nightVis, fadeNear, fadeFar,
       CLOUD_MC_HEIGHT, CLOUD_MC_THICKNESS, CLOUD_MC_SCALE,
       rfCloudEffectiveAmount(CLOUD_MC_AMOUNT), CLOUD_MC_DENSITY, CLOUD_MC_DETAIL,
-      CLOUD_MC_SPEED, CLOUD_MC_LOOP_SECONDS, CLOUD_MC_OPACITY, CLOUD_MC_SAMPLES
+      CLOUD_MC_SPEED, CLOUD_MC_LOOP_SECONDS, CLOUD_MC_OPACITY, CLOUD_MC_SAMPLES,
+      RF_CLOUD_LAYER_MC
    );
    vec4 near = rfMarchCloudLayer(
       noisetex, rd, sky, sceneLen, cap, dither, lightColor, atmosphere,
       lightOff, phase, sunVis, sunVisSqrt, nightVis, fadeNear, fadeFar,
       CLOUD_LC_HEIGHT, CLOUD_LC_THICKNESS, CLOUD_LC_SCALE,
       rfCloudEffectiveAmount(CLOUD_LC_AMOUNT), CLOUD_LC_DENSITY, CLOUD_LC_DETAIL,
-      CLOUD_LC_SPEED, CLOUD_LC_LOOP_SECONDS, CLOUD_LC_OPACITY, CLOUD_LC_SAMPLES
+      CLOUD_LC_SPEED, CLOUD_LC_LOOP_SECONDS, CLOUD_LC_OPACITY, CLOUD_LC_SAMPLES,
+      RF_CLOUD_LAYER_LC
    );
 
    vc = rfCloudOverStraight(mid, far);

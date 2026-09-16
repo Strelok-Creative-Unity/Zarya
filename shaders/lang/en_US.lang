@@ -94,7 +94,7 @@ option.CLOUD_RAIN_AMOUNT=Rain coverage §e[?]
 option.CLOUD_RAIN_AMOUNT.comment=Multiplies cloud coverage on all layers during rain. 1.0 = no change
 
 option.CLOUD_LC_AMOUNT=Coverage
-option.CLOUD_LC_AMOUNT.comment=How much of the sky this layer covers
+option.CLOUD_LC_AMOUNT.comment=How much of the sky this layer covers. 0 = layer off
 option.CLOUD_LC_HEIGHT=Altitude
 option.CLOUD_LC_HEIGHT.comment=Base height of low clouds (~120)
 option.CLOUD_LC_THICKNESS=Thickness §e[?]
@@ -103,6 +103,8 @@ option.CLOUD_LC_SCALE=Scale §e[?]
 option.CLOUD_LC_SCALE.comment=Horizontal size of cloud masses
 option.CLOUD_LC_DENSITY=Density
 option.CLOUD_LC_DETAIL=Detail
+option.CLOUD_LC_CIRRUS=Cirrus §e[?]
+option.CLOUD_LC_CIRRUS.comment=0 = puffy cumulus. 1 = stretched wind-blown wisps
 option.CLOUD_LC_SPEED=Low · wind §e[?]
 option.CLOUD_LC_SPEED.comment=How far the low layer travels on its closed wind loop. End of the cycle matches the start, no tile rewind
 option.CLOUD_LC_LOOP_SECONDS=Low · loop §e[?]
@@ -114,7 +116,7 @@ option.CLOUD_LC_SAMPLES.comment=Raymarch steps for this layer
 option.CLOUD_LC_DISTANCE=Draw distance
 
 option.CLOUD_MC_AMOUNT=Coverage
-option.CLOUD_MC_AMOUNT.comment=How much of the sky this layer covers
+option.CLOUD_MC_AMOUNT.comment=How much of the sky this layer covers. 0 = layer off
 option.CLOUD_MC_HEIGHT=Altitude
 option.CLOUD_MC_HEIGHT.comment=Base height of mid clouds (~220)
 option.CLOUD_MC_THICKNESS=Thickness §e[?]
@@ -123,6 +125,8 @@ option.CLOUD_MC_SCALE=Scale §e[?]
 option.CLOUD_MC_SCALE.comment=Horizontal size of cloud masses
 option.CLOUD_MC_DENSITY=Density
 option.CLOUD_MC_DETAIL=Detail
+option.CLOUD_MC_CIRRUS=Cirrus §e[?]
+option.CLOUD_MC_CIRRUS.comment=0 = puffy cumulus. 1 = stretched wind-blown wisps
 option.CLOUD_MC_SPEED=Mid · wind §e[?]
 option.CLOUD_MC_SPEED.comment=How far the mid layer travels on its closed wind loop. No tile rewind
 option.CLOUD_MC_LOOP_SECONDS=Mid · loop §e[?]
@@ -134,7 +138,7 @@ option.CLOUD_MC_SAMPLES.comment=Raymarch steps for this layer
 option.CLOUD_MC_DISTANCE=Draw distance
 
 option.CLOUD_UC_AMOUNT=Coverage
-option.CLOUD_UC_AMOUNT.comment=How much of the sky this layer covers
+option.CLOUD_UC_AMOUNT.comment=How much of the sky this layer covers. 0 = layer off
 option.CLOUD_UC_HEIGHT=Altitude
 option.CLOUD_UC_HEIGHT.comment=Base height of high clouds (~320)
 option.CLOUD_UC_THICKNESS=Thickness §e[?]
@@ -143,6 +147,8 @@ option.CLOUD_UC_SCALE=Scale §e[?]
 option.CLOUD_UC_SCALE.comment=Horizontal size of cloud masses
 option.CLOUD_UC_DENSITY=Density
 option.CLOUD_UC_DETAIL=Detail
+option.CLOUD_UC_CIRRUS=Cirrus §e[?]
+option.CLOUD_UC_CIRRUS.comment=0 = puffy cumulus. 1 = stretched wind-blown wisps
 option.CLOUD_UC_SPEED=High · wind §e[?]
 option.CLOUD_UC_SPEED.comment=How far the high layer travels on its closed wind loop. No tile rewind
 option.CLOUD_UC_LOOP_SECONDS=High · loop §e[?]

@@ -118,7 +118,7 @@ option.CLOUD_RAIN_AMOUNT=Regenbedeckung §e[?]
 option.CLOUD_RAIN_AMOUNT.comment=Multipliziert die Wolkenbedeckung aller Schichten bei Regen. 1.0 = keine Änderung
 
 option.CLOUD_LC_AMOUNT=Bedeckung
-option.CLOUD_LC_AMOUNT.comment=Wie viel des Himmels diese Schicht bedeckt
+option.CLOUD_LC_AMOUNT.comment=Wie viel des Himmels diese Schicht bedeckt. 0 = Schicht aus
 option.CLOUD_LC_HEIGHT=Höhe
 option.CLOUD_LC_HEIGHT.comment=Basishöhe der tiefen Wolken (~120)
 option.CLOUD_LC_THICKNESS=Dicke §e[?]
@@ -129,6 +129,8 @@ option.CLOUD_LC_DENSITY=Dichte
 option.CLOUD_LC_DENSITY.comment=Dichte der unteren (LC) Wolkenschicht.
 option.CLOUD_LC_DETAIL=Detail
 option.CLOUD_LC_DETAIL.comment=Detailgrad der unteren Wolken.
+option.CLOUD_LC_CIRRUS=Federwolken §e[?]
+option.CLOUD_LC_CIRRUS.comment=0 = quellige Cumulus. 1 = vom Wind gestreckte Federn
 option.CLOUD_LC_SPEED=Tief · Wind §e[?]
 option.CLOUD_LC_SPEED.comment=Wie weit sich die tiefe Schicht auf ihrer geschlossenen Windschleife bewegt. Ende der Schleife = Anfang, ohne Tile-Reset
 option.CLOUD_LC_LOOP_SECONDS=Tief · Schleife §e[?]
@@ -141,7 +143,7 @@ option.CLOUD_LC_DISTANCE=Sichtweite
 option.CLOUD_LC_DISTANCE.comment=Sichtweite der tiefen Wolken.
 
 option.CLOUD_MC_AMOUNT=Bedeckung
-option.CLOUD_MC_AMOUNT.comment=Wie viel des Himmels diese Schicht bedeckt
+option.CLOUD_MC_AMOUNT.comment=Wie viel des Himmels diese Schicht bedeckt. 0 = Schicht aus
 option.CLOUD_MC_HEIGHT=Höhe
 option.CLOUD_MC_HEIGHT.comment=Basishöhe der mittleren Wolken (~220)
 option.CLOUD_MC_THICKNESS=Dicke §e[?]
@@ -152,6 +154,8 @@ option.CLOUD_MC_DENSITY=Dichte
 option.CLOUD_MC_DENSITY.comment=Dichte der mittleren (MC) Wolkenschicht.
 option.CLOUD_MC_DETAIL=Detail
 option.CLOUD_MC_DETAIL.comment=Detailgrad der mittleren Wolken.
+option.CLOUD_MC_CIRRUS=Federwolken §e[?]
+option.CLOUD_MC_CIRRUS.comment=0 = quellige Cumulus. 1 = vom Wind gestreckte Federn
 option.CLOUD_MC_SPEED=Mittel · Wind §e[?]
 option.CLOUD_MC_SPEED.comment=Wie weit sich die mittlere Schicht auf ihrer geschlossenen Windschleife bewegt. Ohne Tile-Reset
 option.CLOUD_MC_LOOP_SECONDS=Mittel · Schleife §e[?]
@@ -164,7 +168,7 @@ option.CLOUD_MC_DISTANCE=Sichtweite
 option.CLOUD_MC_DISTANCE.comment=Sichtweite der mittleren Wolken.
 
 option.CLOUD_UC_AMOUNT=Bedeckung
-option.CLOUD_UC_AMOUNT.comment=Wie viel des Himmels diese Schicht bedeckt
+option.CLOUD_UC_AMOUNT.comment=Wie viel des Himmels diese Schicht bedeckt. 0 = Schicht aus
 option.CLOUD_UC_HEIGHT=Höhe
 option.CLOUD_UC_HEIGHT.comment=Basishöhe der hohen Wolken (~320)
 option.CLOUD_UC_THICKNESS=Dicke §e[?]
@@ -175,6 +179,8 @@ option.CLOUD_UC_DENSITY=Dichte
 option.CLOUD_UC_DENSITY.comment=Dichte der oberen (UC) Wolkenschicht.
 option.CLOUD_UC_DETAIL=Detail
 option.CLOUD_UC_DETAIL.comment=Detailgrad der oberen Wolken.
+option.CLOUD_UC_CIRRUS=Federwolken §e[?]
+option.CLOUD_UC_CIRRUS.comment=0 = quellige Cumulus. 1 = vom Wind gestreckte Federn
 option.CLOUD_UC_SPEED=Hoch · Wind §e[?]
 option.CLOUD_UC_SPEED.comment=Wie weit sich die hohe Schicht auf ihrer geschlossenen Windschleife bewegt. Ohne Tile-Reset
 option.CLOUD_UC_LOOP_SECONDS=Hoch · Schleife §e[?]
